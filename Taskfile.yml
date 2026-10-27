@@ -51,7 +51,7 @@ tasks:
   self-check:
     desc: Run ci-parity against this repo
     cmds:
-      - go run ./cmd/ci-parity version
+      - go run ./cmd/ci-parity check
 
   scrub:
     desc: Fail if tracked or untracked files contain a term from $SCRUB_TERMS_FILE
