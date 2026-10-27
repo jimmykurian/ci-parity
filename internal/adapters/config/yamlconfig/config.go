@@ -56,9 +56,11 @@ func Parse(data []byte) (*domain.Config, error) {
 	if err := fileSchema.check(root, ""); err != nil {
 		return nil, err
 	}
-	if err := root.Decode(cfg); err != nil {
+	f := fromConfig(cfg)
+	if err := root.Decode(f); err != nil {
 		return nil, err
 	}
+	cfg = f.config()
 	if err := validate(cfg); err != nil {
 		return nil, err
 	}

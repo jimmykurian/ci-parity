@@ -2,40 +2,40 @@ package domain
 
 // Config is the resolved ci-parity configuration. See docs/SPEC.md section 4.2.
 type Config struct {
-	Runner      string      `yaml:"runner"`
-	Taskfile    string      `yaml:"taskfile"`
-	Workflows   []string    `yaml:"workflows"`
-	Invokers    Invokers    `yaml:"invokers"`
-	Tools       ToolList    `yaml:"tools"`
-	Transparent []string    `yaml:"transparent"`
-	Allow       []AllowRule `yaml:"allow"`
-	Baseline    string      `yaml:"baseline"`
+	Runner      string
+	Taskfile    string
+	Workflows   []string
+	Invokers    Invokers
+	Tools       ToolList
+	Transparent []string
+	Allow       []AllowRule
+	Baseline    string
 }
 
 // Invokers describes how CI calls the task runner.
 type Invokers struct {
-	Shell   []string        `yaml:"shell"`
-	Actions []ActionInvoker `yaml:"actions"`
+	Shell   []string
+	Actions []ActionInvoker
 }
 
 // ActionInvoker is a local action whose input names the task to run.
 type ActionInvoker struct {
-	Uses  string `yaml:"uses"`
-	Input string `yaml:"input"`
+	Uses  string
+	Input string
 }
 
 // ToolList adjusts the built-in tool list.
 type ToolList struct {
-	Extend  []string `yaml:"extend"`
-	Remove  []string `yaml:"remove"`
-	Replace []string `yaml:"replace"`
+	Extend  []string
+	Remove  []string
+	Replace []string
 }
 
 // AllowRule allows inline commands that match a command glob.
 type AllowRule struct {
-	Match     string   `yaml:"match"`
-	Reason    string   `yaml:"reason"`
-	Workflows []string `yaml:"workflows"`
+	Match     string
+	Reason    string
+	Workflows []string
 }
 
 // BuiltinTools is the default tools list, matched on the command's basename.
