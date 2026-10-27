@@ -22,10 +22,9 @@ testdata/fixtures/<case>/
 ## Phase 0: scaffold
 
 - [ ] `go mod init github.com/OWNER/ci-parity`; OWNER from the git remote, ask if absent
-- [ ] `LICENSE` (Apache-2.0), `.gitignore`, `.editorconfig`
+- [ ] `LICENSE` (Apache-2.0); `.gitignore`, `.gitattributes` and `.editorconfig` already exist, extend them if needed
 - [ ] `README.md`: positioning paragraph from SPEC section 1, a "pre-release" notice,
       and empty headings for Install, Quick start, Configuration, Rules, Baseline, FAQ
-- [ ] `CLAUDE.md` containing only `@AGENTS.md`
 - [ ] `cmd/ci-parity/main.go` with subcommand dispatch and a working `version`;
       `check` and `baseline` exit 2 with "not implemented"
 - [ ] `Taskfile.yml` with `build`, `test`, `lint`, `fmt`, `fmt:check`, `self-check`,
