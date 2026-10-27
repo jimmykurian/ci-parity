@@ -46,7 +46,7 @@ func TestRunGoldenPassesMatchingFixture(t *testing.T) {
 		t.Fatal(err)
 	}
 	var calls int
-	RunGolden(t, root, func(args []string, stdout, _ io.Writer) int {
+	RunGolden(t, root, Formats, func(args []string, stdout, _ io.Writer) int {
 		calls++
 		fmt.Fprintln(stdout, args[len(args)-1])
 		return 1

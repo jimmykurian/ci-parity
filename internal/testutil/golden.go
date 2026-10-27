@@ -17,7 +17,7 @@ import (
 
 var update = flag.Bool("update", false, "rewrite golden files and exit codes from current output")
 
-// Formats lists the output formats every fixture is checked in.
+// Formats lists every output format the CLI supports.
 var Formats = []string{"text", "github", "json"}
 
 // RunFunc runs the CLI in-process with args and returns its exit code.
@@ -45,10 +45,10 @@ func Fixtures(t testing.TB, root string) []string {
 }
 
 // RunGolden runs `check -C <fixture> --format <format>` for every fixture under
-// root in every format and compares stdout with expected/<format>.golden and the
-// exit code with expected/exitcode. A golden file that does not exist yet is
-// skipped; with -update every golden file and exit code is rewritten.
-func RunGolden(t *testing.T, root string, run RunFunc) {
+// root in each of formats and compares stdout with expected/<format>.golden and
+// the exit code with expected/exitcode. Every format must exit with the same
+// code. With -update the golden files and exit code are rewritten.
+func RunGolden(t *testing.T, root string, formats []string, run RunFunc) {
 	t.Helper()
 	dirs := Fixtures(t, root)
 	if len(dirs) == 0 {
@@ -57,7 +57,7 @@ func RunGolden(t *testing.T, root string, run RunFunc) {
 	}
 	for _, dir := range dirs {
 		t.Run(filepath.Base(dir), func(t *testing.T) {
-			for _, format := range Formats {
+			for _, format := range formats {
 				t.Run(format, func(t *testing.T) {
 					var stdout, stderr bytes.Buffer
 					code := run([]string{"check", "-C", dir, "--format", format}, &stdout, &stderr)
@@ -77,11 +77,8 @@ func compareGolden(t *testing.T, path string, got []byte, stderr string) {
 		return
 	}
 	want, err := os.ReadFile(path)
-	if errors.Is(err, fs.ErrNotExist) {
-		t.Skipf("no golden file %s", path)
-	}
 	if err != nil {
-		t.Fatalf("read golden: %v", err)
+		t.Fatalf("read golden (run with -update to create): %v", err)
 	}
 	if !bytes.Equal(got, want) {
 		t.Errorf("%s mismatch (run with -update to rewrite)\n--- want\n%s\n--- got\n%s\n--- stderr\n%s", path, want, got, stderr)
@@ -95,11 +92,8 @@ func compareExitCode(t *testing.T, path string, got int, stderr string) {
 		return
 	}
 	raw, err := os.ReadFile(path)
-	if errors.Is(err, fs.ErrNotExist) {
-		return
-	}
 	if err != nil {
-		t.Fatalf("read exit code: %v", err)
+		t.Fatalf("read exit code (run with -update to create): %v", err)
 	}
 	want, err := strconv.Atoi(strings.TrimSpace(string(raw)))
 	if err != nil {

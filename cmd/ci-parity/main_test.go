@@ -8,8 +8,11 @@ import (
 	"github.com/jimmykurian/ci-parity/internal/testutil"
 )
 
+// goldenFormats lists the formats fixtures are checked in; github and json join in Phase 3.
+var goldenFormats = []string{"text"}
+
 func TestGolden(t *testing.T) {
-	testutil.RunGolden(t, "../../testdata/fixtures", run)
+	testutil.RunGolden(t, "../../testdata/fixtures", goldenFormats, run)
 }
 
 func TestRun(t *testing.T) {
