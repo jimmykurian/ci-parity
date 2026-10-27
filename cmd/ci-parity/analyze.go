@@ -1,6 +1,9 @@
 package main
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/jimmykurian/ci-parity/internal/config"
 	"github.com/jimmykurian/ci-parity/internal/rules"
 	"github.com/jimmykurian/ci-parity/internal/runner/taskfile"
@@ -19,6 +22,9 @@ type analysis struct {
 // it rather than changing the process directory, so in-process tests stay
 // independent. A non-empty baselinePath overrides the configured one.
 func analyze(root, configPath, baselinePath string) (*analysis, error) {
+	if info, err := os.Stat(root); err != nil || !info.IsDir() {
+		return nil, fmt.Errorf("-C %s: not a directory", root)
+	}
 	required := configPath != ""
 	if !required {
 		configPath = config.DefaultPath

@@ -47,6 +47,13 @@ func runBaseline(args []string, stdout, stderr io.Writer) int {
 	for _, n := range counts {
 		total += n
 	}
-	fmt.Fprintf(stdout, "wrote %s: %d workflows, %d inline-tool findings\n", res.baseline, len(counts), total)
+	fmt.Fprintf(stdout, "wrote %s: %s, %s\n", res.baseline, plural(len(counts), "workflow"), plural(total, "inline-tool finding"))
 	return exitOK
+}
+
+func plural(n int, word string) string {
+	if n == 1 {
+		return fmt.Sprintf("%d %s", n, word)
+	}
+	return fmt.Sprintf("%d %ss", n, word)
 }

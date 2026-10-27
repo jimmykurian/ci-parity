@@ -25,7 +25,8 @@ func TestRun(t *testing.T) {
 		{"help", []string{"--help"}, exitOK, "Usage:", ""},
 		{"unknown command", []string{"lint"}, exitUsage, "", `unknown command "lint"`},
 		{"check unknown format", []string{"check", "--format", "sarif"}, exitUsage, "", `unknown format "sarif"`},
-		{"check missing explicit config", []string{"check", "-C", "testdata-absent", "--config", "x.yml"}, exitUsage, "", "read config"},
+		{"check missing directory", []string{"check", "-C", "testdata-absent"}, exitUsage, "", "-C testdata-absent: not a directory"},
+		{"check missing explicit config", []string{"check", "-C", ".", "--config", "x.yml"}, exitUsage, "", "read config"},
 		{"unknown flag", []string{"check", "--nope"}, exitUsage, "", "flag provided but not defined"},
 		{"positional argument", []string{"version", "extra"}, exitUsage, "", `unexpected argument "extra"`},
 	}

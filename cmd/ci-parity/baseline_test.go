@@ -69,7 +69,7 @@ func TestBaselineRefusesRegression(t *testing.T) {
 	if got := readFile(t, path); got != want {
 		t.Errorf("baseline file =\n%s\nwant\n%s", got, want)
 	}
-	if !strings.Contains(stdout, "1 workflows, 3 inline-tool findings") {
+	if !strings.Contains(stdout, "1 workflow, 3 inline-tool findings") {
 		t.Errorf("stdout = %q", stdout)
 	}
 }
