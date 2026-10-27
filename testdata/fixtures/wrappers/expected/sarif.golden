@@ -1,0 +1,386 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ci-parity",
+          "version": "dev",
+          "informationUri": "https://github.com/jimmykurian/ci-parity",
+          "rules": [
+            {
+              "id": "P001",
+              "name": "inline-tool",
+              "shortDescription": {
+                "text": "A run: step calls a listed tool directly instead of through the task runner."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P002",
+              "name": "unknown-task",
+              "shortDescription": {
+                "text": "CI calls a task that the Taskfile does not define."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P003",
+              "name": "internal-task",
+              "shortDescription": {
+                "text": "CI calls a task marked internal: true."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P004",
+              "name": "regression",
+              "shortDescription": {
+                "text": "A workflow has more inline-tool findings than its baseline allows."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P005",
+              "name": "unsupported",
+              "shortDescription": {
+                "text": "A step that ci-parity cannot analyze."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapped\" in job \"test\" runs 'docker compose up -d' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 19
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "f327021fbed7ea61f161fe14c141f851"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapped\" in job \"test\" runs 'pnpm test' directly; already available as 'task test'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 20
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "a26046b8f969b2af7a3d35988f6d0bdb"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapped\" in job \"test\" runs 'pnpm lint' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 25
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "dad3947b67f1b3345269d033cc93a997"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapped\" in job \"test\" runs 'go test ./...' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 13,
+                  "startColumn": 23
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "79d9c14efc912f1358baab10e6cf3671"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapped\" in job \"test\" runs 'cargo build' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 22
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "c1f14ff21dab9d03d7a59c75ea8ab5d8"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapped\" in job \"test\" runs 'npm ci' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 16
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "69002f146ac225e4c024075d019048c0"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapped\" in job \"test\" runs 'node server.js' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 17
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "2411cc9aa965cb16a3a2cff24623bb13"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Go tool that is not task\" in job \"test\" runs 'go tool cover -func=coverage.out' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 23,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "b7812c9d5cf5cb3c082d876507b07cd6"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapper flags that take values\" in job \"test\" runs 'docker push ghcr.io/acme/widget-service' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 26,
+                  "startColumn": 26
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "7d11b7826f245f5842c87237668dc420"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapper flags that take values\" in job \"test\" runs 'pnpm test' directly; already available as 'task test'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 27,
+                  "startColumn": 28
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "1c722d81c2e8445d7024056f2e1f1fd3"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapper flags that take values\" in job \"test\" runs 'pnpm build' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 30
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "5b80bc5b4ff9e2dbf49fe8922faab2ad"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapper flags that take values\" in job \"test\" runs 'make all' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 29,
+                  "startColumn": 28
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "16efdd4a54cb60e9bcae67811c751b74"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Wrapper flags that take values\" in job \"test\" runs 'npm ci' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 30,
+                  "startColumn": 31
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "e8ce4313d8a579e3a41f8a9db52c4c05"
+          }
+        }
+      ]
+    }
+  ]
+}
