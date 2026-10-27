@@ -48,17 +48,19 @@ type Step struct {
 // Script is a step's run: value and where it sits in the file.
 type Script struct {
 	Text   string
-	line   int  // source line of the script's first line
-	col    int  // source column of the script's first character
-	indent int  // indentation of block scalar content
-	block  bool // literal or folded block scalar
+	line   int       // source line of the script's first line
+	col    int       // source column of the script's first character
+	indent int       // indentation of block scalar content
+	block  bool      // literal or folded block scalar
+	segs   []segment // source positions of folded text; nil when not folded
 }
 
 // Position maps a 1-based line and column inside the script to a position in
-// the file. Lines are exact for literal blocks and single-line values; columns
-// are best effort.
+// the file.
 func (s *Script) Position(line, col int) (int, int) {
 	switch {
+	case s.segs != nil:
+		return s.foldedPosition(line, col)
 	case s.block:
 		return s.line + line - 1, s.indent + col
 	case line == 1:
@@ -144,12 +146,19 @@ func steps(rel, job string, seq *yaml.Node, fallback string, lines []string) []S
 func script(n *yaml.Node, lines []string) *Script {
 	s := &Script{Text: n.Value, line: n.Line, col: n.Column}
 	switch n.Style {
-	case yaml.LiteralStyle, yaml.FoldedStyle:
+	case yaml.LiteralStyle:
 		s.block = true
 		s.line = n.Line + 1
 		s.indent = blockIndent(lines, n.Line)
+	case yaml.FoldedStyle:
+		s.block = true
+		s.line = n.Line + 1
+		s.indent = blockIndent(lines, n.Line)
+		s.segs = foldedBlock(lines, n.Line, s.indent, n.Value)
 	case yaml.DoubleQuotedStyle, yaml.SingleQuotedStyle:
 		s.col = n.Column + 1
+	default:
+		s.segs = foldedPlain(lines, n.Line, n.Column, n.Value)
 	}
 	// On a single-line value, `run: cmd # ci-parity: allow ...` ends in a YAML
 	// comment, not a shell one; put it back so allow comments work there too.
