@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.1](https://github.com/jimmykurian/ci-parity/compare/v0.1.0...v0.1.1) (2026-10-27)
+
+
+### Bug Fixes
+
+* **action:** write outputs and annotations when there are findings ([#5](https://github.com/jimmykurian/ci-parity/issues/5)) ([8697361](https://github.com/jimmykurian/ci-parity/commit/869736117deefd941e01081a019cef2eb9220c24))
+
+
+### Documentation
+
+* add the ci-parity logo and social preview ([#3](https://github.com/jimmykurian/ci-parity/issues/3)) ([cd31d29](https://github.com/jimmykurian/ci-parity/commit/cd31d2957ea0818f8a9736ec7d10e37ae1768a5d))
+
 ## 0.1.0 (2026-10-27)
 
 
