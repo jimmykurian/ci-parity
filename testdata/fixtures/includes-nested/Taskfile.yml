@@ -1,0 +1,14 @@
+version: "3"
+
+includes:
+  web: ./web
+  docs:
+    taskfile: ./docs/Taskfile.yml
+  shared:
+    taskfile: ./shared.yml
+    flatten: true
+
+tasks:
+  build:
+    cmds:
+      - go build ./...

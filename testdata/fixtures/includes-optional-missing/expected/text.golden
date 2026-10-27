@@ -1,0 +1,4 @@
+.github/workflows/ci.yml
+  9:19   P002 unknown-task  'task local:setup' is not defined in Taskfile.yml
+
+1 error, 0 warnings, 0 tolerated, 0 allowed

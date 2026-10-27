@@ -1,0 +1,10 @@
+.github/workflows/ci.yml
+  8:14    P001 inline-tool   step "Exact match, internal duplicate is skipped" in job "web" runs 'pnpm test' directly; already available as 'task test'
+  10:14   P001 inline-tool   step "Shortest of two matches" in job "web" runs 'pnpm lint' directly; already available as 'task lint'
+  12:14   P001 inline-tool   step "run form in CI" in job "web" runs 'pnpm run lint' directly; already available as 'task lint'
+  14:14   P001 inline-tool   step "run form in the Taskfile" in job "web" runs 'pnpm format' directly; already available as 'task format'
+  16:14   P001 inline-tool   step "Only an internal task matches" in job "web" runs 'pnpm db:migrate' directly
+  18:14   P001 inline-tool   step "Extra whitespace" in job "web" runs 'pnpm test' directly; already available as 'task test'
+  20:14   P001 inline-tool   step "Templated command does not match" in job "web" runs 'pnpm exec playwright test' directly
+
+7 errors, 0 warnings, 0 tolerated, 0 allowed

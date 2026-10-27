@@ -1,0 +1,14 @@
+name: ci
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Internal task
+        run: task setup
+      - name: Task from an internal include
+        run: task helpers:cache
+      - name: Public task
+        run: task ci
+      - name: Inline command that only an internal task wraps
+        run: pnpm install

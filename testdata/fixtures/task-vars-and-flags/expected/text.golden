@@ -1,0 +1,4 @@
+.github/workflows/ci.yml
+  30:33   P002 unknown-task  'task tset' is not defined in Taskfile.yml (closest: test)
+
+1 error, 0 warnings, 0 tolerated, 0 allowed

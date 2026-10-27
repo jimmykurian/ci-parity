@@ -1,0 +1,28 @@
+name: ci
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Known tasks
+        uses: ./.github/actions/run-task
+        with:
+          task: build lint
+      - name: Unknown and internal
+        uses: ./.github/actions/run-task
+        with:
+          task: biuld setup
+      - name: Pinned ref
+        uses: ./.github/actions/run-task@v1
+        with:
+          task: lnt
+      - name: Expression is skipped
+        uses: ./.github/actions/run-task
+        with:
+          task: ${{ matrix.task }} build
+      - name: Missing input is ignored
+        uses: ./.github/actions/run-task
+      - name: Other action is not an invoker
+        uses: ./.github/actions/run-task-extra
+        with:
+          task: nope

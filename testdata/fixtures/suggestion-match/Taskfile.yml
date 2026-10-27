@@ -1,0 +1,25 @@
+version: "3"
+
+tasks:
+  test:
+    cmds:
+      - pnpm test
+  t:
+    internal: true
+    cmds:
+      - pnpm   test
+  lint:
+    cmd: pnpm lint
+  lint:fix:
+    cmds:
+      - pnpm lint
+  format:
+    cmds:
+      - pnpm run format
+  migrate:
+    internal: true
+    cmds:
+      - pnpm db:migrate
+  e2e:
+    cmds:
+      - pnpm exec playwright test {{.CLI_ARGS}}

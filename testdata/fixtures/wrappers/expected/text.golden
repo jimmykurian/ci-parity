@@ -1,6 +1,6 @@
 .github/workflows/ci.yml
   10:19   P001 inline-tool   step "Wrapped" in job "test" runs 'docker compose up -d' directly
-  11:20   P001 inline-tool   step "Wrapped" in job "test" runs 'pnpm test' directly
+  11:20   P001 inline-tool   step "Wrapped" in job "test" runs 'pnpm test' directly; already available as 'task test'
   12:25   P001 inline-tool   step "Wrapped" in job "test" runs 'pnpm lint' directly
   13:23   P001 inline-tool   step "Wrapped" in job "test" runs 'go test ./...' directly
   14:22   P001 inline-tool   step "Wrapped" in job "test" runs 'cargo build' directly
@@ -8,7 +8,7 @@
   16:17   P001 inline-tool   step "Wrapped" in job "test" runs 'node server.js' directly
   23:14   P001 inline-tool   step "Go tool that is not task" in job "test" runs 'go tool cover -func=coverage.out' directly
   26:26   P001 inline-tool   step "Wrapper flags that take values" in job "test" runs 'docker push ghcr.io/acme/widget-service' directly
-  27:28   P001 inline-tool   step "Wrapper flags that take values" in job "test" runs 'pnpm test' directly
+  27:28   P001 inline-tool   step "Wrapper flags that take values" in job "test" runs 'pnpm test' directly; already available as 'task test'
   28:30   P001 inline-tool   step "Wrapper flags that take values" in job "test" runs 'pnpm build' directly
   29:28   P001 inline-tool   step "Wrapper flags that take values" in job "test" runs 'make all' directly
   30:31   P001 inline-tool   step "Wrapper flags that take values" in job "test" runs 'npm ci' directly

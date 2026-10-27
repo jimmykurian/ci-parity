@@ -1,0 +1,6 @@
+.github/workflows/ci.yml
+  14:17   P002 unknown-task  'task biuld' is not defined in Taskfile.yml (closest: build)
+  14:23   P003 internal-task 'setup' is marked internal: true and should not be invoked from CI
+  18:17   P002 unknown-task  'task lnt' is not defined in Taskfile.yml (closest: lint)
+
+3 errors, 0 warnings, 0 tolerated, 0 allowed

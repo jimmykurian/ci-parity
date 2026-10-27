@@ -1,0 +1,7 @@
+.github/workflows/ci.yml
+  8:19    P002 unknown-task  'task lint:all' is not defined in Taskfile.yml (closest: lint:ci)
+  10:19   P002 unknown-task  'task test' is not defined in Taskfile.yml (closest: test:unit)
+  12:19   P002 unknown-task  'task publish-docs' is not defined in Taskfile.yml
+  16:27   P002 unknown-task  'task tset:unit' is not defined in Taskfile.yml (closest: test:unit)
+
+4 errors, 0 warnings, 0 tolerated, 0 allowed

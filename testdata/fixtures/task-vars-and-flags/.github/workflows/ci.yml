@@ -1,0 +1,32 @@
+name: ci
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Variables
+        run: task build VERSION=1.2.3 GOOS=linux
+      - name: Flag values
+        run: |
+          task -C 2 build lint
+          task --concurrency=2 test
+          task -o group --output prefixed build
+          task --interval 5s lint
+      - name: Boolean flags
+        run: task --silent --force test
+      - name: Arguments after the separator
+        run: task build -- --verbose extra
+      - name: No task names
+        run: |
+          task --list
+          task
+      - name: Other Taskfiles are not checked
+        run: |
+          task -t services/example-api/Taskfile.yml migrate
+          task --dir=web assets
+          task -dweb assets
+          task --global setup
+      - name: Unknown after flags
+        run: task --silent -C 4 tset
+      - name: Dynamic task name
+        run: task ${{ inputs.target }}

@@ -1,0 +1,13 @@
+version: "3"
+
+tasks:
+  lint:ci:
+    cmds:
+      - golangci-lint run
+  test:unit:
+    cmds:
+      - go test ./...
+  deploy-staging:
+    aliases: [ds]
+    cmds:
+      - echo deploying widget-service

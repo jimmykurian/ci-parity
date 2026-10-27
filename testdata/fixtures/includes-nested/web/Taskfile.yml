@@ -1,0 +1,11 @@
+version: "3"
+
+includes:
+  ui:
+    taskfile: ./ui
+    aliases: [frontend]
+
+tasks:
+  lint:
+    cmds:
+      - pnpm lint

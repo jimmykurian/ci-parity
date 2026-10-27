@@ -1,0 +1,9 @@
+name: ci
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: task build
+      - name: A task from the missing optional include is unknown
+        run: task local:setup

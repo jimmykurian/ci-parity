@@ -1,0 +1,16 @@
+version: "3"
+
+includes:
+  helpers:
+    taskfile: ./helpers.yml
+    internal: true
+
+tasks:
+  ci:
+    cmds:
+      - task: setup
+      - go test ./...
+  setup:
+    internal: true
+    cmds:
+      - pnpm install

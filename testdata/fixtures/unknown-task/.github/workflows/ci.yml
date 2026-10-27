@@ -1,0 +1,16 @@
+name: ci
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Within distance 3
+        run: task lint:all
+      - name: Prefix of a task
+        run: task test
+      - name: Too far for a suggestion
+        run: task publish-docs
+      - name: Alias is defined
+        run: task ds
+      - name: Two names, one unknown
+        run: task lint:ci tset:unit

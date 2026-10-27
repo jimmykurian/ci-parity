@@ -1,0 +1,5 @@
+.github/workflows/ci.yml
+  12:27   P002 unknown-task  'task tset' is not defined in Taskfile.yml (closest: test)
+  14:14   P001 inline-tool   step "Inline go test has a task" in job "build" runs 'go test ./...' directly; already available as 'task test'
+
+2 errors, 0 warnings, 0 tolerated, 0 allowed

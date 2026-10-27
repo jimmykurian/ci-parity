@@ -1,0 +1,5 @@
+.github/workflows/ci.yml
+  18:19   P002 unknown-task  'task web:ui:bild' is not defined in Taskfile.yml (closest: web:ui:build)
+  20:19   P002 unknown-task  'task web' is not defined in Taskfile.yml (closest: web:lint)
+
+2 errors, 0 warnings, 0 tolerated, 0 allowed

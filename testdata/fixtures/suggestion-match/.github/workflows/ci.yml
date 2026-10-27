@@ -1,0 +1,20 @@
+name: ci
+on: [push]
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Exact match, internal duplicate is skipped
+        run: pnpm test
+      - name: Shortest of two matches
+        run: pnpm lint
+      - name: run form in CI
+        run: pnpm run lint
+      - name: run form in the Taskfile
+        run: pnpm format
+      - name: Only an internal task matches
+        run: pnpm db:migrate
+      - name: Extra whitespace
+        run: pnpm     test
+      - name: Templated command does not match
+        run: pnpm exec playwright test

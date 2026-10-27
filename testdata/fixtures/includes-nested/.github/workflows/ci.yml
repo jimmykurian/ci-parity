@@ -1,0 +1,20 @@
+name: ci
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Three levels deep
+        run: task web:ui:build
+      - name: Through the namespace alias
+        run: task web:frontend:build
+      - name: Second level
+        run: task web:lint
+      - name: Namespace runs its default task
+        run: task docs
+      - name: Flattened include
+        run: task release-notes
+      - name: Wrong leaf name
+        run: task web:ui:bild
+      - name: Namespace without a default task
+        run: task web

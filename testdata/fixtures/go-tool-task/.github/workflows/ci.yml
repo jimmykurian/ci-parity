@@ -1,0 +1,14 @@
+name: ci
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: go tool task
+        run: go tool task build
+      - name: go-task binary
+        run: go-task test
+      - name: Unknown through go tool task
+        run: go tool task tset
+      - name: Inline go test has a task
+        run: go test ./...

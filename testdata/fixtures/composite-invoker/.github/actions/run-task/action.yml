@@ -1,0 +1,11 @@
+name: run-task
+description: Run a task from the Taskfile
+inputs:
+  task:
+    description: Task names to run
+    required: true
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: task ${{ inputs.task }}

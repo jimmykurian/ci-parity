@@ -1,0 +1,9 @@
+version: "3"
+
+includes:
+  api: ./services/example-api
+
+tasks:
+  build:
+    cmds:
+      - go build ./...

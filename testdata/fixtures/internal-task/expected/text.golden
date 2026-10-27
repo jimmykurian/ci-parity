@@ -1,0 +1,6 @@
+.github/workflows/ci.yml
+  8:19    P003 internal-task 'setup' is marked internal: true and should not be invoked from CI
+  10:19   P003 internal-task 'helpers:cache' is marked internal: true and should not be invoked from CI
+  14:14   P001 inline-tool   step "Inline command that only an internal task wraps" in job "build" runs 'pnpm install' directly
+
+3 errors, 0 warnings, 0 tolerated, 0 allowed
