@@ -34,6 +34,69 @@ the inline count down to zero.
 
 ## Baseline
 
+The baseline lets an existing repo adopt ci-parity one workflow at a time. It records,
+per workflow, how many inline-tool (P001) findings are tolerated; counts can only go down.
+
+```sh
+ci-parity baseline            # write .ci-parity-baseline.json from the current findings
+ci-parity check               # tolerate up to each count; any rise fails with P004
+```
+
+A workflow at 0, or missing from the baseline, is locked: any inline tool fails. When a
+count drops, `check` prints a ratchet table; run `ci-parity baseline` again to lock in
+the lower count. `baseline` refuses to raise a count unless given `--allow-regression`.
+`check --strict` ignores the baseline.
+
+## JSON output
+
+`ci-parity check --format json` prints one document. Its shape only changes with a new
+`version`.
+
+```json
+{
+  "version": 1,
+  "summary": { "errors": 1, "warnings": 0, "tolerated": 2, "allowed": 0 },
+  "findings": [
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 10,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Test",
+      "command": "pnpm test",
+      "message": "step \"Test\" in job \"web\" runs 'pnpm test' directly; already available as 'task test'",
+      "suggestion": "task test",
+      "reason": null
+    }
+  ],
+  "ratchet": {
+    ".github/workflows/ci.yml": { "baseline": 2, "current": 3, "locked": false }
+  }
+}
+```
+
+| Field | Type | Meaning |
+|-------|------|---------|
+| `version` | number | Schema version, currently `1`. |
+| `summary` | object | Finding counts by severity. |
+| `findings[].rule`, `.name` | string | Rule ID (`P001`..`P005`) and name. |
+| `findings[].severity` | string | `error`, `warning`, `tolerated` or `allowed`. JSON includes all four. |
+| `findings[].file`, `.line`, `.col` | string, number | Repo-relative path with forward slashes; 1-based position. |
+| `findings[].job` | string or null | Job ID; null for composite actions and P004. |
+| `findings[].action` | string or null | Action path for findings in a composite action. |
+| `findings[].step` | string or null | The step's `name:`; null when the step has none. |
+| `findings[].command` | string or null | The normalized inline command, for P001. |
+| `findings[].message` | string | The same text the other formats print. |
+| `findings[].suggestion` | string or null | A `task <name>` to use instead, for P001 and P002. |
+| `findings[].reason` | string or null | The allow reason, for allowed findings. |
+| `ratchet` | object or null | Per scanned file: baseline count, current count, and whether it is locked at 0. Null when no baseline applies (no file, or `--strict`). |
+
+Findings are sorted by file, line, column and rule ID.
+
 ## FAQ
 
 ## Development

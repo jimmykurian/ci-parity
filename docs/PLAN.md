@@ -89,17 +89,17 @@ names. Unknown-task suggestions appear only within the distance rule.
 
 ## Phase 3: baseline, ratchet, formats, exit codes
 
-- [ ] `internal/baseline`: read, write, compare per SPEC 4.3
-- [ ] P004 and the tolerated severity
-- [ ] `baseline` subcommand with `--allow-regression`
-- [ ] `check --strict`, `check --verbose`
-- [ ] `internal/report/github` with workflow-command escaping
-- [ ] `internal/report/json` per SPEC 8, with a schema section in the README
-- [ ] Exit codes per SPEC 9
-- [ ] Fixtures: `baseline-within`, `baseline-regression`, `baseline-locked`,
+- [x] `internal/baseline`: read, write, compare per SPEC 4.3
+- [x] P004 and the tolerated severity
+- [x] `baseline` subcommand with `--allow-regression`
+- [x] `check --strict`, `check --verbose`
+- [x] `internal/report/github` with workflow-command escaping
+- [x] `internal/report/json` per SPEC 8, with a schema section in the README
+- [x] Exit codes per SPEC 9
+- [x] Fixtures: `baseline-within`, `baseline-regression`, `baseline-locked`,
       `baseline-improved`, `baseline-missing-strict`; github and json goldens for every
       existing fixture
-- [ ] Harness asserts exit codes from `expected/exitcode`
+- [x] Harness asserts exit codes from `expected/exitcode`
 
 Acceptance: every fixture passes in all three formats with the expected exit code.
 `ci-parity baseline` on `baseline-regression` refuses without `--allow-regression`.

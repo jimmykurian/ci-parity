@@ -60,3 +60,17 @@ written would give wrong results.
    distance suggested `ds` for `test` over `test:unit`.
 7. SPEC 5.6, P001. Add: "Ties go to the shorter name, then the alphabetically first.
    Only the canonical task name is suggested, not an alias."
+
+### 2026-10-27: Phase 3 readings of SPEC 4.3 and 8 (accepted, SPEC text unchanged)
+
+Gaps the spec leaves open, filled within its wording:
+
+- Composite actions are scanned files, so they get baseline entries like workflows.
+- `ci-parity baseline` with no existing file writes every count without refusing. With a
+  file, a workflow missing from it counts as locked at 0, so a new workflow with inline
+  tools is a regression. Workflows no longer scanned are dropped on rewrite.
+- `--baseline` naming a missing file means strict mode, the same as no file.
+- The text ratchet block lists improvements and regressions, as the SPEC 8 example does.
+- JSON: `action` is always present (null outside composite actions), `step` is null for
+  unnamed steps, `ratchet` lists every scanned file when a baseline applies and is null
+  otherwise, and P002's `suggestion` is `task <name>` like P001's.
