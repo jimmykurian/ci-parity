@@ -131,8 +131,10 @@ runs:
         report="$RUNNER_TEMP/ci-parity-report.json"
 
         # One run as JSON for the outputs, one in the requested format for the log.
-        "$BIN" "${args[@]}" --format json > "$report"
-        code=$?
+        # GitHub runs this with `bash -e`, so findings (exit 1) must not end the
+        # script before the outputs are written: capture the code instead.
+        code=0
+        "$BIN" "${args[@]}" --format json > "$report" || code=$?
         if [[ "$code" -ge 2 ]]; then
           exit "$code"
         fi
@@ -142,7 +144,7 @@ runs:
         if [[ "$INPUT_FORMAT" == json ]]; then
           cat "$report"
         else
-          "$BIN" "${args[@]}" --format "$INPUT_FORMAT"
+          "$BIN" "${args[@]}" --format "$INPUT_FORMAT" || true
         fi
         if [[ "$code" -eq 1 && "$INPUT_FAIL" == true ]]; then
           exit 1
