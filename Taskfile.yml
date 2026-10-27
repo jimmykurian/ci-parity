@@ -129,6 +129,22 @@ tasks:
     cmds:
       - goreleaser check
 
+  action:expect:
+    desc: "Check the action's outputs in ERRORS, WARNINGS and TOLERATED: task action:expect -- 8 0 0 (CI runs this)"
+    silent: true
+    requires:
+      vars: [CLI_ARGS]
+    cmds:
+      - |
+        read -r errors warnings tolerated <<< "{{.CLI_ARGS}}"
+        got="${ERRORS:-} ${WARNINGS:-} ${TOLERATED:-}"
+        want="$errors $warnings $tolerated"
+        if [ "$got" != "$want" ]; then
+          echo "action outputs (errors warnings tolerated): got '$got', want '$want'" >&2
+          exit 1
+        fi
+        echo "action outputs: $got"
+
   release:snapshot:
     desc: Build every release archive into dist/ without publishing
     preconditions:

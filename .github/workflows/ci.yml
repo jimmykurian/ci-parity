@@ -129,6 +129,20 @@ jobs:
         uses: ./ # zizmor: ignore[self-repository]
         with:
           binary: ./bin/ci-parity
+      # The action on a fixture with findings: it must still write its outputs and,
+      # with fail-on-error off, succeed. Text format, so no annotations land here.
+      - id: action_findings
+        uses: ./ # zizmor: ignore[self-repository]
+        with:
+          binary: ./bin/ci-parity
+          working-directory: testdata/fixtures/inline-tools
+          format: text
+          fail-on-error: "false"
+      - env:
+          ERRORS: ${{ steps.action_findings.outputs.errors }}
+          WARNINGS: ${{ steps.action_findings.outputs.warnings }}
+          TOLERATED: ${{ steps.action_findings.outputs.tolerated }}
+        run: task action:expect -- 8 0 0
 
   # Posts (or updates) one comment on the pull request with a table of every check.
   report:
