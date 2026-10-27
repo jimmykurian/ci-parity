@@ -1,0 +1,16 @@
+name: ci
+on: [push]
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install
+        run: pnpm install
+      - name: Test
+        run: pnpm test
+      - name: Lint
+        run: pnpm lint
+      - name: Allowed steps do not count
+        run: docker push ghcr.io/acme/widget-service # ci-parity: allow images publish only from CI
+      - name: Unknown tasks are not affected by the baseline
+        run: task tset

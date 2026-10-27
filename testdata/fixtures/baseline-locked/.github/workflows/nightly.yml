@@ -1,0 +1,8 @@
+name: nightly
+on: [schedule]
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Within its baseline
+        run: pnpm exec playwright test

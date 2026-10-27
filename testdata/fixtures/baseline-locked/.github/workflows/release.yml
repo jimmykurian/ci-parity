@@ -1,0 +1,8 @@
+name: release
+on: [push]
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Not in the baseline, so locked
+        run: npm publish

@@ -1,0 +1,12 @@
+::error file=.github/workflows/ci.yml,line=8,col=14,title=P001 inline-tool::step "Plain" in job "lines" runs 'pnpm one' directly
+::error file=.github/workflows/ci.yml,line=10,col=15,title=P001 inline-tool::step "Double quoted" in job "lines" runs 'pnpm two' directly
+::error file=.github/workflows/ci.yml,line=12,col=15,title=P001 inline-tool::step "Single quoted" in job "lines" runs 'pnpm three' directly
+::error file=.github/workflows/ci.yml,line=18,col=11,title=P001 inline-tool::step "Literal block" in job "lines" runs 'pnpm four' directly
+::error file=.github/workflows/ci.yml,line=20,col=13,title=P001 inline-tool::step "Literal block" in job "lines" runs 'pnpm five' directly
+::error file=.github/workflows/ci.yml,line=25,col=13,title=P001 inline-tool::step "Strip chomping with blank first line" in job "lines" runs 'pnpm six' directly
+::error file=.github/workflows/ci.yml,line=28,col=11,title=P001 inline-tool::step "Folded single line" in job "lines" runs 'pnpm seven' directly
+::error file=.github/workflows/ci.yml,line=32,col=14,title=P001 inline-tool::step "Folded multi-line" in job "lines" runs 'pnpm eight' directly
+::error file=.github/workflows/ci.yml,line=34,col=11,title=P001 inline-tool::step "Folded multi-line" in job "lines" runs 'pnpm nine' directly
+::error file=.github/workflows/ci.yml,line=36,col=11,title=P001 inline-tool::step "Folded multi-line" in job "lines" runs 'pnpm ten' directly
+::error file=.github/workflows/ci.yml,line=39,col=14,title=P001 inline-tool::step "Plain multi-line" in job "lines" runs 'pnpm eleven' directly
+::error file=.github/workflows/ci.yml,line=41,col=64,title=P001 inline-tool::step "Expression before the command" in job "lines" runs 'pnpm twelve' directly

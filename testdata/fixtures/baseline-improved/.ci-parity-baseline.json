@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "workflows": {
+    ".github/workflows/ci.yml": 5,
+    ".github/workflows/release.yml": 0
+  }
+}

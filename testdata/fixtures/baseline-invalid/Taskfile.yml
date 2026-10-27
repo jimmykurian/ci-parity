@@ -1,0 +1,9 @@
+version: "3"
+
+tasks:
+  test:
+    cmds:
+      - pnpm test
+  lint:
+    cmds:
+      - pnpm lint

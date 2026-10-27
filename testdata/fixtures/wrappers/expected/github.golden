@@ -1,0 +1,13 @@
+::error file=.github/workflows/ci.yml,line=10,col=19,title=P001 inline-tool::step "Wrapped" in job "test" runs 'docker compose up -d' directly
+::error file=.github/workflows/ci.yml,line=11,col=20,title=P001 inline-tool::step "Wrapped" in job "test" runs 'pnpm test' directly; already available as 'task test'
+::error file=.github/workflows/ci.yml,line=12,col=25,title=P001 inline-tool::step "Wrapped" in job "test" runs 'pnpm lint' directly
+::error file=.github/workflows/ci.yml,line=13,col=23,title=P001 inline-tool::step "Wrapped" in job "test" runs 'go test ./...' directly
+::error file=.github/workflows/ci.yml,line=14,col=22,title=P001 inline-tool::step "Wrapped" in job "test" runs 'cargo build' directly
+::error file=.github/workflows/ci.yml,line=15,col=16,title=P001 inline-tool::step "Wrapped" in job "test" runs 'npm ci' directly
+::error file=.github/workflows/ci.yml,line=16,col=17,title=P001 inline-tool::step "Wrapped" in job "test" runs 'node server.js' directly
+::error file=.github/workflows/ci.yml,line=23,col=14,title=P001 inline-tool::step "Go tool that is not task" in job "test" runs 'go tool cover -func=coverage.out' directly
+::error file=.github/workflows/ci.yml,line=26,col=26,title=P001 inline-tool::step "Wrapper flags that take values" in job "test" runs 'docker push ghcr.io/acme/widget-service' directly
+::error file=.github/workflows/ci.yml,line=27,col=28,title=P001 inline-tool::step "Wrapper flags that take values" in job "test" runs 'pnpm test' directly; already available as 'task test'
+::error file=.github/workflows/ci.yml,line=28,col=30,title=P001 inline-tool::step "Wrapper flags that take values" in job "test" runs 'pnpm build' directly
+::error file=.github/workflows/ci.yml,line=29,col=28,title=P001 inline-tool::step "Wrapper flags that take values" in job "test" runs 'make all' directly
+::error file=.github/workflows/ci.yml,line=30,col=31,title=P001 inline-tool::step "Wrapper flags that take values" in job "test" runs 'npm ci' directly

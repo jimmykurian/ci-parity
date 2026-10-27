@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 1,
+    "warnings": 1,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P005",
+      "name": "unsupported",
+      "severity": "warning",
+      "file": ".github/actions/lint/action.yml",
+      "line": 7,
+      "col": 7,
+      "job": null,
+      "action": ".github/actions/lint/action.yml",
+      "step": "Lint",
+      "command": null,
+      "message": "composite step has no shell; not analyzed",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/actions/lint/action.yml",
+      "line": 10,
+      "col": 12,
+      "job": null,
+      "action": ".github/actions/lint/action.yml",
+      "step": "Format",
+      "command": "pnpm format",
+      "message": "step \"Format\" in action \".github/actions/lint/action.yml\" runs 'pnpm format' directly",
+      "suggestion": null,
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

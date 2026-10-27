@@ -1,0 +1,4 @@
+::error file=.github/workflows/ci.yml,line=8,col=19,title=P002 unknown-task::'task lint:all' is not defined in Taskfile.yml (closest: lint:ci)
+::error file=.github/workflows/ci.yml,line=10,col=19,title=P002 unknown-task::'task test' is not defined in Taskfile.yml (closest: test:unit)
+::error file=.github/workflows/ci.yml,line=12,col=19,title=P002 unknown-task::'task publish-docs' is not defined in Taskfile.yml
+::error file=.github/workflows/ci.yml,line=16,col=27,title=P002 unknown-task::'task tset:unit' is not defined in Taskfile.yml (closest: test:unit)

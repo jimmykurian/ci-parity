@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 2,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 18,
+      "col": 19,
+      "job": "build",
+      "action": null,
+      "step": "Wrong leaf name",
+      "command": null,
+      "message": "'task web:ui:bild' is not defined in Taskfile.yml (closest: web:ui:build)",
+      "suggestion": "task web:ui:build",
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 20,
+      "col": 19,
+      "job": "build",
+      "action": null,
+      "step": "Namespace without a default task",
+      "command": null,
+      "message": "'task web' is not defined in Taskfile.yml (closest: web:lint)",
+      "suggestion": "task web:lint",
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

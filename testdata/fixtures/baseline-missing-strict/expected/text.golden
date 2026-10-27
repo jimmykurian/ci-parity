@@ -1,0 +1,6 @@
+.github/workflows/ci.yml
+  8:14    P001 inline-tool   step "Install" in job "web" runs 'pnpm install' directly
+  10:14   P001 inline-tool   step "Test" in job "web" runs 'pnpm test' directly; already available as 'task test'
+  12:14   P001 inline-tool   step "Lint" in job "web" runs 'pnpm lint' directly; already available as 'task lint'
+
+3 errors, 0 warnings, 0 tolerated, 0 allowed

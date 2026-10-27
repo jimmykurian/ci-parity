@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 0,
+    "warnings": 0,
+    "tolerated": 3,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "tolerated",
+      "file": ".github/workflows/ci.yml",
+      "line": 8,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Install",
+      "command": "pnpm install",
+      "message": "step \"Install\" in job \"web\" runs 'pnpm install' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "tolerated",
+      "file": ".github/workflows/ci.yml",
+      "line": 10,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Test",
+      "command": "pnpm test",
+      "message": "step \"Test\" in job \"web\" runs 'pnpm test' directly; already available as 'task test'",
+      "suggestion": "task test",
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "tolerated",
+      "file": ".github/workflows/ci.yml",
+      "line": 12,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Lint",
+      "command": "pnpm lint",
+      "message": "step \"Lint\" in job \"web\" runs 'pnpm lint' directly; already available as 'task lint'",
+      "suggestion": "task lint",
+      "reason": null
+    }
+  ],
+  "ratchet": {
+    ".github/workflows/ci.yml": {
+      "baseline": 3,
+      "current": 3,
+      "locked": false
+    }
+  }
+}

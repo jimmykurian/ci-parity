@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 4,
+    "warnings": 0,
+    "tolerated": 1,
+    "allowed": 1
+  },
+  "findings": [
+    {
+      "rule": "P004",
+      "name": "regression",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 1,
+      "col": 1,
+      "job": null,
+      "action": null,
+      "step": null,
+      "command": null,
+      "message": ".github/workflows/ci.yml has 3 inline-tool findings, baseline allows 1",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "tolerated",
+      "file": ".github/workflows/ci.yml",
+      "line": 8,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Install",
+      "command": "pnpm install",
+      "message": "step \"Install\" in job \"web\" runs 'pnpm install' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 10,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Test",
+      "command": "pnpm test",
+      "message": "step \"Test\" in job \"web\" runs 'pnpm test' directly; already available as 'task test'",
+      "suggestion": "task test",
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 12,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Lint",
+      "command": "pnpm lint",
+      "message": "step \"Lint\" in job \"web\" runs 'pnpm lint' directly; already available as 'task lint'",
+      "suggestion": "task lint",
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "allowed",
+      "file": ".github/workflows/ci.yml",
+      "line": 14,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Allowed steps do not count",
+      "command": "docker push ghcr.io/acme/widget-service",
+      "message": "step \"Allowed steps do not count\" in job \"web\" runs 'docker push ghcr.io/acme/widget-service' directly",
+      "suggestion": null,
+      "reason": "images publish only from CI"
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 16,
+      "col": 19,
+      "job": "web",
+      "action": null,
+      "step": "Unknown tasks are not affected by the baseline",
+      "command": null,
+      "message": "'task tset' is not defined in Taskfile.yml (closest: test)",
+      "suggestion": "task test",
+      "reason": null
+    }
+  ],
+  "ratchet": {
+    ".github/workflows/ci.yml": {
+      "baseline": 1,
+      "current": 3,
+      "locked": false
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 3,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 14,
+      "col": 17,
+      "job": "build",
+      "action": null,
+      "step": "Unknown and internal",
+      "command": null,
+      "message": "'task biuld' is not defined in Taskfile.yml (closest: build)",
+      "suggestion": "task build",
+      "reason": null
+    },
+    {
+      "rule": "P003",
+      "name": "internal-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 14,
+      "col": 23,
+      "job": "build",
+      "action": null,
+      "step": "Unknown and internal",
+      "command": null,
+      "message": "'setup' is marked internal: true and should not be invoked from CI",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 18,
+      "col": 17,
+      "job": "build",
+      "action": null,
+      "step": "Pinned ref",
+      "command": null,
+      "message": "'task lnt' is not defined in Taskfile.yml (closest: lint)",
+      "suggestion": "task lint",
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

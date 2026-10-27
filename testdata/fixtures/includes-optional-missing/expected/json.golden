@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 1,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 9,
+      "col": 19,
+      "job": "build",
+      "action": null,
+      "step": "A task from the missing optional include is unknown",
+      "command": null,
+      "message": "'task local:setup' is not defined in Taskfile.yml",
+      "suggestion": null,
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

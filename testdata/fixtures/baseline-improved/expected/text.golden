@@ -1,0 +1,4 @@
+ratchet
+  .github/workflows/ci.yml  baseline 5   now 3   run `ci-parity baseline` to lock in
+
+0 errors, 0 warnings, 3 tolerated, 0 allowed

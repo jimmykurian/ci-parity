@@ -1,0 +1,2 @@
+::warning file=.github/actions/lint/action.yml,line=7,col=7,title=P005 unsupported::composite step has no shell; not analyzed
+::error file=.github/actions/lint/action.yml,line=10,col=12,title=P001 inline-tool::step "Format" in action ".github/actions/lint/action.yml" runs 'pnpm format' directly

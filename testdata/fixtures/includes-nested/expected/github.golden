@@ -1,0 +1,2 @@
+::error file=.github/workflows/ci.yml,line=18,col=19,title=P002 unknown-task::'task web:ui:bild' is not defined in Taskfile.yml (closest: web:ui:build)
+::error file=.github/workflows/ci.yml,line=20,col=19,title=P002 unknown-task::'task web' is not defined in Taskfile.yml (closest: web:lint)

@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 1,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 30,
+      "col": 33,
+      "job": "build",
+      "action": null,
+      "step": "Unknown after flags",
+      "command": null,
+      "message": "'task tset' is not defined in Taskfile.yml (closest: test)",
+      "suggestion": "task test",
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

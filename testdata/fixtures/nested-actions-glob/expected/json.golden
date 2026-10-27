@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 2,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/actions/action.yaml",
+      "line": 7,
+      "col": 12,
+      "job": null,
+      "action": ".github/actions/action.yaml",
+      "step": null,
+      "command": "dotnet build",
+      "message": "step 1 in action \".github/actions/action.yaml\" runs 'dotnet build' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/actions/build/node/action.yml",
+      "line": 7,
+      "col": 12,
+      "job": null,
+      "action": ".github/actions/build/node/action.yml",
+      "step": null,
+      "command": "pnpm build",
+      "message": "step 1 in action \".github/actions/build/node/action.yml\" runs 'pnpm build' directly",
+      "suggestion": null,
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

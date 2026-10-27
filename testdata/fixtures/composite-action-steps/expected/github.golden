@@ -1,0 +1,1 @@
+::error file=.github/actions/setup-app/action.yml,line=8,col=12,title=P001 inline-tool::step "Install" in action ".github/actions/setup-app/action.yml" runs 'pnpm install' directly

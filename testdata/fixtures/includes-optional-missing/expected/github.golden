@@ -1,0 +1,1 @@
+::error file=.github/workflows/ci.yml,line=9,col=19,title=P002 unknown-task::'task local:setup' is not defined in Taskfile.yml

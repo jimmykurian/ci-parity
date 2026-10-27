@@ -1,0 +1,7 @@
+::error file=.github/workflows/ci.yml,line=8,col=14,title=P001 inline-tool::step "Exact match, internal duplicate is skipped" in job "web" runs 'pnpm test' directly; already available as 'task test'
+::error file=.github/workflows/ci.yml,line=10,col=14,title=P001 inline-tool::step "Shortest of two matches" in job "web" runs 'pnpm lint' directly; already available as 'task lint'
+::error file=.github/workflows/ci.yml,line=12,col=14,title=P001 inline-tool::step "run form in CI" in job "web" runs 'pnpm run lint' directly; already available as 'task lint'
+::error file=.github/workflows/ci.yml,line=14,col=14,title=P001 inline-tool::step "run form in the Taskfile" in job "web" runs 'pnpm format' directly; already available as 'task format'
+::error file=.github/workflows/ci.yml,line=16,col=14,title=P001 inline-tool::step "Only an internal task matches" in job "web" runs 'pnpm db:migrate' directly
+::error file=.github/workflows/ci.yml,line=18,col=14,title=P001 inline-tool::step "Extra whitespace" in job "web" runs 'pnpm test' directly; already available as 'task test'
+::error file=.github/workflows/ci.yml,line=20,col=14,title=P001 inline-tool::step "Templated command does not match" in job "web" runs 'pnpm exec playwright test' directly

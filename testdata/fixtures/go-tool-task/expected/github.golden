@@ -1,0 +1,2 @@
+::error file=.github/workflows/ci.yml,line=12,col=27,title=P002 unknown-task::'task tset' is not defined in Taskfile.yml (closest: test)
+::error file=.github/workflows/ci.yml,line=14,col=14,title=P001 inline-tool::step "Inline go test has a task" in job "build" runs 'go test ./...' directly; already available as 'task test'

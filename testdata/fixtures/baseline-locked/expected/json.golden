@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 6,
+    "warnings": 0,
+    "tolerated": 1,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P004",
+      "name": "regression",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 1,
+      "col": 1,
+      "job": null,
+      "action": null,
+      "step": null,
+      "command": null,
+      "message": ".github/workflows/ci.yml is locked at 0 and has 3 inline-tool findings",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 8,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Install",
+      "command": "pnpm install",
+      "message": "step \"Install\" in job \"web\" runs 'pnpm install' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 10,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Test",
+      "command": "pnpm test",
+      "message": "step \"Test\" in job \"web\" runs 'pnpm test' directly; already available as 'task test'",
+      "suggestion": "task test",
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 12,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Lint",
+      "command": "pnpm lint",
+      "message": "step \"Lint\" in job \"web\" runs 'pnpm lint' directly; already available as 'task lint'",
+      "suggestion": "task lint",
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "tolerated",
+      "file": ".github/workflows/nightly.yml",
+      "line": 8,
+      "col": 14,
+      "job": "e2e",
+      "action": null,
+      "step": "Within its baseline",
+      "command": "pnpm exec playwright test",
+      "message": "step \"Within its baseline\" in job \"e2e\" runs 'pnpm exec playwright test' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P004",
+      "name": "regression",
+      "severity": "error",
+      "file": ".github/workflows/release.yml",
+      "line": 1,
+      "col": 1,
+      "job": null,
+      "action": null,
+      "step": null,
+      "command": null,
+      "message": ".github/workflows/release.yml is locked at 0 and has 1 inline-tool findings",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/release.yml",
+      "line": 8,
+      "col": 14,
+      "job": "publish",
+      "action": null,
+      "step": "Not in the baseline, so locked",
+      "command": "npm publish",
+      "message": "step \"Not in the baseline, so locked\" in job \"publish\" runs 'npm publish' directly",
+      "suggestion": null,
+      "reason": null
+    }
+  ],
+  "ratchet": {
+    ".github/workflows/ci.yml": {
+      "baseline": 0,
+      "current": 3,
+      "locked": true
+    },
+    ".github/workflows/nightly.yml": {
+      "baseline": 2,
+      "current": 1,
+      "locked": false
+    },
+    ".github/workflows/release.yml": {
+      "baseline": 0,
+      "current": 1,
+      "locked": true
+    }
+  }
+}

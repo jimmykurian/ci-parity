@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 1,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 3
+  },
+  "findings": [
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 8,
+      "col": 14,
+      "job": "build",
+      "action": null,
+      "step": "Push image from the wrong workflow",
+      "command": "docker push ghcr.io/acme/widget-service:dev",
+      "message": "step \"Push image from the wrong workflow\" in job \"build\" runs 'docker push ghcr.io/acme/widget-service:dev' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "allowed",
+      "file": ".github/workflows/ci.yml",
+      "line": 10,
+      "col": 14,
+      "job": "build",
+      "action": null,
+      "step": "Check registry",
+      "command": "npm view acme-app version",
+      "message": "step \"Check registry\" in job \"build\" runs 'npm view acme-app version' directly",
+      "suggestion": null,
+      "reason": "read-only registry lookups"
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "allowed",
+      "file": ".github/workflows/release.yml",
+      "line": 8,
+      "col": 14,
+      "job": "publish",
+      "action": null,
+      "step": "Push image",
+      "command": "docker push ghcr.io/acme/widget-service:1.0.0",
+      "message": "step \"Push image\" in job \"publish\" runs 'docker push ghcr.io/acme/widget-service:1.0.0' directly",
+      "suggestion": null,
+      "reason": "images publish only from the release workflow"
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "allowed",
+      "file": ".github/workflows/release.yml",
+      "line": 10,
+      "col": 14,
+      "job": "publish",
+      "action": null,
+      "step": "Check registry",
+      "command": "npm view acme-app version",
+      "message": "step \"Check registry\" in job \"publish\" runs 'npm view acme-app version' directly",
+      "suggestion": null,
+      "reason": "read-only registry lookups"
+    }
+  ],
+  "ratchet": null
+}

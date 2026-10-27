@@ -1,0 +1,16 @@
+.github/workflows/ci.yml
+  1:1     P004 regression    .github/workflows/ci.yml is locked at 0 and has 3 inline-tool findings
+  8:14    P001 inline-tool   step "Install" in job "web" runs 'pnpm install' directly
+  10:14   P001 inline-tool   step "Test" in job "web" runs 'pnpm test' directly; already available as 'task test'
+  12:14   P001 inline-tool   step "Lint" in job "web" runs 'pnpm lint' directly; already available as 'task lint'
+
+.github/workflows/release.yml
+  1:1     P004 regression    .github/workflows/release.yml is locked at 0 and has 1 inline-tool findings
+  8:14    P001 inline-tool   step "Not in the baseline, so locked" in job "publish" runs 'npm publish' directly
+
+ratchet
+  .github/workflows/ci.yml       locked       now 3   REGRESSION
+  .github/workflows/nightly.yml  baseline 2   now 1   run `ci-parity baseline` to lock in
+  .github/workflows/release.yml  locked       now 1   REGRESSION
+
+6 errors, 0 warnings, 1 tolerated, 0 allowed

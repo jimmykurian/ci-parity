@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 3,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P003",
+      "name": "internal-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 8,
+      "col": 19,
+      "job": "build",
+      "action": null,
+      "step": "Internal task",
+      "command": null,
+      "message": "'setup' is marked internal: true and should not be invoked from CI",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P003",
+      "name": "internal-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 10,
+      "col": 19,
+      "job": "build",
+      "action": null,
+      "step": "Task from an internal include",
+      "command": null,
+      "message": "'helpers:cache' is marked internal: true and should not be invoked from CI",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 14,
+      "col": 14,
+      "job": "build",
+      "action": null,
+      "step": "Inline command that only an internal task wraps",
+      "command": "pnpm install",
+      "message": "step \"Inline command that only an internal task wraps\" in job \"build\" runs 'pnpm install' directly",
+      "suggestion": null,
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

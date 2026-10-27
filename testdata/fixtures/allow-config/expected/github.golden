@@ -1,0 +1,1 @@
+::error file=.github/workflows/ci.yml,line=8,col=14,title=P001 inline-tool::step "Push image from the wrong workflow" in job "build" runs 'docker push ghcr.io/acme/widget-service:dev' directly

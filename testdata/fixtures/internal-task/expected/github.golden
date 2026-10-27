@@ -1,0 +1,3 @@
+::error file=.github/workflows/ci.yml,line=8,col=19,title=P003 internal-task::'setup' is marked internal: true and should not be invoked from CI
+::error file=.github/workflows/ci.yml,line=10,col=19,title=P003 internal-task::'helpers:cache' is marked internal: true and should not be invoked from CI
+::error file=.github/workflows/ci.yml,line=14,col=14,title=P001 inline-tool::step "Inline command that only an internal task wraps" in job "build" runs 'pnpm install' directly

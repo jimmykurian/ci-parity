@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 4,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 8,
+      "col": 19,
+      "job": "build",
+      "action": null,
+      "step": "Within distance 3",
+      "command": null,
+      "message": "'task lint:all' is not defined in Taskfile.yml (closest: lint:ci)",
+      "suggestion": "task lint:ci",
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 10,
+      "col": 19,
+      "job": "build",
+      "action": null,
+      "step": "Prefix of a task",
+      "command": null,
+      "message": "'task test' is not defined in Taskfile.yml (closest: test:unit)",
+      "suggestion": "task test:unit",
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 12,
+      "col": 19,
+      "job": "build",
+      "action": null,
+      "step": "Too far for a suggestion",
+      "command": null,
+      "message": "'task publish-docs' is not defined in Taskfile.yml",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 16,
+      "col": 27,
+      "job": "build",
+      "action": null,
+      "step": "Two names, one unknown",
+      "command": null,
+      "message": "'task tset:unit' is not defined in Taskfile.yml (closest: test:unit)",
+      "suggestion": "task test:unit",
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

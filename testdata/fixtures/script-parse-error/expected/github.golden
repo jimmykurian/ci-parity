@@ -1,0 +1,2 @@
+::warning file=.github/workflows/ci.yml,line=9,col=11,title=P005 unsupported::cannot parse step script: `if` statement must end with `fi`
+::error file=.github/workflows/ci.yml,line=12,col=14,title=P001 inline-tool::step "Still checked" in job "broken" runs 'pnpm lint' directly

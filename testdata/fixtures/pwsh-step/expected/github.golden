@@ -1,0 +1,7 @@
+::warning file=.github/workflows/ci.yml,line=8,col=9,title=P005 unsupported::step uses shell 'pwsh'; not analyzed
+::warning file=.github/workflows/ci.yml,line=11,col=9,title=P005 unsupported::step uses shell 'pwsh'; not analyzed
+::error file=.github/workflows/ci.yml,line=14,col=14,title=P001 inline-tool::step "Explicit bash" in job "windows" runs 'npm ci' directly
+::error file=.github/workflows/ci.yml,line=22,col=14,title=P001 inline-tool::step "Job default" in job "windows-bash-default" runs 'pnpm build' directly
+::error file=.github/workflows/ci.yml,line=27,col=14,title=P001 inline-tool::step "Expression runner" in job "matrix" runs 'pnpm build' directly
+::warning file=.github/workflows/ci.yml,line=30,col=9,title=P005 unsupported::step uses shell 'python'; not analyzed
+::error file=.github/workflows/ci.yml,line=33,col=14,title=P001 inline-tool::step "Bash with options" in job "matrix" runs 'pnpm test' directly; already available as 'task test'

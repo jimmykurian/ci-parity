@@ -1,0 +1,5 @@
+::error file=.github/workflows/ci.yml,line=1,col=1,title=P004 regression::.github/workflows/ci.yml has 3 inline-tool findings, baseline allows 1
+::notice file=.github/workflows/ci.yml,line=8,col=14,title=P001 inline-tool (tolerated)::step "Install" in job "web" runs 'pnpm install' directly
+::error file=.github/workflows/ci.yml,line=10,col=14,title=P001 inline-tool::step "Test" in job "web" runs 'pnpm test' directly; already available as 'task test'
+::error file=.github/workflows/ci.yml,line=12,col=14,title=P001 inline-tool::step "Lint" in job "web" runs 'pnpm lint' directly; already available as 'task lint'
+::error file=.github/workflows/ci.yml,line=16,col=19,title=P002 unknown-task::'task tset' is not defined in Taskfile.yml (closest: test)

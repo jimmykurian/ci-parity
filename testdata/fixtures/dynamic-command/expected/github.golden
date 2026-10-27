@@ -1,0 +1,4 @@
+::warning file=.github/workflows/ci.yml,line=11,col=14,title=P005 unsupported::dynamic command name '$PKG_MANAGER' cannot be analyzed
+::warning file=.github/workflows/ci.yml,line=13,col=14,title=P005 unsupported::dynamic command name '${{ matrix.tool }}' cannot be analyzed
+::warning file=.github/workflows/ci.yml,line=16,col=11,title=P005 unsupported::dynamic command name '"$(command -v pnpm)"' cannot be analyzed
+::error file=.github/workflows/ci.yml,line=17,col=11,title=P001 inline-tool::step "Substitution" in job "matrix" runs 'pnpm --filter test' directly
