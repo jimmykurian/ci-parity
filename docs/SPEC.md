@@ -111,7 +111,7 @@ spaces, and `?` matches exactly one character. `docker push *` therefore matches
 Built-in tools, matched on the command's basename so `./node_modules/.bin/eslint` and
 `./gradlew` match:
 
-- node: `npm npx pnpm pnpx yarn bun bunx node deno`
+- node: `npm npx pnpm pnpx pnx yarn bun bunx node deno`
 - python: `python python3 pip pip3 pipx uv uvx poetry pytest ruff mypy tox nox`
 - dotnet: `dotnet`
 - go: `go golangci-lint`

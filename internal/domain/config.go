@@ -41,7 +41,7 @@ type AllowRule struct {
 // BuiltinTools is the default tools list, matched on the command's basename.
 var BuiltinTools = []string{
 	// node
-	"npm", "npx", "pnpm", "pnpx", "yarn", "bun", "bunx", "node", "deno",
+	"npm", "npx", "pnpm", "pnpx", "pnx", "yarn", "bun", "bunx", "node", "deno",
 	// python
 	"python", "python3", "pip", "pip3", "pipx", "uv", "uvx", "poetry", "pytest", "ruff", "mypy", "tox", "nox",
 	// dotnet, go, rust, jvm

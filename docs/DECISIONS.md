@@ -6,6 +6,17 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-27: add `pnx` to the built-in tools list (accepted)
+
+Problem: pnpm now ships `pnx`, an alias of `pnpm dlx` and `pnpx` that fetches and runs a
+package binary. SPEC 4.2's built-in `node` tools list has `npx` and `pnpx` but not
+`pnx`, so `run: pnx eslint .` passes unflagged while `run: pnpx eslint .` is P001.
+
+Change: add `pnx` after `pnpx` in the SPEC 4.2 `node` line and in
+`domain.BuiltinTools`, and add a `pnx` step to the `inline-tools` fixture so the goldens
+cover it. Repos that use `pnx` deliberately can keep it with `tools.remove: [pnx]` or an
+`allow:` entry.
+
 ### 2026-10-27: pin dev tools in mise.toml (accepted)
 
 Problem: SPEC 12 pins golangci-lint and actionlint only in CI, task floats at `3.x`, and

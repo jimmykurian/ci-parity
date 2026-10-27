@@ -10,6 +10,8 @@ jobs:
       - name: Test
         run: npx vitest run
       - run: ./gradlew check
+      - name: Lint
+        run: pnx eslint .
   api:
     runs-on: ubuntu-latest
     steps:

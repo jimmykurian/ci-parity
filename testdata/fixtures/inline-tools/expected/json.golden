@@ -1,7 +1,7 @@
 {
   "version": 1,
   "summary": {
-    "errors": 7,
+    "errors": 8,
     "warnings": 0,
     "tolerated": 0,
     "allowed": 0
@@ -57,7 +57,22 @@
       "name": "inline-tool",
       "severity": "error",
       "file": ".github/workflows/ci.yml",
-      "line": 17,
+      "line": 14,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Lint",
+      "command": "pnx eslint .",
+      "message": "step \"Lint\" in job \"web\" runs 'pnx eslint .' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 19,
       "col": 14,
       "job": "api",
       "action": null,
@@ -72,7 +87,7 @@
       "name": "inline-tool",
       "severity": "error",
       "file": ".github/workflows/ci.yml",
-      "line": 19,
+      "line": 21,
       "col": 14,
       "job": "api",
       "action": null,
