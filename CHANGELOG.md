@@ -5,7 +5,7 @@
 
 ### Features
 
-* **action:** add the GitHub Action, releases and complete README (Phase 4) ([#5](https://github.com/jimmykurian/ci-parity/issues/5)) ([b3dab72](https://github.com/jimmykurian/ci-parity/commit/b3dab72cb64a1cb02fb3a712396747a27a0e69c3))
+* **action:** add the GitHub Action, releases and complete README (Phase 4) ([b3dab72](https://github.com/jimmykurian/ci-parity/commit/b3dab72cb64a1cb02fb3a712396747a27a0e69c3))
 * **baseline:** read, write and apply the inline-tool ratchet ([db0a183](https://github.com/jimmykurian/ci-parity/commit/db0a183aae8cac67d45135a080c0dfc926677625))
 * **cli:** add subcommand dispatch and version command ([d5e9b58](https://github.com/jimmykurian/ci-parity/commit/d5e9b58e4ad842c4d579e1775898f4226d341bd4))
 * **cli:** add the baseline subcommand and check --strict, --baseline and formats ([d58c51a](https://github.com/jimmykurian/ci-parity/commit/d58c51af186b505b55c64f5be0be9ecd887aab7b))
@@ -29,7 +29,7 @@
 * **ci:** pin actionlint to a version install-action supports ([8195bae](https://github.com/jimmykurian/ci-parity/commit/8195bae2aa27964665726a5b37b8138bfa91ca2c))
 * **cli:** report a missing -C directory and pluralize baseline output ([21a341d](https://github.com/jimmykurian/ci-parity/commit/21a341d66b9dacadbc189094ab0859576d059f64))
 * **fixtures:** check only listed formats and require every golden ([339eda3](https://github.com/jimmykurian/ci-parity/commit/339eda3addb5a7cb2be2ffdccbc1e06b7a5847a8))
-* **release:** start Release Please at v0.1.0 ([#7](https://github.com/jimmykurian/ci-parity/issues/7)) ([174219f](https://github.com/jimmykurian/ci-parity/commit/174219f0dd21996feb045a6998a56d03f31dbc1b))
+* **release:** start Release Please at v0.1.0 ([174219f](https://github.com/jimmykurian/ci-parity/commit/174219f0dd21996feb045a6998a56d03f31dbc1b))
 * **rules:** give P002 suggestions the task &lt;name&gt; form ([607b465](https://github.com/jimmykurian/ci-parity/commit/607b4650882eb330f478008c36a33255cd08cb36))
 * **rules:** report parse errors at the parser's position ([3b1e5ca](https://github.com/jimmykurian/ci-parity/commit/3b1e5cabd289a2eeb6bdbdb066702233dff13a2f))
 * **shell:** skip wrapper flag values and map positions through expressions ([65a5cf9](https://github.com/jimmykurian/ci-parity/commit/65a5cf9c7a286cd82f00e155194a912ca91c2bcb))
@@ -40,7 +40,7 @@
 
 ### Documentation
 
-* add a status table to the README ([#4](https://github.com/jimmykurian/ci-parity/issues/4)) ([32013f1](https://github.com/jimmykurian/ci-parity/commit/32013f16ecb42350ae35ae5fd7529d728e12ed7b))
+* add a status table to the README ([32013f1](https://github.com/jimmykurian/ci-parity/commit/32013f16ecb42350ae35ae5fd7529d728e12ed7b))
 * add ACCESSIBILITY.md with output and documentation rules ([6193b2a](https://github.com/jimmykurian/ci-parity/commit/6193b2ad30cac2b1b2d7a62b4a2885cb5c2182d6))
 * add issue and pull request templates and community files ([caf26cf](https://github.com/jimmykurian/ci-parity/commit/caf26cfe80d16f404c7e8e83596f9870b0228b4c))
 * add README and decisions log, tick Phase 0 ([77529c6](https://github.com/jimmykurian/ci-parity/commit/77529c6f78a449ca0961da0f8d677cd2b8e732cb))
