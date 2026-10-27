@@ -1,0 +1,4 @@
+# ci-parity config for this repo's own workflows. Keys and defaults: docs/SPEC.md section 4.2.
+runner: taskfile
+taskfile: Taskfile.yml
+baseline: .ci-parity-baseline.json
