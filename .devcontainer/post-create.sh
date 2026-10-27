@@ -6,6 +6,10 @@ set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
+# The bind-mounted workspace can show up owned by another user, which makes git
+# refuse it ("dubious ownership") and breaks Go's VCS stamping in `task build`.
+git config --global --add safe.directory "$PWD"
+
 # Go at the toolchain go.mod pins, falling back to its go line. mise.toml leaves
 # Go out so go.mod stays the only pin; this installs it for the container only.
 go_version=$(awk '$1 == "toolchain" { sub(/^go/, "", $2); print $2; exit }' go.mod)
