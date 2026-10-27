@@ -36,8 +36,10 @@ In v0.1:
 - Composite GitHub Action.
 - Release binaries for linux, darwin, windows on amd64 and arm64.
 
-Out of scope (Phase 5 backlog in `docs/PLAN.md`): Make, just and mise readers; SARIF;
-auto-fix; PowerShell parsing; reading `task --list-all --json`; a companion run-task action.
+Out of scope for v0.1: Make, just and mise readers, unwrapping for suggestions and fix
+mode (Phases 6 to 8 in `docs/PLAN.md`); PowerShell parsing; and the Backlog items,
+reading `task --list-all --json` and a companion run-task action. SARIF output arrives in
+v0.2 (Phase 5).
 
 ## 3. Vocabulary
 
@@ -317,7 +319,7 @@ A step without a `name:` is referred to as `step <index>` (1-based) in place of
 ## 7. CLI
 
 ```text
-ci-parity check    [--config PATH] [--baseline PATH] [--format text|github|json]
+ci-parity check    [--config PATH] [--baseline PATH] [--format text|github|json|sarif]
                    [--strict] [--verbose] [-C DIR]
 ci-parity baseline [--config PATH] [--baseline PATH] [--allow-regression] [-C DIR]
 ci-parity version
@@ -403,6 +405,22 @@ JSON format:
 the allow reason for allowed findings and null otherwise. The schema is documented in
 the README and only changes with a `version` bump.
 
+SARIF format (`--format sarif`, from v0.2): one SARIF 2.1.0 log with one run, sorted like
+the other formats.
+
+- `runs[0].tool.driver`: `name` `ci-parity`, `version` from the build (plus
+  `semanticVersion` when that version is `X.Y.Z`), `informationUri` the repository URL,
+  and one `rules` entry per rule P001 to P005 with `id`, `name`, `shortDescription`,
+  `helpUri` (the README's Rules section) and `defaultConfiguration.level`.
+- One result per finding: `ruleId`, `level` `error` for errors, `warning` for warnings
+  and `note` for tolerated findings, and `message.text` with the same message as the
+  other formats. An allowed finding is a result with
+  `suppressions: [{"kind": "inSource", "justification": <reason>}]`.
+- `locations[0].physicalLocation`: `artifactLocation` with the repository-relative `uri`
+  and `uriBaseId` `%SRCROOT%`; `region` with `startLine` and `startColumn`.
+- `partialFingerprints["ciParity/v1"]`: a hash of the rule, file, job or action, step
+  and command, so a finding keeps its identity when lines above it move.
+
 ## 9. Exit codes
 
 - 0: no error-severity findings.
@@ -420,13 +438,15 @@ Inputs:
 - `binary`: path to a prebuilt `ci-parity`. When set, no download happens. This repo's
   own CI uses it to test the action before a release exists.
 - `config`, `baseline`: passed through.
-- `format`: default `github`.
+- `format`: default `github`. With `sarif` the log is written to
+  `$RUNNER_TEMP/ci-parity.sarif` instead of printed, and the `sarif-file` output holds
+  its path; other formats leave that output empty.
 - `strict`: default `false`.
 - `working-directory`: default `.`.
 - `fail-on-error`: default `true`. When `false`, the step succeeds and exposes outputs.
 
 Outputs: `errors`, `warnings`, `tolerated`, read from a JSON run written to
-`$RUNNER_TEMP`.
+`$RUNNER_TEMP`, and `sarif-file`.
 
 Steps: resolve the version; download `ci-parity_<version>_<os>_<arch>.tar.gz` (zip on
 windows) and `checksums.txt` from the release with `gh release download`, using

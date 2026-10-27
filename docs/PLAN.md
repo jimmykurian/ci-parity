@@ -124,11 +124,34 @@ Acceptance: a throwaway repo with one inline `pnpm test` step and
 `uses: OWNER/ci-parity@v0` gets an inline annotation on the offending line. Release
 assets and `checksums.txt` are attached to the release. `task ci` green.
 
-## Phase 5: backlog (do not start)
+## Phase 5: SARIF output
 
-- Make, just and mise readers behind the `Runner` interface
-- SARIF output for code scanning
+- [ ] `internal/adapters/report/sarif` per SPEC 8: SARIF 2.1.0, one run, rule metadata,
+      levels, suppressions for allowed findings, `%SRCROOT%`-relative locations and
+      partial fingerprints
+- [ ] `check --format sarif` in the CLI and its usage text
+- [ ] `expected/sarif.golden` for every fixture; a unit test for the required SARIF fields
+- [ ] The action: `format: sarif` writes `$RUNNER_TEMP/ci-parity.sarif` and sets the
+      `sarif-file` output
+- [ ] This repo's CI uploads its own SARIF with `github/codeql-action/upload-sarif`
+- [ ] README: the format, the action output and an upload example
+
+Acceptance: `task ci` green; every fixture passes in all four formats; this repo's code
+scanning lists a ci-parity analysis after a push to `main`. Release v0.2.0.
+
+## Phase 6: unwrapping for suggestions
+
+Spec proposed in `docs/DECISIONS.md` when the phase starts. Release v0.3.0.
+
+## Phase 7: Make, just and mise readers
+
+Spec proposed in `docs/DECISIONS.md` when the phase starts. Release v0.4.0.
+
+## Phase 8: fix mode
+
+Spec proposed in `docs/DECISIONS.md` when the phase starts. Release v0.5.0.
+
+## Backlog (do not start)
+
 - `task --list-all --json` as an optional source when the binary is present
-- `fix` mode that rewrites a flagged step to its suggested task
 - Companion `run-task` composite action in this repo
-- Unwrapping `npx X`, `pnpm exec X`, `uv run X`, `dotnet tool run X` for suggestions

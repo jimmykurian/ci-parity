@@ -11,8 +11,8 @@ ci-parity is built to a written spec, so most changes start in the docs:
 
 - [docs/SPEC.md](docs/SPEC.md) says what the tool does: rules, config keys,
   output formats, the baseline format and exit codes.
-- [docs/PLAN.md](docs/PLAN.md) says in what order. Items under "Phase 5:
-  backlog" are deliberately not started; open an issue before working on one.
+- [docs/PLAN.md](docs/PLAN.md) says in what order. Items under "Backlog" are
+  deliberately not started; open an issue before working on one.
 - [docs/DECISIONS.md](docs/DECISIONS.md) records every change to a decision or
   contract. A new config key, rule, dependency, or a change to a rule ID, the
   baseline format or the JSON schema needs an entry there, agreed in an issue,

@@ -90,6 +90,6 @@ gitleaks runs in CI. Treat a hit as a build failure, never as something to allow
 
 ## Do not
 
-- Do not implement anything listed under Phase 5 (backlog) in `docs/PLAN.md`.
+- Do not implement anything listed under Backlog in `docs/PLAN.md`.
 - Do not add a config option that the spec does not list. Propose it in `docs/DECISIONS.md`.
 - Do not parse PowerShell or cmd steps; report them as P005 per the spec.

@@ -6,7 +6,7 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
-### 2026-10-27: promote four backlog items into Phases 5 to 8 (proposed)
+### 2026-10-27: promote four backlog items into Phases 5 to 8 (accepted)
 
 Problem: `AGENTS.md` forbids the Phase 5 backlog and `docs/PLAN.md` marks it "do not
 start", but the owner asked to build SARIF output, unwrapping for suggestions, fix mode,
