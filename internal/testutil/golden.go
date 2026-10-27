@@ -18,7 +18,7 @@ import (
 var update = flag.Bool("update", false, "rewrite golden files and exit codes from current output")
 
 // Formats lists every output format the CLI supports.
-var Formats = []string{"text", "github", "json"}
+var Formats = []string{"text", "github", "json", "sarif"}
 
 // RunFunc runs the CLI in-process with args and returns its exit code.
 type RunFunc func(args []string, stdout, stderr io.Writer) int

@@ -25,7 +25,7 @@ var (
 )
 
 const usageText = `Usage:
-  ci-parity check    [--config PATH] [--baseline PATH] [--format text|github|json]
+  ci-parity check    [--config PATH] [--baseline PATH] [--format text|github|json|sarif]
                      [--strict] [--verbose] [-C DIR]
   ci-parity baseline [--config PATH] [--baseline PATH] [--allow-regression] [-C DIR]
   ci-parity version
