@@ -6,6 +6,18 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-27: README status table from CI badges (accepted)
+
+Problem: the README showed no build status, and the per-check results lived only in the
+pull request comment.
+
+Change: a **Badges** job runs after Checks and Self-check on pushes to `main` and commits
+one shields.io endpoint JSON per check to a `badges` branch through the Git Data API, so no
+git credentials stay on the runner. `README.md` gets a Status section with Checks, Build and
+tests, Security and Tech stack tables. shields.io reads the files from
+`raw.githubusercontent.com`, which serves only public repositories, so the badges render
+once the repo is public.
+
 ### 2026-10-27: PR check table, labels, assignment and a main ruleset (accepted)
 
 Problem: CI ran `task ci` as one step, so a pull request showed one pass or fail with no

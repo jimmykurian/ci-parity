@@ -455,6 +455,8 @@ tracks the latest v0.x. Version, commit and date are injected with `-ldflags`.
   `uses: ./` with `binary: ./bin/ci-parity` (Phase 4; before that, `run: task self-check`).
 - job `report` ("Check table"), on pull requests: one comment with each step's result,
   updated on every push.
+- job `badges` ("Badges"), on pushes to `main`: one shields.io endpoint file per check,
+  committed to the `badges` branch, for the status table in `README.md`.
 
 `.github/workflows/labeler.yml` labels pull requests by path (`.github/labeler.yml`), and
 `.github/workflows/pr-assign-author.yml` assigns each new one to its author.

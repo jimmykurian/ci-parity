@@ -2,8 +2,8 @@ name: ci
 
 # Every check, then a table of their results on the pull request:
 #
-#   checks ─────┐
-#   self-check ─┴─ report (the PR comment)
+#   checks ─────┬─ report (the PR comment)
+#   self-check ─┴─ badges (main only: the README status table)
 #
 # Each check is its own step running a task from Taskfile.yml, with tools from
 # mise.toml, so CI runs the same commands as a local `task ci`. Every step runs even
@@ -215,3 +215,81 @@ jobs:
             } else {
               await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
             }
+
+  # Writes one shields.io endpoint JSON per check to the badges branch, for the README's
+  # status table. Only main's results count. One commit through the Git Data API, so no
+  # git credentials stay on the runner.
+  badges:
+    name: Badges
+    needs: [checks, self-check]
+    if: ${{ always() && github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write # commits to the badges branch
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        with:
+          script: |
+            const needs = JSON.parse(process.env.NEEDS);
+            const badge = (message, color) => ({ schemaVersion: 1, label: '', message, color });
+            const status = (outcome) =>
+              outcome === 'success'
+                ? badge('passing', 'brightgreen')
+                : outcome === 'failure'
+                  ? badge('failing', 'red')
+                  : badge(outcome || 'not run', 'lightgrey');
+
+            const c = needs.checks?.outputs ?? {};
+            const s = needs['self-check']?.outputs ?? {};
+            const files = {
+              'checks/format.json': status(c.fmt),
+              'checks/lint.json': status(c.go),
+              'checks/workflows.json': status(c.actions),
+              'checks/shell.json': status(c.shell),
+              'checks/yaml.json': status(c.yaml),
+              'checks/markdown.json': status(c.markdown),
+              'checks/spelling.json': status(c.spelling),
+              'checks/editorconfig.json': status(c.editorconfig),
+              'build/tests.json': status(c.test),
+              'build/build.json': status(c.build),
+              'build/self-check.json': status(s.self_check),
+              'security/gitleaks.json': status(c.secrets),
+              'security/govulncheck.json': status(c.vuln),
+              'security/scrub.json': status(c.scrub),
+            };
+
+            const { owner, repo } = context.repo;
+            const ref = 'heads/badges';
+            let parent;
+            try {
+              parent = (await github.rest.git.getRef({ owner, repo, ref })).data.object.sha;
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+            const tree = await github.rest.git.createTree({
+              owner,
+              repo,
+              tree: Object.entries(files).map(([path, data]) => ({
+                path,
+                mode: '100644',
+                type: 'blob',
+                content: `${JSON.stringify(data)}\n`,
+              })),
+            });
+            if (parent) {
+              const { data: last } = await github.rest.git.getCommit({ owner, repo, commit_sha: parent });
+              if (last.tree.sha === tree.data.sha) return core.info('Badges unchanged');
+            }
+            const commit = await github.rest.git.createCommit({
+              owner,
+              repo,
+              message: `chore: update the CI badges for ${context.sha.slice(0, 7)}`,
+              tree: tree.data.sha,
+              parents: parent ? [parent] : [],
+            });
+            if (parent) await github.rest.git.updateRef({ owner, repo, ref, sha: commit.data.sha });
+            else await github.rest.git.createRef({ owner, repo, ref: `refs/${ref}`, sha: commit.data.sha });
+            core.info(`Updated ${Object.keys(files).length} badges`);

@@ -9,6 +9,34 @@ It reports every inline invocation, verifies that every task CI references exist
 keeps a per-workflow baseline so an existing repo can migrate one workflow at a time
 without regressing.
 
+## Status
+
+Each badge is a check from the last CI run on `main` (`.github/workflows/ci.yml` writes them to the `badges` branch). On a pull request, the same checks report in a comment on the PR.
+
+### Checks
+
+| Branch | Format | Lint | Workflows | Shell | YAML | Markdown | Spelling | EditorConfig |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| main | [![Format](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fformat.json&style=flat-square&logo=go&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Lint](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Flint.json&style=flat-square&logo=go&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Workflows](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fworkflows.json&style=flat-square&logo=githubactions&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Shell](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fshell.json&style=flat-square&logo=gnubash&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![YAML](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fyaml.json&style=flat-square&logo=yaml&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Markdown](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fmarkdown.json&style=flat-square&logo=markdown&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Spelling](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fspelling.json&style=flat-square&logo=grammarly&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![EditorConfig](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Feditorconfig.json&style=flat-square&logo=editorconfig&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) |
+
+### Build and tests
+
+| Branch | Tests | Build | Self-check |
+| --- | --- | --- | --- |
+| main | [![Tests](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fbuild%2Ftests.json&style=flat-square&logo=go&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Build](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fbuild%2Fbuild.json&style=flat-square&logo=go&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Self-check](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fbuild%2Fself-check.json&style=flat-square&logo=githubactions&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) |
+
+### Security
+
+| Branch | gitleaks | govulncheck | Scrub |
+| --- | --- | --- | --- |
+| main | [![gitleaks](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fsecurity%2Fgitleaks.json&style=flat-square&logo=git&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![govulncheck](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fsecurity%2Fgovulncheck.json&style=flat-square&logo=go&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Scrub](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fsecurity%2Fscrub.json&style=flat-square&logo=git&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) |
+
+### Tech stack
+
+| Go | Task | mise | golangci-lint | yaml.v3 | mvdan/sh | GitHub Actions |
+| --- | --- | --- | --- | --- | --- | --- |
+| [![Go](https://img.shields.io/badge/%20-1.27-00ADD8?style=flat-square&logo=go&logoColor=white&labelColor=555)](https://go.dev/) | [![Task](https://img.shields.io/badge/%20-3-29BEB0?style=flat-square&logo=task&logoColor=white&labelColor=555)](https://taskfile.dev/) | [![mise](https://img.shields.io/badge/%20-tool%20versions-00ADD8?style=flat-square&logo=gnometerminal&logoColor=white&labelColor=555)](https://mise.jdx.dev/) | [![golangci-lint](https://img.shields.io/badge/%20-2.15-00ADD8?style=flat-square&logo=go&logoColor=white&labelColor=555)](https://golangci-lint.run/) | [![yaml.v3](https://img.shields.io/badge/%20-3.0-CB171E?style=flat-square&logo=yaml&logoColor=white&labelColor=555)](https://github.com/go-yaml/yaml) | [![mvdan/sh](https://img.shields.io/badge/%20-3.14-4EAA25?style=flat-square&logo=gnubash&logoColor=white&labelColor=555)](https://github.com/mvdan/sh) | [![GitHub Actions](https://img.shields.io/badge/%20-CI%20and%20Action-2088FF?style=flat-square&logo=githubactions&logoColor=white&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions) |
+
 How it differs from nearby tools:
 
 - **actionlint** checks workflow syntax, expression types and shellcheck over `run:`
