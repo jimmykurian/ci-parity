@@ -108,6 +108,9 @@ jobs:
     name: Self-check
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
+      security-events: write # uploads this repo's SARIF to code scanning on main
     outputs:
       self_check: ${{ steps.self_check.outcome }}
     steps:
@@ -143,6 +146,18 @@ jobs:
           WARNINGS: ${{ steps.action_findings.outputs.warnings }}
           TOLERATED: ${{ steps.action_findings.outputs.tolerated }}
         run: task action:expect -- 8 0 0
+      # This repo's own results in code scanning, through the action's SARIF output.
+      - id: sarif
+        if: ${{ github.event_name == 'push' }}
+        uses: ./ # zizmor: ignore[self-repository]
+        with:
+          binary: ./bin/ci-parity
+          format: sarif
+      - if: ${{ github.event_name == 'push' }}
+        uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+        with:
+          sarif_file: ${{ steps.sarif.outputs.sarif-file }}
+          category: ci-parity
 
   # Posts (or updates) one comment on the pull request with a table of every check.
   report:
