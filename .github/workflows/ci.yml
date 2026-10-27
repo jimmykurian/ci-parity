@@ -41,6 +41,7 @@ jobs:
       markdown: ${{ steps.markdown.outcome }}
       spelling: ${{ steps.spelling.outcome }}
       editorconfig: ${{ steps.editorconfig.outcome }}
+      release: ${{ steps.release.outcome }}
       test: ${{ steps.test.outcome }}
       build: ${{ steps.build.outcome }}
       scrub: ${{ steps.scrub.outcome }}
@@ -90,6 +91,9 @@ jobs:
       - id: editorconfig
         if: ${{ !cancelled() }}
         run: task lint:editorconfig
+      - id: release
+        if: ${{ !cancelled() }}
+        run: task lint:release
       - id: test
         if: ${{ !cancelled() }}
         run: task test
@@ -117,8 +121,14 @@ jobs:
         with:
           version: 2026.10.21
           install_args: task
+      - run: task build
+      # The action from this checkout, on the binary just built: the same check users run.
+      # `./` rather than `$/`: actionlint 1.7.11 doesn't parse `$/` yet, and nothing but
+      # this repo's own checkout is in the workspace here.
       - id: self_check
-        run: task self-check
+        uses: ./ # zizmor: ignore[self-repository]
+        with:
+          binary: ./bin/ci-parity
 
   # Posts (or updates) one comment on the pull request with a table of every check.
   report:
@@ -163,6 +173,7 @@ jobs:
                   ['Markdown lint (markdownlint)', 'lint:markdown', 'markdown'],
                   ['Spelling (typos)', 'lint:spelling', 'spelling'],
                   ['EditorConfig', 'lint:editorconfig', 'editorconfig'],
+                  ['Release config (goreleaser check)', 'lint:release', 'release'],
                   ['Tests and golden fixtures', 'test', 'test'],
                   ['Build', 'build', 'build'],
                   ['Forbidden terms (scrub)', 'scrub', 'scrub'],
@@ -171,7 +182,7 @@ jobs:
               {
                 title: 'Self-check',
                 job: 'self-check',
-                rows: [['ci-parity on its own workflows', 'self-check', 'self_check']],
+                rows: [['ci-parity on its own workflows, through the action', '', 'self_check']],
               },
             ];
 
@@ -186,7 +197,8 @@ jobs:
               }
               lines.push('| Check | Task | Result |', '|:------|:-----|:-------|');
               for (const [label, task, key] of rows) {
-                lines.push(`| ${label} | ${task ? `\`task ${task}\`` : 'gitleaks-action'} | ${result(outputs[key])} |`);
+                const how = task ? `\`task ${task}\`` : key === 'secrets' ? 'gitleaks-action' : '`uses: ./`';
+                lines.push(`| ${label} | ${how} | ${result(outputs[key])} |`);
               }
               lines.push('');
             }
@@ -253,6 +265,7 @@ jobs:
               'checks/markdown.json': status(c.markdown),
               'checks/spelling.json': status(c.spelling),
               'checks/editorconfig.json': status(c.editorconfig),
+              'checks/release.json': status(c.release),
               'build/tests.json': status(c.test),
               'build/build.json': status(c.build),
               'build/self-check.json': status(s.self_check),

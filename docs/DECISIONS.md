@@ -6,6 +6,29 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-27: releases with Release Please (accepted)
+
+Problem: SPEC 11 had releases start from a pushed `v*` tag, with `CHANGELOG.md` written by
+hand, while every commit already follows Conventional Commits.
+
+Change: `.github/workflows/release.yml` runs Release Please on pushes to `main`. It keeps a
+release PR open that bumps `.github/.release-please-manifest.json` and `CHANGELOG.md`;
+merging it creates the `vX.Y.Z` tag and the GitHub Release. A Publish job in the same
+workflow then runs goreleaser on the tag (`release.mode: keep-existing`, so the notes stay
+Release Please's) and moves `v0` with `task release:float`, which skips pre-releases.
+Publishing runs in the same workflow because a tag created with `GITHUB_TOKEN` starts no
+workflows. Before 1.0, `feat` bumps the minor version, so the first release is v0.1.0.
+
+The workflow uses `GITHUB_TOKEN`, not a GitHub App: the release PR therefore starts no CI
+on its own, and is closed and reopened to run the required checks. goreleaser 2.18.3 is
+pinned in `mise.toml` and the workflow, and the publish job uses no caches.
+
+Two readings of SPEC 10 and 12, within their wording: the action's `working-directory` is
+passed as `-C`, so annotation paths are relative to it and line up only when it is the
+checked-out repository root (documented in the README); and the self-check job uses
+`uses: ./` with an inline zizmor ignore, because zizmor prefers `$/` and actionlint 1.7.11
+cannot parse it.
+
 ### 2026-10-27: README status table from CI badges (accepted)
 
 Problem: the README showed no build status, and the per-check results lived only in the

@@ -3,6 +3,7 @@
   "workflows": {
     ".github/workflows/ci.yml": 0,
     ".github/workflows/labeler.yml": 0,
-    ".github/workflows/pr-assign-author.yml": 0
+    ".github/workflows/pr-assign-author.yml": 0,
+    ".github/workflows/release.yml": 0
   }
 }

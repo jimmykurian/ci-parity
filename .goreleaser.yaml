@@ -1,0 +1,45 @@
+# Release builds per docs/SPEC.md section 11. Release Please creates the tag and the GitHub
+# Release with its notes; the release workflow then runs this to attach the archives.
+# `task lint:release` validates this file and `task release:snapshot` builds locally.
+version: 2
+
+project_name: ci-parity
+
+builds:
+  - id: ci-parity
+    main: ./cmd/ci-parity
+    binary: ci-parity
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X main.version={{ .Version }} -X main.commit={{ .ShortCommit }} -X main.date={{ .CommitDate }}
+    # Reproducible: file times come from the commit, not the build machine.
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - id: ci-parity
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - LICENSE
+      - README.md
+
+checksum:
+  name_template: checksums.txt
+  algorithm: sha256
+
+changelog:
+  # Release Please writes CHANGELOG.md and the release notes.
+  disable: true
+
+release:
+  # Attach the archives to the Release that Release Please created, keeping its notes.
+  mode: keep-existing
+  prerelease: auto

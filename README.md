@@ -1,7 +1,8 @@
 # ci-parity
 
-> **Pre-release.** ci-parity is under active development and has no release yet. The
-> commands, config keys and output formats below may change before v0.1.0.
+> **Pre-1.0.** ci-parity follows semantic versioning, and until v1.0.0 a minor release
+> may change commands, config keys and output. Rule IDs, the baseline format and the JSON
+> schema change only with a new `version` in the file.
 
 ci-parity checks that GitHub Actions workflows invoke project commands through the
 repository's task runner instead of calling build, test, lint and deploy tools inline.
@@ -15,9 +16,9 @@ Each badge is a check from the last CI run on `main` (`.github/workflows/ci.yml`
 
 ### Checks
 
-| Branch | Format | Lint | Workflows | Shell | YAML | Markdown | Spelling | EditorConfig |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| main | [![Format](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fformat.json&style=flat-square&logo=go&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Lint](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Flint.json&style=flat-square&logo=go&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Workflows](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fworkflows.json&style=flat-square&logo=githubactions&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Shell](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fshell.json&style=flat-square&logo=gnubash&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![YAML](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fyaml.json&style=flat-square&logo=yaml&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Markdown](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fmarkdown.json&style=flat-square&logo=markdown&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Spelling](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fspelling.json&style=flat-square&logo=grammarly&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![EditorConfig](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Feditorconfig.json&style=flat-square&logo=editorconfig&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) |
+| Branch | Format | Lint | Workflows | Shell | YAML | Markdown | Spelling | EditorConfig | Release config |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| main | [![Format](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fformat.json&style=flat-square&logo=go&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Lint](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Flint.json&style=flat-square&logo=go&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Workflows](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fworkflows.json&style=flat-square&logo=githubactions&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Shell](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fshell.json&style=flat-square&logo=gnubash&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![YAML](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fyaml.json&style=flat-square&logo=yaml&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Markdown](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fmarkdown.json&style=flat-square&logo=markdown&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Spelling](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Fspelling.json&style=flat-square&logo=grammarly&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![EditorConfig](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Feditorconfig.json&style=flat-square&logo=editorconfig&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Release config](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fchecks%2Frelease.json&style=flat-square&logo=goreleaser&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) |
 
 ### Build and tests
 
@@ -54,11 +55,208 @@ the inline count down to zero.
 
 ## Install
 
+### GitHub Action
+
+```yaml
+- uses: actions/checkout@v7
+- uses: jimmykurian/ci-parity@v0
+```
+
+`@v0` follows the latest v0.x release. To pin, use a release tag (`@v0.1.0`) or, better,
+its full commit SHA with the tag as a comment. The action downloads that release's binary
+for the runner, verifies it against `checksums.txt`, and runs `ci-parity check`.
+
+| Input | Default | Meaning |
+| --- | --- | --- |
+| `version` | the action's ref | Release tag to run. Empty uses the action's own ref when it's an exact `vX.Y.Z` tag, otherwise the latest release. |
+| `binary` | | Path to a prebuilt `ci-parity`; nothing is downloaded. |
+| `config` | `.ci-parity.yml` | Passed to `--config`. |
+| `baseline` | from the config | Passed to `--baseline`. |
+| `format` | `github` | `github` (annotations on the changed lines), `text` or `json`, for the log. |
+| `strict` | `false` | Ignore the baseline. |
+| `working-directory` | `.` | Repository root to check (`-C`). Annotation paths are relative to it, so they line up only when it's the root of the checked-out repository. |
+| `fail-on-error` | `true` | When `false`, the step succeeds and the outputs report the counts. |
+
+| Output | Meaning |
+| --- | --- |
+| `errors` | Number of error findings. |
+| `warnings` | Number of warning findings. |
+| `tolerated` | Number of findings the baseline tolerates. |
+
+### Release binaries
+
+Each [release](https://github.com/jimmykurian/ci-parity/releases) has archives for
+linux, darwin and windows on amd64 and arm64, and a `checksums.txt`:
+
+```sh
+gh release download v0.1.0 --repo jimmykurian/ci-parity \
+  --pattern 'ci-parity_0.1.0_linux_amd64.tar.gz' --pattern checksums.txt
+sha256sum --ignore-missing -c checksums.txt
+tar -xzf ci-parity_0.1.0_linux_amd64.tar.gz
+./ci-parity version
+```
+
+### go install
+
+```sh
+go install github.com/jimmykurian/ci-parity/cmd/ci-parity@latest
+```
+
+A `go install` build reports its version as `dev`; the release binaries carry the
+version, commit and date.
+
 ## Quick start
+
+A workflow that calls pnpm directly, next to a Taskfile that already wraps those commands:
+
+```yaml
+# .github/workflows/ci.yml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Test
+        run: pnpm test
+      - name: Lint
+        run: task lint
+```
+
+```yaml
+# Taskfile.yml
+version: "3"
+
+tasks:
+  install:
+    cmds:
+      - pnpm install --frozen-lockfile
+  test:
+    cmds:
+      - pnpm test
+```
+
+```text
+$ ci-parity check
+.github/workflows/ci.yml
+  9:14    P001 inline-tool   step "Install" in job "test" runs 'pnpm install --frozen-lockfile' directly; already available as 'task install'
+  11:14   P001 inline-tool   step "Test" in job "test" runs 'pnpm test' directly; already available as 'task test'
+  13:19   P002 unknown-task  'task lint' is not defined in Taskfile.yml (closest: test)
+
+3 errors, 0 warnings, 0 tolerated, 0 allowed
+```
+
+After calling the tasks instead (and installing task in a `uses:` step), it's clean:
+
+```yaml
+    steps:
+      - uses: actions/checkout@v7
+      - uses: go-task/setup-task@v2
+      - name: Install
+        run: task install
+      - name: Test
+        run: task test
+```
+
+```text
+$ ci-parity check
+0 errors, 0 warnings, 0 tolerated, 0 allowed
+```
+
+For a repository with many inline steps, start from a [baseline](#baseline) instead of
+fixing everything at once:
+
+```sh
+ci-parity baseline     # records today's counts in .ci-parity-baseline.json; commit it
+```
 
 ## Configuration
 
+`.ci-parity.yml` at the repository root is optional, and every key is optional. These are
+the defaults:
+
+```yaml
+runner: taskfile
+taskfile: ""                      # empty: Taskfile.yml, taskfile.yml, Taskfile.yaml,
+                                  # taskfile.yaml, then the .dist variants
+workflows:
+  - .github/workflows/*.yml
+  - .github/workflows/*.yaml
+  - .github/actions/**/action.yml
+  - .github/actions/**/action.yaml
+invokers:
+  shell: [task, go-task, "go tool task"]
+  actions:
+    - uses: ./.github/actions/run-task
+      input: task
+tools:
+  extend: []                      # added to the built-in list
+  remove: []                      # removed from the built-in list
+  replace: []                     # non-empty replaces the built-in list
+transparent: [sudo, env, time, nice, ionice, timeout, nohup, xvfb-run, chronic]
+allow: []
+baseline: .ci-parity-baseline.json
+```
+
+- **Tools** are matched on the command's basename, so `./node_modules/.bin/eslint` and
+  `./gradlew` count. The built-in list covers node (`npm npx pnpm pnpx pnx yarn bun bunx
+  node deno`), python (`python python3 pip pip3 pipx uv uvx poetry pytest ruff mypy tox
+  nox`), `dotnet`, go (`go golangci-lint`), `cargo`, jvm (`mvn mvnw gradle gradlew`),
+  infrastructure (`terraform tofu docker docker-compose kubectl helm az aws gcloud
+  pulumi`), quality tools (`eslint prettier biome vitest jest playwright cypress k6
+  shellcheck actionlint`) and other task runners (`make just mise cargo-make`). Anything
+  else is ignored.
+- **Transparent** wrappers are looked through: `sudo -E env CI=1 pnpm test` is `pnpm test`.
+- **Invokers** are how CI calls the task runner: shell commands, or a local action whose
+  input names the task.
+- **Workflow globs** match repository-relative paths: `*` and `?` stay within one path
+  segment, and a whole `**` segment matches any number of them.
+
+An unknown key, a wrong type, an `allow` entry without a `reason`, or `replace` combined
+with `extend` or `remove` is an error that names the key (exit 2).
+
+### Allowing a step
+
+Some inline commands are deliberate. Allow one with a comment on the same line or the
+line above, with a reason:
+
+```yaml
+      - run: docker push ghcr.io/acme/widget-service:dev # ci-parity: allow images publish only from CI
+```
+
+Or allow a command pattern in the config, optionally for some workflows only:
+
+```yaml
+allow:
+  - match: "docker push *"           # matched against the whole command
+    reason: images publish only from CI
+    workflows: [.github/workflows/release.yml]
+```
+
+Allowed findings don't fail the check; `--verbose` lists them with their reason.
+
 ## Rules
+
+| ID | Name | Severity | Reported when |
+| --- | --- | --- | --- |
+| P001 | inline-tool | error, tolerated or allowed | A `run:` step calls a listed tool directly. |
+| P002 | unknown-task | error | CI calls a task the Taskfile doesn't define. |
+| P003 | internal-task | error | CI calls a task marked `internal: true`. |
+| P004 | regression | error | A workflow has more inline-tool findings than its baseline allows, or any while locked at 0. |
+| P005 | unsupported | warning | A step ci-parity can't analyze: a shell other than bash or sh, a script that doesn't parse, a dynamic command name, or an allow comment without a reason. |
+
+The messages are stable, so you can search for them:
+
+- P001: `step "Test" in job "test" runs 'pnpm test' directly; already available as 'task test'`
+- P002: `'task lint' is not defined in Taskfile.yml (closest: test)`
+- P003: `'deploy:prod' is marked internal: true and should not be invoked from CI`
+- P004: `.github/workflows/ci.yml has 3 inline-tool findings, baseline allows 2`
+- P005: `step uses shell 'pwsh'; not analyzed`
+
+Exit codes: `0` when there are no errors, `1` when there are (or `baseline` refused to
+raise a count), `2` for a usage or config error, YAML that doesn't parse, or a missing
+Taskfile.
 
 ## Baseline
 
@@ -74,6 +272,11 @@ A workflow at 0, or missing from the baseline, is locked: any inline tool fails.
 count drops, `check` prints a ratchet table; run `ci-parity baseline` again to lock in
 the lower count. `baseline` refuses to raise a count unless given `--allow-regression`.
 `check --strict` ignores the baseline.
+
+The baseline is a count, not a list: in a workflow with a count of N, the first N
+inline-tool findings in file order are tolerated. Adding an inline step above existing
+ones moves which findings are tolerated, so the error is reported on an older step; the
+P004 count is what's new.
 
 ## JSON output
 
@@ -126,6 +329,26 @@ the lower count. `baseline` refuses to raise a count unless given `--allow-regre
 Findings are sorted by file, line, column and rule ID.
 
 ## FAQ
+
+**Why not actionlint or zizmor?** Use them too. actionlint checks workflow syntax and
+runs shellcheck on scripts, and zizmor finds security problems; neither knows about your
+task runner. ci-parity checks that CI and local runs use the same commands. This
+repository runs all three.
+
+**What about task2ci?** It generated workflows from Taskfile annotations, and it's
+archived. ci-parity keeps hand-written workflows and checks them instead, with a baseline
+so an existing repository can adopt it gradually.
+
+**What about Make or just?** v0.1 reads Taskfiles only. In a Taskfile repository, `make`
+and `just` count as inline tools, because they bypass the configured runner. Readers for
+other runners are planned.
+
+**How do I allow a step?** With a `# ci-parity: allow <reason>` comment, or an `allow`
+entry in `.ci-parity.yml`; see [Allowing a step](#allowing-a-step). To stop flagging a tool
+everywhere, add it to `tools.remove`.
+
+**Are PowerShell or cmd steps checked?** No. They're reported as P005 warnings and
+skipped, as are steps in any shell other than bash and sh.
 
 ## Development
 

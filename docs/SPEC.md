@@ -440,9 +440,12 @@ Branding: `icon: git-merge`, `color: blue`.
 
 goreleaser v2. Targets linux, darwin, windows on amd64 and arm64. Archive names
 `ci-parity_<version>_<os>_<arch>.tar.gz`, zip on windows, plus `checksums.txt`.
-A release workflow runs on tags matching `v*`, publishes the GitHub Release, and moves
-the floating major tag (`v0`) to the released commit so `uses: OWNER/ci-parity@v0`
-tracks the latest v0.x. Version, commit and date are injected with `-ldflags`.
+Release Please runs on pushes to `main` and keeps a release PR that bumps the version and
+`CHANGELOG.md` from the Conventional Commits; merging it creates the `vX.Y.Z` tag and the
+GitHub Release. The same workflow then runs goreleaser on that tag to attach the archives,
+and moves the floating major tag (`v0`) to the released commit so
+`uses: OWNER/ci-parity@v0` tracks the latest v0.x. Version, commit and date are injected
+with `-ldflags`.
 
 ## 12. This repo's own CI
 
@@ -452,7 +455,7 @@ tracks the latest v0.x. Version, commit and date are injected with `-ldflags`.
   gitleaks-action, then one `run: task <name>` step for each task in `task ci` except
   self-check, every step running even after one fails.
 - job `self-check` ("Self-check"): checkout, setup-go, mise-action, `run: task build`, then
-  `uses: ./` with `binary: ./bin/ci-parity` (Phase 4; before that, `run: task self-check`).
+  `uses: ./` with `binary: ./bin/ci-parity`.
 - job `report` ("Check table"), on pull requests: one comment with each step's result,
   updated on every push.
 - job `badges` ("Badges"), on pushes to `main`: one shields.io endpoint file per check,
@@ -463,8 +466,8 @@ tracks the latest v0.x. Version, commit and date are injected with `-ldflags`.
 Once the repository is public, a ruleset on `main` requires squash-only pull requests,
 signed commits, linear history, and Checks and Self-check.
 
-`.github/workflows/release.yml` runs goreleaser via `uses:` and moves the floating tag
-with `gh`; those `run:` lines carry `# ci-parity: allow` comments with reasons.
+`.github/workflows/release.yml` runs Release Please and goreleaser via `uses:`, and moves
+the floating tag with `run: task release:float`.
 
 The repo ships `.ci-parity.yml` and a `.ci-parity-baseline.json` with every workflow
 locked at 0.

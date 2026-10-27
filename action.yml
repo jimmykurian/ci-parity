@@ -1,0 +1,150 @@
+name: ci-parity
+description: Check that GitHub Actions workflows run project commands through the Taskfile, with a baseline that only shrinks.
+author: Jimmy Kurian
+
+branding:
+  icon: git-merge
+  color: blue
+
+inputs:
+  version:
+    description: Release tag to run, such as v0.1.0. Empty uses the action's own ref when it is an exact vX.Y.Z tag, otherwise the latest release.
+    required: false
+    default: ""
+  binary:
+    description: Path to a prebuilt ci-parity. When set, nothing is downloaded.
+    required: false
+    default: ""
+  config:
+    description: Path to the config file, passed to --config.
+    required: false
+    default: ""
+  baseline:
+    description: Path to the baseline file, passed to --baseline.
+    required: false
+    default: ""
+  format:
+    description: "Output format for the log: github (annotations), text or json."
+    required: false
+    default: github
+  strict:
+    description: Ignore the baseline.
+    required: false
+    default: "false"
+  working-directory:
+    description: Repository root to check, passed to -C. Annotation paths are relative to it, so they line up when it is the root of the checked-out repository.
+    required: false
+    default: "."
+  fail-on-error:
+    description: Fail the step when there are error findings. When false, the step succeeds and the outputs report the counts.
+    required: false
+    default: "true"
+
+outputs:
+  errors:
+    description: Number of error findings.
+    value: ${{ steps.check.outputs.errors }}
+  warnings:
+    description: Number of warning findings.
+    value: ${{ steps.check.outputs.warnings }}
+  tolerated:
+    description: Number of findings the baseline tolerates.
+    value: ${{ steps.check.outputs.tolerated }}
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve the ci-parity binary
+      id: resolve
+      shell: bash
+      env:
+        INPUT_VERSION: ${{ inputs.version }}
+        INPUT_BINARY: ${{ inputs.binary }}
+        ACTION_REF: ${{ github.action_ref }}
+        ACTION_REPOSITORY: ${{ github.action_repository }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        if [[ -n "$INPUT_BINARY" ]]; then
+          echo "path=$(cd "$(dirname "$INPUT_BINARY")" && pwd)/$(basename "$INPUT_BINARY")" >> "$GITHUB_OUTPUT"
+          exit 0
+        fi
+        if [[ -z "$ACTION_REPOSITORY" ]]; then
+          echo "::error::ci-parity: set the binary input when using the action from a local path"
+          exit 1
+        fi
+        version="$INPUT_VERSION"
+        if [[ -z "$version" ]]; then
+          if [[ "$ACTION_REF" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            version="$ACTION_REF"
+          else
+            version="$(gh release view --repo "$ACTION_REPOSITORY" --json tagName --jq .tagName)"
+          fi
+        fi
+        case "$RUNNER_OS" in
+          Linux) os=linux ext=tar.gz ;;
+          macOS) os=darwin ext=tar.gz ;;
+          Windows) os=windows ext=zip ;;
+          *) echo "::error::ci-parity: unsupported runner OS $RUNNER_OS"; exit 1 ;;
+        esac
+        case "$RUNNER_ARCH" in
+          X64) arch=amd64 ;;
+          ARM64) arch=arm64 ;;
+          *) echo "::error::ci-parity: unsupported runner architecture $RUNNER_ARCH"; exit 1 ;;
+        esac
+        archive="ci-parity_${version#v}_${os}_${arch}.${ext}"
+        dir="$RUNNER_TEMP/ci-parity"
+        rm -rf "$dir" && mkdir -p "$dir"
+        gh release download "$version" --repo "$ACTION_REPOSITORY" --dir "$dir" \
+          --pattern "$archive" --pattern checksums.txt
+        (
+          cd "$dir"
+          grep -F "  $archive" checksums.txt > expected.txt || {
+            echo "::error::ci-parity: $archive is not in checksums.txt"
+            exit 1
+          }
+          if command -v sha256sum > /dev/null; then sha256sum -c expected.txt; else shasum -a 256 -c expected.txt; fi
+          if [[ "$ext" == zip ]]; then unzip -q -o "$archive"; else tar -xzf "$archive"; fi
+        )
+        bin="$dir/ci-parity"
+        [[ "$os" == windows ]] && bin="$bin.exe"
+        echo "path=$bin" >> "$GITHUB_OUTPUT"
+        echo "ci-parity $version from $ACTION_REPOSITORY"
+
+    - name: Run ci-parity check
+      id: check
+      shell: bash
+      env:
+        BIN: ${{ steps.resolve.outputs.path }}
+        INPUT_CONFIG: ${{ inputs.config }}
+        INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_FORMAT: ${{ inputs.format }}
+        INPUT_STRICT: ${{ inputs.strict }}
+        INPUT_DIR: ${{ inputs.working-directory }}
+        INPUT_FAIL: ${{ inputs.fail-on-error }}
+      run: |
+        set -uo pipefail
+        args=(check -C "$INPUT_DIR")
+        [[ -n "$INPUT_CONFIG" ]] && args+=(--config "$INPUT_CONFIG")
+        [[ -n "$INPUT_BASELINE" ]] && args+=(--baseline "$INPUT_BASELINE")
+        [[ "$INPUT_STRICT" == true ]] && args+=(--strict)
+        report="$RUNNER_TEMP/ci-parity-report.json"
+
+        # One run as JSON for the outputs, one in the requested format for the log.
+        "$BIN" "${args[@]}" --format json > "$report"
+        code=$?
+        if [[ "$code" -ge 2 ]]; then
+          exit "$code"
+        fi
+        for key in errors warnings tolerated; do
+          echo "$key=$(jq -r ".summary.$key" "$report")" >> "$GITHUB_OUTPUT"
+        done
+        if [[ "$INPUT_FORMAT" == json ]]; then
+          cat "$report"
+        else
+          "$BIN" "${args[@]}" --format "$INPUT_FORMAT"
+        fi
+        if [[ "$code" -eq 1 && "$INPUT_FAIL" == true ]]; then
+          exit 1
+        fi
+        exit 0

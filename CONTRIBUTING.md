@@ -65,6 +65,7 @@ tasks:
 | `task lint:markdown` | markdownlint-cli2, run with `pnx` |
 | `task lint:spelling` | typos |
 | `task lint:editorconfig` | editorconfig-checker |
+| `task lint:release` | goreleaser check on `.goreleaser.yaml` |
 | `task fmt` | formats Go code with gofumpt and goimports; `task fmt:check` prints the diff and fails |
 | `task self-check` | runs ci-parity against this repo's own workflows |
 | `task scrub` | maintainer check for private terms; passes with a warning when not set up |
@@ -169,6 +170,24 @@ A check whose tool isn't installed is skipped with a warning; CI runs everything
 - Output and message changes follow the rules in
   [ACCESSIBILITY.md](ACCESSIBILITY.md): meaning in words, never color or
   symbols alone.
+
+## Releases
+
+[Release Please](https://github.com/googleapis/release-please) (`.github/workflows/release.yml`)
+versions the project from the Conventional Commits on `main`:
+
+- After each merge it opens or updates one release PR, `chore: release <version>`, that
+  bumps the version in `.github/.release-please-manifest.json` and adds the commits to
+  `CHANGELOG.md`. Before 1.0, a `feat` is a minor release and a `fix` a patch; a `!` or
+  `BREAKING CHANGE` footer is a minor release too. `docs` and `refactor` commits are
+  listed; `chore`, `ci`, `build`, `test` and `style` aren't.
+- The workflow uses `GITHUB_TOKEN`, so the release PR doesn't start the CI checks on its
+  own. Close and reopen it to run them, then merge it.
+- Merging it tags `vX.Y.Z` and publishes the GitHub Release. The same workflow then runs
+  goreleaser to attach the archives and `checksums.txt`, and moves the `v0` tag to the
+  release (`task release:float`).
+- Never edit a version or the changelog by hand. `task release:snapshot` builds every
+  archive into `dist/` locally, and `task lint:release` checks `.goreleaser.yaml`.
 
 ## License
 

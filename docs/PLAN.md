@@ -106,12 +106,12 @@ Acceptance: every fixture passes in all three formats with the expected exit cod
 
 ## Phase 4: action, releases, docs, v0.1.0
 
-- [ ] `action.yml` per SPEC 10, including the `binary` input and outputs
-- [ ] `.goreleaser.yaml` per SPEC 11 with `-ldflags` for version, commit, date
-- [ ] `.github/workflows/release.yml`: goreleaser on `v*` tags, floating `v0` tag move,
+- [x] `action.yml` per SPEC 10, including the `binary` input and outputs
+- [x] `.goreleaser.yaml` per SPEC 11 with `-ldflags` for version, commit, date
+- [x] `.github/workflows/release.yml`: goreleaser on `v*` tags, floating `v0` tag move,
       allow comments on the non-task `run:` lines
-- [ ] `self-check` job switched to `uses: ./` with `binary: ./bin/ci-parity`
-- [ ] README complete: install (release binary, `go install`, action), quick start with
+- [x] `self-check` job switched to `uses: ./` with `binary: ./bin/ci-parity`
+- [x] README complete: install (release binary, `go install`, action), quick start with
       a before/after workflow snippet, configuration reference, rules reference, baseline
       workflow, JSON schema, FAQ (why not actionlint or zizmor, what about task2ci, what
       about Make or just, how to allow a step)
