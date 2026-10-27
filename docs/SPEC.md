@@ -243,12 +243,16 @@ Shell invokers are word sequences. `go tool task` matches the three words `go`, 
   carries its value and consumes nothing further. Any other argument starting with `-`
   is a flag that consumes nothing.
 - Arguments of the form `KEY=VALUE` are task variables, not task names.
-- Every remaining argument is a task name. Zero task names (for example `task --list`)
-  means the call is ignored.
+- `-t`, `--taskfile`, `-d`, `--dir` (in any form, including `--dir=web` and `-dweb`),
+  `-g` and `--global` select a Taskfile other than the root one, so the call is ignored.
+- Every remaining argument is a task name. A task name that is not a literal word cannot
+  be checked and is skipped. Zero task names (for example `task --list`) means the call
+  is ignored.
 
 Action invokers: a `uses:` step matches when its value equals the configured `uses`
 exactly, or equals it followed by `@<ref>`. Task names come from `with.<input>`, split on
-whitespace. A matching step without that input is ignored.
+whitespace; a word that holds `${{ }}` cannot be checked and is skipped. A matching step
+without that input is ignored.
 
 ### 5.5 Taskfile reading
 
@@ -257,13 +261,17 @@ exits 2). Collect:
 
 - Task names from `tasks`, plus every entry of each task's `aliases`.
 - `internal: true` per task.
-- `includes`: a string value is a path to a Taskfile or to a directory (meaning
-  `<dir>/Taskfile.yml`); a map value supports `taskfile`, `dir`, `optional`, `internal`,
+- `includes`: a string value is a path to a Taskfile or to a directory (the first of the
+  root discovery names found there); a map value supports `taskfile`, `dir`, `optional`, `internal`,
   `aliases`, `flatten`. Included tasks are named `<namespace>:<task>` (also under each
   alias namespace), or unprefixed when `flatten: true`. `internal: true` on an include
   marks all its tasks internal. Resolve relative to the including file's directory, cap
   recursion at depth 10, ignore cycles. A missing include is a parse error (exit 2)
-  unless `optional: true`.
+  unless `optional: true`. An include path holding a template (`{{OS}}`) is treated as
+  missing.
+- An included Taskfile with a `default` task also makes the bare namespace a valid name.
+
+File names are matched exactly against the directory listing.
 - Each task's command strings for suggestion matching: `cmd:` on the task, string
   entries of `cmds`, and `cmd:` map entries of `cmds`. Ignore `task:`, `for:` and
   `defer:` entries.
@@ -271,11 +279,14 @@ exits 2). Collect:
 ### 5.6 Suggestions
 
 - P001: normalize each Taskfile command string (trim, collapse whitespace). If it equals
-  the inline command's normalized form, suggest `task <name>`, preferring non-internal
-  tasks and the shortest name. Treat `pnpm run X` as equal to `pnpm X` and
-  `yarn run X` as equal to `yarn X`.
-- P002: suggest the closest task name by Levenshtein distance when the distance is at
-  most 3, or any task name that has the unknown name as a prefix.
+  the inline command's normalized form, suggest `task <name>`, never suggesting internal
+  tasks and choosing the shortest name. Ties go to the shorter name, then the
+  alphabetically first. Only the canonical task name is suggested, not an alias. Treat
+  `pnpm run X` as equal to `pnpm X` and `yarn run X` as equal to `yarn X`.
+- P002: a task name that has the unknown name as a prefix wins, shortest first.
+  Otherwise suggest the name with the lowest Levenshtein distance, when that distance is
+  at most 3 and less than the length of the unknown name. Internal tasks are never
+  suggested.
 
 ## 6. Rules
 

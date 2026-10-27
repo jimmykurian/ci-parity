@@ -27,3 +27,36 @@ Change: SPEC 5.3 lists, per built-in wrapper, the flags that consume the next ar
   expressions; parse errors are reported at the parser's position (SPEC 5.1, 5.3).
 - A YAML line comment after a single-line `run:` value is kept as a shell comment, so
   one-line allow comments work (SPEC 5.1).
+
+### 2026-10-27: Phase 2 spec gaps (accepted)
+
+Approved by the owner and applied to SPEC 5.4 to 5.6. Each item says why the spec as
+written would give wrong results.
+
+1. SPEC 5.4, shell invokers. Add: "`-t`, `--taskfile`, `-d`, `--dir` (in any form,
+   including `--dir=web` and `-dweb`), `-g` and `--global` select a Taskfile other than
+   the root one, so the call is ignored." Why: `task -d web build` names a task in
+   `web/Taskfile.yml`; checking it against the root Taskfile reports a false P002.
+2. SPEC 5.4, both invokers. Add: "A task name that is not a literal word, or a word in an
+   action input that holds `${{ }}`, cannot be checked and is skipped." Why: without it,
+   `with: {task: "${{ matrix.task }}"}` splits into `${{`, `matrix.task`, `}}` and reports
+   `matrix.task` as unknown.
+3. SPEC 5.5, includes. Add: "An included Taskfile with a `default` task also makes the
+   bare namespace a valid name." Why: `task docs` runs `docs:default`; without this it is
+   a false P002.
+4. SPEC 5.5, includes. Replace "(meaning `<dir>/Taskfile.yml`)" with "(the first of the
+   root discovery names found there)", and add "An include path holding a template
+   (`{{OS}}`) is treated as missing" and "File names are matched exactly against the
+   directory listing." Why: task itself searches all names in a directory; templates
+   cannot be resolved statically; case-insensitive file systems otherwise report a
+   different file name than Linux, which breaks deterministic output.
+5. SPEC 5.6. Replace "preferring non-internal tasks" with "never suggesting internal
+   tasks". Why: `task` refuses to run an internal task from the command line, so
+   suggesting one is wrong advice.
+6. SPEC 5.6, P002. Replace the rule with: "A task name that has the unknown name as a
+   prefix wins, shortest first. Otherwise suggest the name with the lowest Levenshtein
+   distance, when that distance is at most 3 and less than the length of the unknown
+   name." Why: the spec does not rank its two kinds of candidate, and plain lowest
+   distance suggested `ds` for `test` over `test:unit`.
+7. SPEC 5.6, P001. Add: "Ties go to the shorter name, then the alphabetically first.
+   Only the canonical task name is suggested, not an alias."
