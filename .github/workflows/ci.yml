@@ -29,10 +29,12 @@ jobs:
         with:
           version: v2.15.0
           install-only: true
-      - uses: taiki-e/install-action@5488ac5a951645ce95062214902ac4b6bc1a1037 # v2.87.32
+      - uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d # v5.2.4
         with:
-          tool: actionlint@1.7.11
-          fallback: none
+          version: 2026.10.21
+          mise_toml: |
+            [tools]
+            actionlint = "1.7.11"
       - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
