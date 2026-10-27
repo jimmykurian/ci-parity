@@ -115,10 +115,10 @@ Acceptance: every fixture passes in all three formats with the expected exit cod
       a before/after workflow snippet, configuration reference, rules reference, baseline
       workflow, JSON schema, FAQ (why not actionlint or zizmor, what about task2ci, what
       about Make or just, how to allow a step)
-- [ ] `CHANGELOG.md` with a v0.1.0 entry
-- [ ] Marketplace checklist verified: public repo, root `action.yml` with `name`,
+- [x] `CHANGELOG.md` with a v0.1.0 entry
+- [x] Marketplace checklist verified: public repo, root `action.yml` with `name`,
       `description`, `branding`, a published release
-- [ ] Tag `v0.1.0`
+- [x] Tag `v0.1.0`
 
 Acceptance: a throwaway repo with one inline `pnpm test` step and
 `uses: OWNER/ci-parity@v0` gets an inline annotation on the offending line. Release
