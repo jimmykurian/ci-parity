@@ -38,8 +38,10 @@ If a decision turns out to be wrong, write the problem and the proposed change i
 
 ## Code conventions
 
-- One package per concern under `internal/`: `config`, `workflow`, `shell`, `runner`,
-  `rules`, `baseline`, `report`. `cmd/ci-parity` only wires flags to packages.
+- Clean-architecture layout under `internal/`: `domain` (types and pure logic, stdlib
+  only), `rules`, `app` (use cases and ports), and
+  `adapters/{config,workflow,shell,runner,baseline,report}`. Dependencies point inward.
+  `cmd/ci-parity` is the composition root: it parses flags, builds adapters and calls `app`.
 - Errors are wrapped with context (`fmt.Errorf("parse %s: %w", path, err)`). No panics
   outside `main` for truly impossible states.
 - Reported paths are relative to the repo root with forward slashes on every OS.

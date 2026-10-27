@@ -6,6 +6,32 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-27: clean-architecture package layout (accepted)
+
+Problem: AGENTS.md fixed one package per concern, but the core depended on details.
+`rules` imported the mvdan-based `shell` and the YAML-based `workflow`, `baseline` mixed
+the ratchet math with JSON file I/O, and the check and baseline use cases lived in
+`cmd/ci-parity`. A new runner or shell would have meant editing the rules.
+
+Change: dependencies point inward, `cmd -> adapters -> app -> rules -> domain`.
+
+- `internal/domain`: types and pure logic only (findings, the workflow model and
+  position mapping, extracted commands, the config value and its globs, the ratchet).
+  Standard library only.
+- `internal/rules`: P001 to P005. It defines the two interfaces it consumes,
+  `TaskSource` (the former `runner.Runner`) and `CommandExtractor`, so it imports only
+  `domain`. `CommandExtractor.Supports(shell)` decides which shells are parsed; anything
+  else is still P005.
+- `internal/app`: the check and baseline use cases and their ports (`ConfigSource`,
+  `WorkflowSource`, `TaskLoader`, `BaselineStore`, `Reporter`, plus aliases of the two
+  rules interfaces). `TaskLoader` exists because the Taskfile path comes from the config.
+- `internal/adapters/{config/yamlconfig,workflow/ghactions,shell/posix,runner/taskfile,
+  baseline/jsonfile,report/*}`: the YAML, shell, JSON and output details. Each is
+  constructed with the repo root, so `-C` is resolved once in `cmd`.
+- `cmd/ci-parity` is the composition root: flags, adapters, exit codes.
+
+Output, exit codes, error messages and the fixtures are unchanged.
+
 ### 2026-10-27: wrapper flags that take a value (accepted)
 
 Problem: SPEC 5.3 dropped a wrapper's options but not the values of options that take

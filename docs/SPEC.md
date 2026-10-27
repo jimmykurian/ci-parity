@@ -65,7 +65,7 @@ Path globs (`workflows`, `allow[].workflows`) match repo-relative forward-slash 
 `*` matches any characters except `/`, `?` matches one character except `/`, and a whole
 `**` segment matches zero or more path segments. No other syntax (no braces, no
 character classes). The standard library has no `**` support and no glob library is
-allowed, so `internal/config` implements this matcher itself, with table tests.
+allowed, so `internal/domain` implements this matcher itself, with table tests.
 
 ### 4.2 Config: `.ci-parity.yml`
 
