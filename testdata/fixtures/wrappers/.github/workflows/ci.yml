@@ -21,3 +21,11 @@ jobs:
           go-task build
       - name: Go tool that is not task
         run: go tool cover -func=coverage.out
+      - name: Wrapper flags that take values
+        run: |
+          sudo -u deploy docker push ghcr.io/acme/widget-service
+          timeout -k 5 30s pnpm test
+          env -u HOME -C web pnpm build
+          ionice -c 2 -n 7 make all
+          /usr/bin/time -f %e npm ci
+          env -S 'pnpm test --coverage'

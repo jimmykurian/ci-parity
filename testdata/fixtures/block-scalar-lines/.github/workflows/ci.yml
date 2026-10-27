@@ -26,3 +26,16 @@ jobs:
       - name: Folded single line
         run: >
           pnpm seven
+      - name: Folded multi-line
+        run: >
+          echo folding joins these lines
+          && pnpm eight
+
+          pnpm nine
+            more-indented lines keep their breaks
+          pnpm ten
+      - name: Plain multi-line
+        run: echo plain scalars fold too
+          && pnpm eleven
+      - name: Expression before the command
+        run: echo ${{ github.event.pull_request.head.sha }} && pnpm twelve

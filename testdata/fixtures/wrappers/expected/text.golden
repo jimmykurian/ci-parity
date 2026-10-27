@@ -7,5 +7,10 @@
   15:16   P001 inline-tool   step "Wrapped" in job "test" runs 'npm ci' directly
   16:17   P001 inline-tool   step "Wrapped" in job "test" runs 'node server.js' directly
   23:14   P001 inline-tool   step "Go tool that is not task" in job "test" runs 'go tool cover -func=coverage.out' directly
+  26:26   P001 inline-tool   step "Wrapper flags that take values" in job "test" runs 'docker push ghcr.io/acme/widget-service' directly
+  27:28   P001 inline-tool   step "Wrapper flags that take values" in job "test" runs 'pnpm test' directly
+  28:30   P001 inline-tool   step "Wrapper flags that take values" in job "test" runs 'pnpm build' directly
+  29:28   P001 inline-tool   step "Wrapper flags that take values" in job "test" runs 'make all' directly
+  30:31   P001 inline-tool   step "Wrapper flags that take values" in job "test" runs 'npm ci' directly
 
-8 errors, 0 warnings, 0 tolerated, 0 allowed
+13 errors, 0 warnings, 0 tolerated, 0 allowed
