@@ -21,26 +21,26 @@ testdata/fixtures/<case>/
 
 ## Phase 0: scaffold
 
-- [ ] `go mod init github.com/OWNER/ci-parity`; OWNER from the git remote, ask if absent
-- [ ] `LICENSE` (Apache-2.0); `.gitignore`, `.gitattributes` and `.editorconfig` already exist, extend them if needed
-- [ ] `README.md`: positioning paragraph from SPEC section 1, a "pre-release" notice,
+- [x] `go mod init github.com/OWNER/ci-parity`; OWNER from the git remote, ask if absent
+- [x] `LICENSE` (Apache-2.0); `.gitignore`, `.gitattributes` and `.editorconfig` already exist, extend them if needed
+- [x] `README.md`: positioning paragraph from SPEC section 1, a "pre-release" notice,
       and empty headings for Install, Quick start, Configuration, Rules, Baseline, FAQ
-- [ ] `cmd/ci-parity/main.go` with subcommand dispatch and a working `version`;
+- [x] `cmd/ci-parity/main.go` with subcommand dispatch and a working `version`;
       `check` and `baseline` exit 2 with "not implemented"
-- [ ] `Taskfile.yml` with `build`, `test`, `lint`, `fmt`, `fmt:check`, `self-check`,
+- [x] `Taskfile.yml` with `build`, `test`, `lint`, `fmt`, `fmt:check`, `self-check`,
       `scrub`, `ci`. `self-check` runs `go run ./cmd/ci-parity version` for now.
       `scrub` warns and passes when `$SCRUB_TERMS_FILE` is unset
-- [ ] `.golangci.yml` in golangci-lint v2 format (`version: "2"`): standard linters
+- [x] `.golangci.yml` in golangci-lint v2 format (`version: "2"`): standard linters
       plus `gocritic` and `revive`
-- [ ] Dev tools per SPEC section 12: nothing added to `go.mod`; `task lint` fails with an
+- [x] Dev tools per SPEC section 12: nothing added to `go.mod`; `task lint` fails with an
       install hint when golangci-lint or actionlint is missing from `PATH`
-- [ ] `.github/workflows/ci.yml` per SPEC section 12 with `run: task ci` and
+- [x] `.github/workflows/ci.yml` per SPEC section 12 with `run: task ci` and
       `run: task self-check`, third-party actions pinned to SHAs, golangci-lint and
       actionlint installed by `uses:` steps, gitleaks as its own `uses:` step
-- [ ] `.ci-parity.yml` and `.ci-parity-baseline.json` for this repo (workflows locked at 0)
-- [ ] `internal/testutil` golden harness: discovers fixtures, runs the CLI in-process in
+- [x] `.ci-parity.yml` and `.ci-parity-baseline.json` for this repo (workflows locked at 0)
+- [x] `internal/testutil` golden harness: discovers fixtures, runs the CLI in-process in
       each format, compares to goldens, `-update` flag rewrites them. Zero fixtures yet
-- [ ] `docs/DECISIONS.md` created with a short header
+- [x] `docs/DECISIONS.md` created with a short header
 
 Acceptance: `task ci` green locally and in CI. `go run ./cmd/ci-parity version` prints a
 version string.
