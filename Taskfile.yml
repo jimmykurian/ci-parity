@@ -1,0 +1,90 @@
+version: "3"
+
+vars:
+  BIN: ./bin/ci-parity
+  VERSION:
+    sh: git describe --tags --always --dirty 2>/dev/null || echo dev
+  COMMIT:
+    sh: git rev-parse --short HEAD 2>/dev/null || echo none
+  DATE:
+    sh: date -u +%Y-%m-%dT%H:%M:%SZ
+
+tasks:
+  build:
+    desc: Build ./bin/ci-parity
+    cmds:
+      - go build -ldflags "-s -w -X main.version={{.VERSION}} -X main.commit={{.COMMIT}} -X main.date={{.DATE}}" -o {{.BIN}} ./cmd/ci-parity
+
+  test:
+    desc: Run tests; `task test -- -update` regenerates golden files
+    cmds:
+      # Extra args such as -update go to the golden test alone; only its harness defines -update.
+      - '{{if .CLI_ARGS}}go test ./cmd/ci-parity -run TestGolden {{.CLI_ARGS}}{{else}}go test ./...{{end}}'
+
+  lint:
+    desc: Run golangci-lint and actionlint
+    preconditions:
+      - sh: command -v golangci-lint
+        msg: "golangci-lint not found on PATH; install v2: https://golangci-lint.run/welcome/install/"
+      - sh: command -v actionlint
+        msg: "actionlint not found on PATH; install: https://github.com/rhysd/actionlint/blob/main/docs/install.md"
+    cmds:
+      - golangci-lint run ./...
+      - actionlint
+
+  fmt:
+    desc: Format Go code
+    cmds:
+      - gofmt -w .
+
+  fmt:check:
+    desc: Fail on unformatted Go code
+    cmds:
+      - |
+        unformatted=$(gofmt -l .)
+        if [ -n "$unformatted" ]; then
+          echo "unformatted files (run 'task fmt'):"
+          echo "$unformatted"
+          exit 1
+        fi
+
+  self-check:
+    desc: Run ci-parity against this repo
+    cmds:
+      - go run ./cmd/ci-parity version
+
+  scrub:
+    desc: Fail if tracked or untracked files contain a term from $SCRUB_TERMS_FILE
+    cmds:
+      - |
+        if [ -z "${SCRUB_TERMS_FILE:-}" ]; then
+          echo "warning: SCRUB_TERMS_FILE is unset; skipping scrub"
+          exit 0
+        fi
+        if [ ! -r "$SCRUB_TERMS_FILE" ]; then
+          echo "SCRUB_TERMS_FILE=$SCRUB_TERMS_FILE is not readable"
+          exit 1
+        fi
+        # Blank lines would match everything; lines starting with # are comments.
+        terms=$(mktemp)
+        trap 'rm -f "$terms"' EXIT
+        grep -v -e '^[[:space:]]*$' -e '^#' "$SCRUB_TERMS_FILE" > "$terms" || true
+        if [ ! -s "$terms" ]; then
+          echo "scrub: no terms in $SCRUB_TERMS_FILE"
+          exit 0
+        fi
+        if git grep --untracked -I -n -i -F -f "$terms"; then
+          echo "scrub: forbidden terms found"
+          exit 1
+        fi
+        echo "scrub: clean"
+
+  ci:
+    desc: Run every check CI runs
+    cmds:
+      - task: fmt:check
+      - task: lint
+      - task: test
+      - task: build
+      - task: self-check
+      - task: scrub
