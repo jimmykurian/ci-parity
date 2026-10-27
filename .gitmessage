@@ -2,7 +2,7 @@
 # │       │             │
 # │       │             └─> Summary in present tense. Not capitalized. No period at the end.
 # │       │
-# │       └─> Scope: cli|config|workflow|shell|runner|rules|baseline|report|fixtures|action|release|deps|docs|tooling (optional)
+# │       └─> Scope: cli|app|domain|config|workflow|shell|runner|rules|baseline|report|fixtures|action|release|deps|docs|tooling (optional)
 # │
 # └─> Type: feat, fix, docs, style, refactor, perf, test, build, ci, chore
 

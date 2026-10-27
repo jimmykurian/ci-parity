@@ -1,0 +1,63 @@
+name: Feature Request
+description: Suggest a new capability or an improvement
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Some features are already planned: readers for Make, just and mise,
+        SARIF output, a `fix` mode and more are listed under "Phase 5: backlog"
+        in docs/PLAN.md. Add your use case to an existing issue if there is one.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Feature Area
+      options:
+        - Rules (P001 to P005)
+        - Shell parsing (wrappers, invokers, allow comments)
+        - Taskfile reader
+        - Other task runners
+        - Configuration (.ci-parity.yml)
+        - Baseline and ratchet
+        - Output formats (text, github, json)
+        - CLI
+        - GitHub Action
+        - Install and releases
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What can't you do today, or what's awkward?
+      placeholder: "Our workflows call task through a wrapper script, so..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the behavior you'd like, with an example workflow or config if it helps.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Including what you do today, such as allow comments or config entries.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+    validations:
+      required: false

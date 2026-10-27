@@ -1,0 +1,125 @@
+# Contributing
+
+Thanks for helping with ci-parity. Bug reports, wrong findings and focused pull
+requests are all welcome. Everyone taking part follows the
+[Code of Conduct](CODE_OF_CONDUCT.md). Security issues go through
+[SECURITY.md](SECURITY.md), not public issues.
+
+## Before you start
+
+ci-parity is built to a written spec, so most changes start in the docs:
+
+- [docs/SPEC.md](docs/SPEC.md) says what the tool does: rules, config keys,
+  output formats, the baseline format and exit codes.
+- [docs/PLAN.md](docs/PLAN.md) says in what order. Items under "Phase 5:
+  backlog" are deliberately not started; open an issue before working on one.
+- [docs/DECISIONS.md](docs/DECISIONS.md) records every change to a decision or
+  contract. A new config key, rule, dependency, or a change to a rule ID, the
+  baseline format or the JSON schema needs an entry there, agreed in an issue,
+  before the code.
+- [AGENTS.md](AGENTS.md) has the working rules for this repo, for people and
+  coding agents alike.
+
+For anything bigger than a small fix, open an issue first so we can agree on
+the approach.
+
+## Getting started
+
+**Prerequisites:**
+
+- Go, at the version in `go.mod` (Go downloads the pinned toolchain itself)
+- [mise](https://mise.jdx.dev), which installs task, golangci-lint,
+  actionlint and gitleaks at the versions in `mise.toml`. Without mise,
+  install those yourself at the same versions.
+
+**Setup:**
+
+```sh
+git clone https://github.com/jimmykurian/ci-parity.git
+cd ci-parity
+git config commit.template .gitmessage
+
+mise install
+task ci
+```
+
+Every command runs through the [Taskfile](Taskfile.yml), and CI runs the same
+tasks:
+
+| Task | What it does |
+| --- | --- |
+| `task build` | builds `./bin/ci-parity` |
+| `task test` | runs `go test ./...` |
+| `task test -- -update` | regenerates the golden files |
+| `task lint` | golangci-lint and actionlint |
+| `task fmt` | formats Go code; `task fmt:check` fails on unformatted code |
+| `task self-check` | runs ci-parity against this repo's own workflows |
+| `task scrub` | maintainer check for private terms; passes with a warning when not set up |
+| `task ci` | all of the above, in order |
+
+## How the code is organized
+
+The layout is clean architecture, with dependencies pointing inward:
+
+- `internal/domain`: types and pure logic, standard library only
+- `internal/rules`: the rules, P001 to P005
+- `internal/app`: the `check` and `baseline` use cases and the ports they need
+- `internal/adapters/...`: YAML, shell and Taskfile parsing, the baseline file
+  and the output formats
+- `cmd/ci-parity`: flags, wiring and exit codes
+
+## Tests
+
+Golden tests drive the project. Each case under `testdata/fixtures/<case>/` is
+a complete miniature repo (config, Taskfile, workflows, optional baseline) with
+`expected/{text,github,json}.golden` and `expected/exitcode`. The harness runs
+the CLI in-process on every fixture in every format, so adding a fixture needs
+no test code.
+
+- Prefer a new fixture over a mock. Use invented names like `acme-app`,
+  `example-api` or `widget-service`; never copy a real repository's workflows.
+- After `task test -- -update`, read the golden diff. Every change in it should
+  be one you meant.
+- Parsers and readers also have table tests next to the code.
+
+## Commits
+
+Messages follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/).
+`.gitmessage` lists the types and scopes:
+
+```text
+feat(shell): peel transparent wrappers before matching tools
+fix(workflow): report block-scalar run lines one line below the key
+test(fixtures): add includes-nested fixture
+```
+
+Rule IDs, the baseline format and the JSON schema are public contracts:
+changing one is a breaking change, marked with `!` or a `BREAKING CHANGE`
+footer.
+
+Commits should be signed so GitHub shows them as Verified. With an SSH key:
+
+```sh
+git config gpg.format ssh
+git config user.signingkey ~/.ssh/id_ed25519.pub
+git config commit.gpgsign true
+```
+
+Then add the same public key to GitHub as a signing key.
+
+## Pull requests
+
+- Keep each pull request to one change, and fill in the
+  [template](.github/PULL_REQUEST_TEMPLATE.md).
+- The PR title follows Conventional Commits.
+- `task ci` must pass. CI also runs gitleaks, and a hit fails the build;
+  remove the secret rather than allowlisting it.
+- Every `run:` step in this repo's workflows calls `task`. Setup goes in
+  `uses:` steps pinned to a full commit SHA with a version comment. Anything
+  else needs a `# ci-parity: allow <reason>` comment on the line.
+- Update `README.md` when a command, flag or output changes.
+
+## License
+
+By contributing, you agree that your contributions are licensed under the
+[Apache License 2.0](LICENSE).

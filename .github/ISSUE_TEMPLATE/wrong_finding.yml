@@ -1,0 +1,85 @@
+name: Wrong Finding
+description: A rule flagged a step it shouldn't, missed one, or pointed at the wrong place
+title: "[Finding]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report a false positive, a false negative, a wrong position or a wrong
+        suggestion. If the step is a deliberate exception, a
+        `# ci-parity: allow <reason>` comment or an `allow:` entry in
+        `.ci-parity.yml` may be the fix rather than a rule change.
+
+  - type: dropdown
+    id: rule
+    attributes:
+      label: Rule
+      options:
+        - P001 inline-tool
+        - P002 unknown-task
+        - P003 internal-task
+        - P004 regression
+        - P005 unsupported
+        - None (a finding was expected)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What's Wrong
+      options:
+        - False positive (flagged a step that's fine)
+        - False negative (missed a step that should be flagged)
+        - Wrong line or column
+        - Wrong or missing suggestion
+        - Wrong message
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The output of `ci-parity version`, or the Action ref you use.
+    validations:
+      required: true
+
+  - type: textarea
+    id: step
+    attributes:
+      label: Workflow Step
+      description: The step as written, with its `shell:` if it sets one.
+      render: yaml
+      placeholder: |
+        - name: Test
+          run: sudo -E env CI=1 pnpm test
+    validations:
+      required: true
+
+  - type: textarea
+    id: taskfile
+    attributes:
+      label: Taskfile and Config
+      description: The relevant tasks, and `.ci-parity.yml` if you have one.
+      render: yaml
+    validations:
+      required: false
+
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: What `ci-parity check --verbose` printed for this step.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Finding
+      description: What ci-parity should report, and why.
+    validations:
+      required: true
