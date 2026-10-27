@@ -2,6 +2,7 @@
 package shell
 
 import (
+	"errors"
 	"fmt"
 	"path"
 	"regexp"
@@ -59,16 +60,26 @@ type Result struct {
 
 var exprPattern = regexp.MustCompile(`(?s)\$\{\{.*?\}\}`)
 
+// ParseError reports a script that does not parse as bash. Line and Col are
+// 1-based positions in the script, or 0 when the parser gave none.
+type ParseError struct {
+	Line, Col int
+	Message   string
+}
+
+func (e *ParseError) Error() string {
+	return e.Message
+}
+
 // Extract parses script as bash and returns the tool and invoker calls in it.
-// A parse error is returned as an error; the caller reports it as P005.
+// A script that does not parse returns a *ParseError; the caller reports it as P005.
 func Extract(script string, opts Options) (Result, error) {
-	e := &extractor{opts: opts, allows: map[int]allowComment{}}
+	e := &extractor{opts: opts, script: script, lines: strings.Split(script, "\n"), allows: map[int]allowComment{}}
 	src := e.replaceExpressions(script)
-	e.lines = strings.Split(src, "\n")
 	parser := syntax.NewParser(syntax.KeepComments(true), syntax.Variant(syntax.LangBash))
 	file, err := parser.Parse(strings.NewReader(src), "")
 	if err != nil {
-		return Result{}, fmt.Errorf("%s", e.restore(err.Error()))
+		return Result{}, e.parseError(err)
 	}
 	syntax.Walk(file, e.visit)
 	e.applyAllows()
@@ -81,6 +92,20 @@ func Extract(script string, opts Options) (Result, error) {
 	return e.res, nil
 }
 
+func (e *extractor) parseError(err error) *ParseError {
+	var pe syntax.ParseError
+	var le syntax.LangError
+	switch {
+	case errors.As(err, &pe):
+		line, col := e.position(pe.Pos)
+		return &ParseError{Line: line, Col: col, Message: e.restore(pe.Text)}
+	case errors.As(err, &le):
+		line, col := e.position(le.Pos)
+		return &ParseError{Line: line, Col: col, Message: e.restore(strings.TrimPrefix(le.Error(), le.Pos.String()+": "))}
+	}
+	return &ParseError{Message: e.restore(err.Error())}
+}
+
 func before(l1, c1, l2, c2 int) bool {
 	if l1 != l2 {
 		return l1 < l2
@@ -90,19 +115,36 @@ func before(l1, c1, l2, c2 int) bool {
 
 type extractor struct {
 	opts   Options
+	script string   // original script text
+	lines  []string // original script lines
 	exprs  []string
-	lines  []string
+	repls  []replacement
 	allows map[int]allowComment
 	res    Result
 }
 
+// replacement records where a ${{ }} expression sat in the original script and
+// where its token sits in the parsed text, as byte offsets.
+type replacement struct {
+	srcStart, srcEnd   int
+	origStart, origEnd int
+}
+
 // replaceExpressions swaps each ${{ }} for a token the shell parser treats as
-// an ordinary word, remembering the original text for messages.
+// an ordinary word, remembering the original text and offsets.
 func (e *extractor) replaceExpressions(script string) string {
-	return exprPattern.ReplaceAllStringFunc(script, func(m string) string {
-		e.exprs = append(e.exprs, m)
-		return fmt.Sprintf("__GHA_EXPR_%d__", len(e.exprs)-1)
-	})
+	var b strings.Builder
+	last := 0
+	for _, m := range exprPattern.FindAllStringIndex(script, -1) {
+		b.WriteString(script[last:m[0]])
+		start := b.Len()
+		fmt.Fprintf(&b, "__GHA_EXPR_%d__", len(e.exprs))
+		e.exprs = append(e.exprs, script[m[0]:m[1]])
+		e.repls = append(e.repls, replacement{srcStart: start, srcEnd: b.Len(), origStart: m[0], origEnd: m[1]})
+		last = m[1]
+	}
+	b.WriteString(script[last:])
+	return b.String()
 }
 
 // restore puts the original ${{ }} text back into s.
@@ -111,6 +153,26 @@ func (e *extractor) restore(s string) string {
 		s = strings.ReplaceAll(s, fmt.Sprintf("__GHA_EXPR_%d__", i), e.exprs[i])
 	}
 	return s
+}
+
+// position maps a parser position in the rewritten text to a 1-based line and
+// column in the original script.
+func (e *extractor) position(p syntax.Pos) (int, int) {
+	off := int(p.Offset())
+	orig := off
+	for _, r := range e.repls {
+		if off < r.srcStart {
+			break
+		}
+		if off < r.srcEnd {
+			orig = r.origStart
+			break
+		}
+		orig = r.origEnd + off - r.srcEnd
+	}
+	orig = min(orig, len(e.script))
+	lineStart := strings.LastIndex(e.script[:orig], "\n") + 1
+	return strings.Count(e.script[:orig], "\n") + 1, orig - lineStart + 1
 }
 
 func (e *extractor) visit(n syntax.Node) bool {
@@ -138,8 +200,7 @@ func (e *extractor) call(c *syntax.CallExpr) {
 	if i >= len(words) {
 		return
 	}
-	pos := c.Args[i].Pos()
-	line, col := int(pos.Line()), int(pos.Col())
+	line, col := e.position(c.Args[i].Pos())
 	cmd := words[i]
 	if !cmd.Literal {
 		e.problem(line, col, fmt.Sprintf("dynamic command name '%s' cannot be analyzed", cmd.Text))
@@ -195,29 +256,61 @@ func (e *extractor) source(w *syntax.Word) string {
 	return e.restore(b.String())
 }
 
+// valueFlags lists, per built-in transparent wrapper, the flags that take the
+// next argument as their value (SPEC 5.3).
+var valueFlags = map[string]map[string]bool{
+	"sudo": flagSet("-u -g -h -p -C -D -R -r -t -T -U --user --group --host --prompt --close-from",
+		"--chdir --chroot --role --type --command-timeout --other-user"),
+	"env":      flagSet("-u -C -S --unset --chdir --split-string"),
+	"time":     flagSet("-f -o --format --output"),
+	"nice":     flagSet("-n --adjustment"),
+	"ionice":   flagSet("-c -n -p -P -u --class --classdata --pid --pgid --uid"),
+	"timeout":  flagSet("-k -s --kill-after --signal"),
+	"xvfb-run": flagSet("-n -s -f -e -p -w --server-num --server-args --auth-file --error-file --xauth-protocol --wait"),
+}
+
+// hidesCommand lists flags whose value contains the command itself.
+var hidesCommand = map[string]bool{"-S": true, "--split-string": true}
+
+func flagSet(lists ...string) map[string]bool {
+	m := map[string]bool{}
+	for _, l := range lists {
+		for _, f := range strings.Fields(l) {
+			m[f] = true
+		}
+	}
+	return m
+}
+
 // peel skips transparent wrappers such as sudo, env and timeout, along with
-// their flags, assignments and (for timeout and nice) a leading number. It
-// returns the index of the real command word.
+// their options and option values and, for timeout and nice, one number. It
+// returns the index of the real command word, or len(words) when none is left.
 func (e *extractor) peel(words []Word) int {
 	i := 0
 	for i < len(words) && words[i].Literal && e.opts.Transparent[path.Base(words[i].Text)] {
-		numeric := path.Base(words[i].Text) == "timeout" || path.Base(words[i].Text) == "nice"
+		name := path.Base(words[i].Text)
+		numeric := name == "timeout" || name == "nice"
 		i++
-		for i < len(words) && words[i].Literal {
+	options:
+		for i < len(words) {
 			t := words[i].Text
-			if strings.HasPrefix(t, "-") || strings.Contains(t, "=") {
+			switch {
+			case words[i].Literal && valueFlags[name][t]:
+				if name == "env" && hidesCommand[t] {
+					return len(words)
+				}
+				i += 2
+			case words[i].Literal && (strings.HasPrefix(t, "-") || strings.Contains(t, "=")):
 				i++
-				continue
-			}
-			if numeric && t != "" && t[0] >= '0' && t[0] <= '9' {
+			case words[i].Literal && numeric && t != "" && t[0] >= '0' && t[0] <= '9':
 				numeric = false
 				i++
-				continue
+			default:
+				break options
 			}
-			break
 		}
 	}
-	return i
+	return min(i, len(words))
 }
 
 // matchInvoker returns the longest configured invoker that words begin with,

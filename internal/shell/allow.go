@@ -20,7 +20,7 @@ func (e *extractor) comment(c *syntax.Comment) {
 	if m == nil {
 		return
 	}
-	line, col := int(c.Hash.Line()), int(c.Hash.Col())
+	line, col := e.position(c.Hash)
 	reason := e.restore(strings.TrimSpace(m[1]))
 	if reason == "" {
 		e.problem(line, col, "allow comment has no reason")

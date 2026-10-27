@@ -1,8 +1,8 @@
 package shell
 
 import (
+	"errors"
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -10,7 +10,7 @@ import (
 
 var testOpts = Options{
 	Tools:       set("pnpm", "npm", "go", "docker", "eslint", "python", "make"),
-	Transparent: set("sudo", "env", "time", "nice", "timeout", "nohup"),
+	Transparent: set("sudo", "env", "time", "nice", "ionice", "timeout", "nohup"),
 	Invokers:    [][]string{{"task"}, {"go-task"}, {"go", "tool", "task"}},
 }
 
@@ -71,9 +71,17 @@ func TestExtract(t *testing.T) {
 		{"env flags", "env -i PATH=/bin go test", []string{"1:18 tool go test"}},
 		{"timeout number", "timeout 30 pnpm test", []string{"1:12 tool pnpm test"}},
 		{"timeout flag and duration", "timeout --preserve-status 30s pnpm test", []string{"1:31 tool pnpm test"}},
-		// Known limitation per SPEC 5.3: wrapper flags that take a separate value are not
-		// understood, so the value is read as the command.
-		{"wrapper flag value", "timeout -k 5 30s pnpm test", nil},
+		{"timeout flag value", "timeout -k 5 30s pnpm test", []string{"1:18 tool pnpm test"}},
+		{"timeout signal", "timeout --signal KILL 30 pnpm test", []string{"1:26 tool pnpm test"}},
+		{"sudo user", "sudo -u deploy docker push acme", []string{"1:16 tool docker push acme"}},
+		{"sudo attached and long values", "sudo -udeploy --user=deploy docker ps", []string{"1:29 tool docker ps"}},
+		{"env unset and chdir", "env -u HOME -C web pnpm build", []string{"1:20 tool pnpm build"}},
+		{"env split string hides command", "env -S 'pnpm test' --flag", nil},
+		{"ionice class", "ionice -c 2 -n 7 make all", []string{"1:18 tool make all"}},
+		// The bash time keyword takes no -f; the flag form is the /usr/bin/time binary.
+		{"time binary format", "/usr/bin/time -f %e pnpm test", []string{"1:21 tool pnpm test"}},
+		{"value flag at end", "sudo -u", nil},
+		{"custom wrapper gets generic rule", "chronic -v pnpm test", nil},
 		{"nice with flag", "nice -n 10 make all", []string{"1:12 tool make all"}},
 		{"stacked wrappers", "sudo -E env CI=1 timeout 60 docker build .", []string{"1:29 tool docker build ."}},
 		{"time keyword", "time pnpm test", []string{"1:6 tool pnpm test"}},
@@ -86,6 +94,8 @@ func TestExtract(t *testing.T) {
 		{"dynamic expression", "${{ matrix.tool }} test", []string{
 			"1:1 problem dynamic command name '${{ matrix.tool }}' cannot be analyzed"}},
 		{"expression argument", "pnpm --filter ${{ inputs.pkg }} build", []string{"1:1 tool pnpm --filter build"}},
+		{"column after expression", "echo ${{ github.sha }} && pnpm test", []string{"1:27 tool pnpm test"}},
+		{"line after multi-line expression", "echo ${{\n  github.sha }}\npnpm test", []string{"3:1 tool pnpm test"}},
 		{"expression in condition", "if [ \"${{ github.event_name }}\" = push ]; then\n  docker push acme\nfi", []string{
 			"2:3 tool docker push acme"}},
 	}
@@ -144,11 +154,23 @@ func TestExtractInvokerArgs(t *testing.T) {
 }
 
 func TestExtractParseError(t *testing.T) {
-	_, err := Extract("if pnpm test; then\n  echo ${{ x }}\n", testOpts)
-	if err == nil {
-		t.Fatal("want parse error")
+	tests := []struct {
+		name, script string
+		want         ParseError
+	}{
+		{"unclosed if", "echo ok\nif pnpm test; then\n  echo ${{ x }}\n", ParseError{2, 1, "`if` statement must end with `fi`"}},
+		{"position after expression", "echo ${{ github.sha }} )", ParseError{1, 24, "a command can only contain words and redirects; encountered `)`"}},
 	}
-	if strings.Contains(err.Error(), "__GHA_EXPR_") {
-		t.Errorf("error leaks placeholder: %v", err)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := Extract(tt.script, testOpts)
+			var pe *ParseError
+			if !errors.As(err, &pe) {
+				t.Fatalf("err = %v, want *ParseError", err)
+			}
+			if diff := cmp.Diff(tt.want, *pe); diff != "" {
+				t.Errorf("ParseError (-want +got):\n%s", diff)
+			}
+		})
 	}
 }
