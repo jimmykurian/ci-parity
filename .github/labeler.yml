@@ -1,0 +1,88 @@
+# Labels for pull requests by the paths they change (actions/labeler, run by
+# .github/workflows/labeler.yml). A pull request can get several.
+
+# Code, by layer
+
+rules:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "internal/domain/**"
+          - "internal/rules/**"
+
+cli:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "cmd/**"
+          - "internal/app/**"
+
+adapters:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "internal/adapters/**"
+
+tests:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "testdata/**"
+          - "internal/testutil/**"
+          - "**/*_test.go"
+
+# Contracts and docs
+
+spec:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/SPEC.md"
+          - "docs/PLAN.md"
+          - "docs/DECISIONS.md"
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.md"
+
+agents:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/AGENTS.md"
+
+security:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "SECURITY.md"
+          - ".config/linters/**"
+          - ".githooks/**"
+
+# Repository plumbing
+
+ci/cd:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+
+configuration:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".config/**"
+          - ".devcontainer/**"
+          - ".editorconfig"
+          - ".gitignore"
+          - ".gitattributes"
+          - ".gitmessage"
+          - ".golangci.yml"
+          - ".ci-parity.yml"
+          - ".ci-parity-baseline.json"
+          - "mise.toml"
+          - "Taskfile.yml"
+
+hooks:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".githooks/**"
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "go.mod"
+          - "go.sum"
+          - "mise.toml"

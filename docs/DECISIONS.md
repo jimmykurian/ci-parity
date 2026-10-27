@@ -6,6 +6,22 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-27: PR check table, labels, assignment and a main ruleset (accepted)
+
+Problem: CI ran `task ci` as one step, so a pull request showed one pass or fail with no
+per-check results; pull requests got no labels or assignee; and nothing on GitHub
+enforced the pull-request-only rule the git hooks apply locally.
+
+Change: the `ci` job becomes **Checks**, one `task` step per check with `!cancelled()`,
+and a **Check table** job comments each result on the pull request (words first, the
+symbol only repeating it, per ACCESSIBILITY.md). `actions/labeler` labels by path and a
+`github-script` step assigns the author; both are `uses:` steps, so the rule that every
+`run:` step calls `task` holds. The `main` ruleset (no force pushes or deletion, linear
+history, signed commits, squash-only pull requests, Checks and Self-check required) is set
+in the repository settings, not kept in the tree. GitHub refuses rulesets and auto-merge on
+a private repository without GitHub Pro, so it is applied when the repo goes public in
+Phase 4.
+
 ### 2026-10-27: git hooks, and main only through pull requests (accepted)
 
 Problem: the checks ran only in `task ci` and CI, so a forbidden term, a secret or a

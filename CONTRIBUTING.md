@@ -154,8 +154,14 @@ A check whose tool isn't installed is skipped with a warning; CI runs everything
 - Keep each pull request to one change, and fill in the
   [template](.github/PULL_REQUEST_TEMPLATE.md).
 - The PR title follows Conventional Commits.
-- `task ci` must pass. CI also runs gitleaks, and a hit fails the build;
-  remove the secret rather than allowlisting it.
+- `task ci` must pass. CI runs each of its tasks as its own step, plus gitleaks, and a
+  gitleaks hit fails the build; remove the secret rather than allowlisting it.
+- On every pull request, CI posts one comment with a table of each check's result,
+  the commit it ran on and a link to the run, and updates it on each push.
+- The PR is labeled by the paths it changes (`.github/labeler.yml`) and assigned to
+  whoever opened it; bots' PRs go to the owner. `.github/CODEOWNERS` requests review.
+- Once the repository is public, a GitHub ruleset protects `main`: squash merges only,
+  signed commits, linear history, and the **Checks** and **Self-check** jobs must pass.
 - Every `run:` step in this repo's workflows calls `task`. Setup goes in
   `uses:` steps pinned to a full commit SHA with a version comment. Anything
   else needs a `# ci-parity: allow <reason>` comment on the line.

@@ -1,5 +1,14 @@
 name: ci
 
+# Every check, then a table of their results on the pull request:
+#
+#   checks ─────┐
+#   self-check ─┴─ report (the PR comment)
+#
+# Each check is its own step running a task from Taskfile.yml, with tools from
+# mise.toml, so CI runs the same commands as a local `task ci`. Every step runs even
+# when an earlier one fails (`!cancelled()`), so the table shows each result, and any
+# failed step still fails its job.
 on:
   push:
     branches: [main]
@@ -9,19 +18,36 @@ permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  ci:
+  checks:
+    name: Checks
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
       # gitleaks-action lists a pull request's commits to scan them.
       pull-requests: read
+    outputs:
+      secrets: ${{ steps.secrets.outcome }}
+      fmt: ${{ steps.fmt.outcome }}
+      go: ${{ steps.go.outcome }}
+      vuln: ${{ steps.vuln.outcome }}
+      actions: ${{ steps.actions.outcome }}
+      shell: ${{ steps.shell.outcome }}
+      yaml: ${{ steps.yaml.outcome }}
+      markdown: ${{ steps.markdown.outcome }}
+      spelling: ${{ steps.spelling.outcome }}
+      editorconfig: ${{ steps.editorconfig.outcome }}
+      test: ${{ steps.test.outcome }}
+      build: ${{ steps.build.outcome }}
+      scrub: ${{ steps.scrub.outcome }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # gitleaks scans the whole history.
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
@@ -30,13 +56,56 @@ jobs:
       - uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d # v5.2.4
         with:
           version: 2026.10.21
-      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
+
+      - id: secrets
+        if: ${{ !cancelled() }}
+        uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e # v3.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: task ci
+      # The same tasks as `task ci`, one step each.
+      - id: fmt
+        if: ${{ !cancelled() }}
+        run: task fmt:check
+      - id: go
+        if: ${{ !cancelled() }}
+        run: task lint:go
+      - id: vuln
+        if: ${{ !cancelled() }}
+        run: task lint:vuln
+      - id: actions
+        if: ${{ !cancelled() }}
+        run: task lint:actions
+      - id: shell
+        if: ${{ !cancelled() }}
+        run: task lint:shell
+      - id: yaml
+        if: ${{ !cancelled() }}
+        run: task lint:yaml
+      - id: markdown
+        if: ${{ !cancelled() }}
+        run: task lint:markdown
+      - id: spelling
+        if: ${{ !cancelled() }}
+        run: task lint:spelling
+      - id: editorconfig
+        if: ${{ !cancelled() }}
+        run: task lint:editorconfig
+      - id: test
+        if: ${{ !cancelled() }}
+        run: task test
+      - id: build
+        if: ${{ !cancelled() }}
+        run: task build
+      - id: scrub
+        if: ${{ !cancelled() }}
+        run: task scrub
 
   self-check:
+    name: Self-check
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      self_check: ${{ steps.self_check.outcome }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -48,4 +117,101 @@ jobs:
         with:
           version: 2026.10.21
           install_args: task
-      - run: task self-check
+      - id: self_check
+        run: task self-check
+
+  # Posts (or updates) one comment on the pull request with a table of every check.
+  report:
+    name: Check table
+    needs: [checks, self-check]
+    if: ${{ always() && github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      pull-requests: write # creates and updates the comment
+    steps:
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        with:
+          script: |
+            const needs = JSON.parse(process.env.NEEDS);
+            const marker = '<!-- pr-check-table -->';
+            // Each result is a word; the symbol only repeats it (ACCESSIBILITY.md).
+            const shown = {
+              success: '✅ Passed',
+              failure: '❌ Failed',
+              cancelled: '⏹️ Cancelled',
+              skipped: '⏭️ Skipped',
+            };
+            const result = (outcome) => shown[outcome] ?? '⚠️ Not run';
+
+            // [check, task, output] rows per job.
+            const sections = [
+              {
+                title: 'Checks',
+                job: 'checks',
+                rows: [
+                  ['Secret scan, git history (gitleaks)', '', 'secrets'],
+                  ['Go format (gofumpt, goimports)', 'fmt:check', 'fmt'],
+                  ['Go lint (golangci-lint)', 'lint:go', 'go'],
+                  ['Go vulnerabilities (govulncheck)', 'lint:vuln', 'vuln'],
+                  ['Workflow lint (actionlint, zizmor)', 'lint:actions', 'actions'],
+                  ['Shell lint (shellcheck)', 'lint:shell', 'shell'],
+                  ['YAML lint (yamllint)', 'lint:yaml', 'yaml'],
+                  ['Markdown lint (markdownlint)', 'lint:markdown', 'markdown'],
+                  ['Spelling (typos)', 'lint:spelling', 'spelling'],
+                  ['EditorConfig', 'lint:editorconfig', 'editorconfig'],
+                  ['Tests and golden fixtures', 'test', 'test'],
+                  ['Build', 'build', 'build'],
+                  ['Forbidden terms (scrub)', 'scrub', 'scrub'],
+                ],
+              },
+              {
+                title: 'Self-check',
+                job: 'self-check',
+                rows: [['ci-parity on its own workflows', 'self-check', 'self_check']],
+              },
+            ];
+
+            const failed = Object.values(needs).some(({ result: r }) => r !== 'success');
+            const lines = [];
+            for (const { title, job, rows } of sections) {
+              const { result: jobResult, outputs = {} } = needs[job] ?? {};
+              lines.push(`### ${title}`, '');
+              if (jobResult === 'cancelled') {
+                lines.push('⏹️ *Cancelled*', '');
+                continue;
+              }
+              lines.push('| Check | Task | Result |', '|:------|:-----|:-------|');
+              for (const [label, task, key] of rows) {
+                lines.push(`| ${label} | ${task ? `\`task ${task}\`` : 'gitleaks-action'} | ${result(outputs[key])} |`);
+              }
+              lines.push('');
+            }
+
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = [
+              '## PR check results',
+              '',
+              `**Overall:** ${failed ? '❌ Some checks failed or didn\'t run' : '✅ All checks passed'}`,
+              '',
+              ...lines,
+              '---',
+              `<sub>Commit \`${process.env.HEAD_SHA.slice(0, 7)}\` · [View run](${run})</sub>`,
+              '',
+              marker,
+            ].join('\n');
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              ...context.repo,
+              issue_number: context.issue.number,
+              per_page: 100,
+            });
+            const existing = comments.find((c) => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body });
+            }

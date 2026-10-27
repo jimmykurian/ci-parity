@@ -448,9 +448,18 @@ tracks the latest v0.x. Version, commit and date are injected with `-ldflags`.
 
 `.github/workflows/ci.yml`:
 
-- job `ci` on ubuntu: checkout, setup-go (reads `go.mod`), setup-task, `run: task ci`.
-- job `self-check`: checkout, setup-go, setup-task, `run: task build`, then
+- job `checks` ("Checks") on ubuntu: checkout, setup-go (reads `go.mod`), mise-action,
+  gitleaks-action, then one `run: task <name>` step for each task in `task ci` except
+  self-check, every step running even after one fails.
+- job `self-check` ("Self-check"): checkout, setup-go, mise-action, `run: task build`, then
   `uses: ./` with `binary: ./bin/ci-parity` (Phase 4; before that, `run: task self-check`).
+- job `report` ("Check table"), on pull requests: one comment with each step's result,
+  updated on every push.
+
+`.github/workflows/labeler.yml` labels pull requests by path (`.github/labeler.yml`), and
+`.github/workflows/pr-assign-author.yml` assigns each new one to its author.
+Once the repository is public, a ruleset on `main` requires squash-only pull requests,
+signed commits, linear history, and Checks and Self-check.
 
 `.github/workflows/release.yml` runs goreleaser via `uses:` and moves the floating tag
 with `gh`; those `run:` lines carry `# ci-parity: allow` comments with reasons.
@@ -462,7 +471,7 @@ Dev tools (golangci-lint v2, govulncheck, actionlint, zizmor, gitleaks, shellche
 yamllint, markdownlint-cli2, typos, editorconfig-checker) are pinned in `mise.toml` and
 never added to `go.mod`, as `tool` directives or otherwise; the dependency rule in
 `AGENTS.md` covers `go.mod` and stays at three modules. In CI they come from a
-SHA-pinned `jdx/mise-action` step before `run: task ci`; gitleaks also runs as its own
+SHA-pinned `jdx/mise-action` step before the `task` steps; gitleaks also runs as its own
 `uses:` step, not part of `task ci`. Locally `mise install` sets them up; each
 `task lint:<group>` checks its binaries are on `PATH` and fails with an install hint
 naming the missing one. `.golangci.yml` uses the v2 format (`version: "2"`).
