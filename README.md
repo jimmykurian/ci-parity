@@ -1,4 +1,9 @@
-# ci-parity
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
+    <img src="docs/assets/logo-light.svg" alt="ci-parity" width="420" height="96">
+  </picture>
+</h1>
 
 > **Pre-1.0.** ci-parity follows semantic versioning, and until v1.0.0 a minor release
 > may change commands, config keys and output. Rule IDs, the baseline format and the JSON

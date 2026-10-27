@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120" role="img" aria-labelledby="title">
+  <title id="title">ci-parity</title>
+  <rect width="120" height="120" rx="28" fill="#0B1F3A"/>
+  <path d="M24 36 C40 36 44 60 58 60" fill="none" stroke="#58A6FF" stroke-width="6" stroke-linecap="round"/>
+  <path d="M24 84 C40 84 44 60 58 60" fill="none" stroke="#E6EDF3" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="24" cy="36" r="6" fill="#58A6FF"/>
+  <circle cx="24" cy="84" r="6" fill="#E6EDF3"/>
+  <polyline points="64 46 78 60 64 74" fill="none" stroke="#E6EDF3" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="84" y1="76" x2="100" y2="76" stroke="#58A6FF" stroke-width="7" stroke-linecap="round"/>
+</svg>
