@@ -12,6 +12,7 @@ import (
 	"github.com/jimmykurian/ci-parity/internal/config"
 	"github.com/jimmykurian/ci-parity/internal/report/text"
 	"github.com/jimmykurian/ci-parity/internal/rules"
+	"github.com/jimmykurian/ci-parity/internal/runner/taskfile"
 	"github.com/jimmykurian/ci-parity/internal/workflow"
 )
 
@@ -124,7 +125,11 @@ func analyze(root, configPath string) ([]rules.Finding, error) {
 		}
 		files = append(files, f)
 	}
-	return rules.Check(cfg, files), nil
+	tf, err := taskfile.Load(root, cfg.Taskfile)
+	if err != nil {
+		return nil, err
+	}
+	return rules.Check(cfg, tf, files), nil
 }
 
 func runBaseline(args []string, stderr io.Writer) int {
