@@ -42,7 +42,13 @@ type Step struct {
 	Col   int
 	Run   *Script
 	Uses  string
-	With  map[string]string
+	With  map[string]Input
+}
+
+// Input is one scalar with: value of a uses: step and its position.
+type Input struct {
+	Value     string
+	Line, Col int
 }
 
 // Script is a step's run: value and where it sits in the file.
@@ -136,7 +142,7 @@ func steps(rel, job string, seq *yaml.Node, fallback string, lines []string) []S
 		} else if key, val := getPair(n, "uses"); val != nil {
 			s.Line, s.Col = key.Line, key.Column
 			s.Uses = val.Value
-			s.With = stringMap(get(n, "with"))
+			s.With = inputs(get(n, "with"))
 		}
 		out = append(out, s)
 	}

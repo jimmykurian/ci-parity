@@ -29,15 +29,15 @@ func scalar(n *yaml.Node) string {
 	return n.Value
 }
 
-// stringMap returns the scalar entries of mapping n.
-func stringMap(n *yaml.Node) map[string]string {
+// inputs returns the scalar entries of the with: mapping n.
+func inputs(n *yaml.Node) map[string]Input {
 	if n == nil || n.Kind != yaml.MappingNode {
 		return nil
 	}
-	m := make(map[string]string, len(n.Content)/2)
+	m := make(map[string]Input, len(n.Content)/2)
 	for i := 0; i+1 < len(n.Content); i += 2 {
 		if v := n.Content[i+1]; v.Kind == yaml.ScalarNode {
-			m[n.Content[i].Value] = v.Value
+			m[n.Content[i].Value] = Input{Value: v.Value, Line: v.Line, Col: v.Column}
 		}
 	}
 	return m

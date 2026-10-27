@@ -147,7 +147,12 @@ func TestExtractInvokerArgs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []Word{{"--dir", true}, {"web", true}, {"build", true}, {"VERSION=${{ github.sha }}", false}}
+	want := []Word{
+		{Text: "--dir", Literal: true, Line: 1, Col: 6},
+		{Text: "web", Literal: true, Line: 1, Col: 12},
+		{Text: "build", Literal: true, Line: 1, Col: 16},
+		{Text: "VERSION=${{ github.sha }}", Line: 1, Col: 22},
+	}
 	if diff := cmp.Diff(want, res.Commands[0].Args); diff != "" {
 		t.Errorf("Args (-want +got):\n%s", diff)
 	}

@@ -31,8 +31,9 @@ type Options struct {
 
 // Word is one argument of a command.
 type Word struct {
-	Text    string // literal value, or the source text when not literal
-	Literal bool
+	Text      string // literal value, or the source text when not literal
+	Literal   bool
+	Line, Col int // 1-based position within the script
 }
 
 // Command is one tool or invoker call found in a script.
@@ -195,6 +196,7 @@ func (e *extractor) call(c *syntax.CallExpr) {
 	words := make([]Word, len(c.Args))
 	for i, a := range c.Args {
 		words[i] = e.word(a)
+		words[i].Line, words[i].Col = e.position(a.Pos())
 	}
 	i := e.peel(words)
 	if i >= len(words) {
