@@ -8,11 +8,8 @@ import (
 	"github.com/jimmykurian/ci-parity/internal/testutil"
 )
 
-// goldenFormats lists the formats fixtures are checked in; github and json join in Phase 3.
-var goldenFormats = []string{"text"}
-
 func TestGolden(t *testing.T) {
-	testutil.RunGolden(t, "../../testdata/fixtures", goldenFormats, run)
+	testutil.RunGolden(t, "../../testdata/fixtures", testutil.Formats, run)
 }
 
 func TestRun(t *testing.T) {
@@ -27,10 +24,8 @@ func TestRun(t *testing.T) {
 		{"no args", nil, exitUsage, "", "Usage:"},
 		{"help", []string{"--help"}, exitOK, "Usage:", ""},
 		{"unknown command", []string{"lint"}, exitUsage, "", `unknown command "lint"`},
-		{"check format not implemented", []string{"check", "--format", "json"}, exitUsage, "", `format "json" is not implemented yet`},
 		{"check unknown format", []string{"check", "--format", "sarif"}, exitUsage, "", `unknown format "sarif"`},
 		{"check missing explicit config", []string{"check", "-C", "testdata-absent", "--config", "x.yml"}, exitUsage, "", "read config"},
-		{"baseline not implemented", []string{"baseline", "--allow-regression"}, exitUsage, "", "baseline: not implemented"},
 		{"unknown flag", []string{"check", "--nope"}, exitUsage, "", "flag provided but not defined"},
 		{"positional argument", []string{"version", "extra"}, exitUsage, "", `unexpected argument "extra"`},
 	}
