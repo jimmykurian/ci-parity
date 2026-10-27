@@ -104,7 +104,8 @@ Findings are sorted by file, line, column and rule ID.
 Every command runs through the [Taskfile](Taskfile.yml); CI calls the same tasks.
 `task ci` runs formatting, lint, tests, build, self-check and scrub. Linting needs
 [golangci-lint](https://golangci-lint.run/) v2 and
-[actionlint](https://github.com/rhysd/actionlint) on `PATH`.
+[actionlint](https://github.com/rhysd/actionlint) on `PATH`. [mise.toml](mise.toml) pins
+the versions CI uses; with [mise](https://mise.jdx.dev/), `mise install` sets them up.
 
 ## License
 

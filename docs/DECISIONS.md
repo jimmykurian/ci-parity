@@ -6,6 +6,19 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-27: pin dev tools in mise.toml (accepted)
+
+Problem: SPEC 12 pins golangci-lint and actionlint only in CI, task floats at `3.x`, and
+local installs come from whatever package manager the developer uses. Local lint
+results can drift from CI's when a tool upgrades on one side.
+
+Change: a root `mise.toml` pins task, golangci-lint, actionlint and gitleaks. CI's
+`jdx/mise-action` step reads it in both jobs, replacing the inline `mise_toml`, the
+`go-task/setup-task` steps and the golangci-lint install-only step. Go stays pinned by
+`go.mod` alone. gitleaks still runs as its own `gitleaks-action` step; the mise pin is
+for local runs. Locally, `mise install` is optional: `task lint` still only checks that
+each binary is on `PATH`. No `go.mod` change, so the three-module rule is unaffected.
+
 ### 2026-10-27: clean-architecture package layout (accepted)
 
 Problem: AGENTS.md fixed one package per concern, but the core depended on details.

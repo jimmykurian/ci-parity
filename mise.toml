@@ -1,0 +1,7 @@
+# Pinned dev tools. CI installs these with jdx/mise-action; locally, run
+# `mise install`. Go is pinned by the toolchain line in go.mod, not here.
+[tools]
+task = "3.53.1"
+golangci-lint = "2.15.0"
+actionlint = "1.7.11"
+gitleaks = "8.30.0"
