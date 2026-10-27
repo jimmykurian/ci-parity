@@ -1,0 +1,28 @@
+name: ci
+on: [push]
+jobs:
+  lines:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Plain
+        run: pnpm one
+      - name: Double quoted
+        run: "pnpm two"
+      - name: Single quoted
+        run: 'pnpm three'
+      - name: Literal block
+        run: |
+          echo start
+
+          # a comment line
+          pnpm four
+          if true; then
+            pnpm five
+          fi
+      - name: Strip chomping with blank first line
+        run: |-
+
+            pnpm six
+      - name: Folded single line
+        run: >
+          pnpm seven

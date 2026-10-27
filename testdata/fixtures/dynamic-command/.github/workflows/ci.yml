@@ -1,0 +1,17 @@
+name: ci
+on: [push]
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tool: [pnpm, npm]
+    steps:
+      - name: Variable
+        run: $PKG_MANAGER test
+      - name: Expression
+        run: ${{ matrix.tool }} run build
+      - name: Substitution
+        run: |
+          "$(command -v pnpm)" install
+          pnpm --filter ${{ inputs.package }} test

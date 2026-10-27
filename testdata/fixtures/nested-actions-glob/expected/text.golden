@@ -1,0 +1,7 @@
+.github/actions/action.yaml
+  7:12   P001 inline-tool   step 1 in action ".github/actions/action.yaml" runs 'dotnet build' directly
+
+.github/actions/build/node/action.yml
+  7:12   P001 inline-tool   step 1 in action ".github/actions/build/node/action.yml" runs 'pnpm build' directly
+
+2 errors, 0 warnings, 0 tolerated, 0 allowed

@@ -1,0 +1,12 @@
+.github/workflows/ci.yml
+  9:14    P001 inline-tool   step "Install" in job "web" runs 'pnpm install --frozen-lockfile' directly
+  11:14   P001 inline-tool   step "Test" in job "web" runs 'npx vitest run' directly
+  12:14   P001 inline-tool   step 4 in job "web" runs './gradlew check' directly
+  17:14   P001 inline-tool   step "Image" in job "api" runs 'docker build -t example-api .' directly
+  19:14   P001 inline-tool   step "Pytest" in job "api" runs 'python3 -m pytest' directly
+
+.github/workflows/deploy.yaml
+  8:14    P001 inline-tool   step "Plan" in job "deploy" runs 'tofu plan -out plan.bin' directly
+  10:14   P001 inline-tool   step "Apply via make" in job "deploy" runs 'make deploy' directly
+
+7 errors, 0 warnings, 0 tolerated, 0 allowed

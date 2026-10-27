@@ -1,0 +1,23 @@
+name: ci
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wrapped
+        run: |
+          sudo -E apt-get install -y jq
+          sudo -E docker compose up -d
+          env CI=1 pnpm test
+          NODE_ENV=test pnpm lint
+          timeout 300 go test ./...
+          nice -n 10 cargo build
+          time npm ci
+          nohup node server.js &
+      - name: Invokers
+        run: |
+          go tool task build
+          env CI=1 task test
+          go-task build
+      - name: Go tool that is not task
+        run: go tool cover -func=coverage.out

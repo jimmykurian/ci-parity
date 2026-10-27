@@ -1,0 +1,4 @@
+.github/workflows/ci.yml
+  8:14   P001 inline-tool   step "Push image from the wrong workflow" in job "build" runs 'docker push ghcr.io/acme/widget-service:dev' directly
+
+1 error, 0 warnings, 0 tolerated, 3 allowed

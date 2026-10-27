@@ -1,0 +1,7 @@
+name: build-node
+description: Nested two levels below .github/actions
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: pnpm build

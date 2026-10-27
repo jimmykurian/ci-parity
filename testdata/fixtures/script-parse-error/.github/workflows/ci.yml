@@ -1,0 +1,12 @@
+name: ci
+on: [push]
+jobs:
+  broken:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Unclosed if
+        run: |
+          if pnpm test; then
+            echo ok
+      - name: Still checked
+        run: pnpm lint

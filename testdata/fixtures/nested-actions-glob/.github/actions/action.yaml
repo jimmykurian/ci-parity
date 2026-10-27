@@ -1,0 +1,7 @@
+name: root-action
+description: Directly under .github/actions, matched by ** as zero segments
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: dotnet build

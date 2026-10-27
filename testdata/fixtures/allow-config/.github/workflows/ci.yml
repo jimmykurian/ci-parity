@@ -1,0 +1,10 @@
+name: ci
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push image from the wrong workflow
+        run: docker push ghcr.io/acme/widget-service:dev
+      - name: Check registry
+        run: npm view acme-app version

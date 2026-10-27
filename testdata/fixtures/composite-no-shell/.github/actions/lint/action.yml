@@ -1,0 +1,10 @@
+name: lint
+description: Composite step without a shell
+runs:
+  using: composite
+  steps:
+    - name: Lint
+      run: pnpm lint
+    - name: Format
+      shell: sh
+      run: pnpm format

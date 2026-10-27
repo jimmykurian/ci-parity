@@ -1,0 +1,33 @@
+name: ci
+on: [push]
+jobs:
+  windows:
+    runs-on: windows-latest
+    steps:
+      - name: Default shell on windows
+        run: dotnet test
+      - name: Explicit pwsh
+        shell: pwsh
+        run: npm ci
+      - name: Explicit bash
+        shell: bash
+        run: npm ci
+  windows-bash-default:
+    runs-on: [self-hosted, windows]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Job default
+        run: pnpm build
+  matrix:
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Expression runner
+        run: pnpm build
+      - name: Python shell
+        shell: python
+        run: print("widget-service")
+      - name: Bash with options
+        shell: bash -euo pipefail {0}
+        run: pnpm test

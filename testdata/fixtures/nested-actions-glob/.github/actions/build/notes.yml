@@ -1,0 +1,7 @@
+name: not-an-action
+description: Not named action.yml, so never scanned
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: pnpm should-not-appear

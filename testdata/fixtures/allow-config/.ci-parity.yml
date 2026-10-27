@@ -1,0 +1,6 @@
+allow:
+  - match: "docker push *"
+    reason: images publish only from the release workflow
+    workflows: [".github/workflows/release.yml"]
+  - match: "npm view *"
+    reason: read-only registry lookups

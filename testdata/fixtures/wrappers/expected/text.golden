@@ -1,0 +1,11 @@
+.github/workflows/ci.yml
+  10:19   P001 inline-tool   step "Wrapped" in job "test" runs 'docker compose up -d' directly
+  11:20   P001 inline-tool   step "Wrapped" in job "test" runs 'pnpm test' directly
+  12:25   P001 inline-tool   step "Wrapped" in job "test" runs 'pnpm lint' directly
+  13:23   P001 inline-tool   step "Wrapped" in job "test" runs 'go test ./...' directly
+  14:22   P001 inline-tool   step "Wrapped" in job "test" runs 'cargo build' directly
+  15:16   P001 inline-tool   step "Wrapped" in job "test" runs 'npm ci' directly
+  16:17   P001 inline-tool   step "Wrapped" in job "test" runs 'node server.js' directly
+  23:14   P001 inline-tool   step "Go tool that is not task" in job "test" runs 'go tool cover -func=coverage.out' directly
+
+8 errors, 0 warnings, 0 tolerated, 0 allowed

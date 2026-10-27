@@ -1,0 +1,5 @@
+name: notify
+description: A JavaScript action has no steps to scan
+runs:
+  using: node24
+  main: index.js

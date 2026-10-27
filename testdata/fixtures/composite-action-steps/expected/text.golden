@@ -1,0 +1,4 @@
+.github/actions/setup-app/action.yml
+  8:12   P001 inline-tool   step "Install" in action ".github/actions/setup-app/action.yml" runs 'pnpm install' directly
+
+1 error, 0 warnings, 0 tolerated, 0 allowed

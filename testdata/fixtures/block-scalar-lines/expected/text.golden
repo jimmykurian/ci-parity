@@ -1,0 +1,10 @@
+.github/workflows/ci.yml
+  8:14    P001 inline-tool   step "Plain" in job "lines" runs 'pnpm one' directly
+  10:15   P001 inline-tool   step "Double quoted" in job "lines" runs 'pnpm two' directly
+  12:15   P001 inline-tool   step "Single quoted" in job "lines" runs 'pnpm three' directly
+  18:11   P001 inline-tool   step "Literal block" in job "lines" runs 'pnpm four' directly
+  20:13   P001 inline-tool   step "Literal block" in job "lines" runs 'pnpm five' directly
+  25:13   P001 inline-tool   step "Strip chomping with blank first line" in job "lines" runs 'pnpm six' directly
+  28:11   P001 inline-tool   step "Folded single line" in job "lines" runs 'pnpm seven' directly
+
+7 errors, 0 warnings, 0 tolerated, 0 allowed

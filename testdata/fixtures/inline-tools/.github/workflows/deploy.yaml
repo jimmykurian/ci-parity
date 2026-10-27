@@ -1,0 +1,10 @@
+name: deploy
+on: [workflow_dispatch]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Plan
+        run: tofu plan -out plan.bin
+      - name: Apply via make
+        run: make deploy

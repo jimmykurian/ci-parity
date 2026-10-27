@@ -1,0 +1,10 @@
+.github/workflows/ci.yml
+  8:9     P005 unsupported   step uses shell 'pwsh'; not analyzed
+  11:9    P005 unsupported   step uses shell 'pwsh'; not analyzed
+  14:14   P001 inline-tool   step "Explicit bash" in job "windows" runs 'npm ci' directly
+  22:14   P001 inline-tool   step "Job default" in job "windows-bash-default" runs 'pnpm build' directly
+  27:14   P001 inline-tool   step "Expression runner" in job "matrix" runs 'pnpm build' directly
+  30:9    P005 unsupported   step uses shell 'python'; not analyzed
+  33:14   P001 inline-tool   step "Bash with options" in job "matrix" runs 'pnpm test' directly
+
+4 errors, 3 warnings, 0 tolerated, 0 allowed

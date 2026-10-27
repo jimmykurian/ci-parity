@@ -1,0 +1,12 @@
+name: setup-app
+description: Install acme-app dependencies
+runs:
+  using: composite
+  steps:
+    - name: Install
+      shell: bash
+      run: pnpm install
+    - name: Task
+      shell: bash
+      run: task build
+    - uses: actions/setup-node@v4

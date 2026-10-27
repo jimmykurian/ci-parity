@@ -1,0 +1,19 @@
+name: ci
+on: [push]
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Test
+        run: npx vitest run
+      - run: ./gradlew check
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Image
+        run: docker build -t example-api .
+      - name: Pytest
+        run: python3 -m pytest

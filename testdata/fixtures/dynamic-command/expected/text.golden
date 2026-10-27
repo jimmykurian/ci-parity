@@ -1,0 +1,7 @@
+.github/workflows/ci.yml
+  11:14   P005 unsupported   dynamic command name '$PKG_MANAGER' cannot be analyzed
+  13:14   P005 unsupported   dynamic command name '${{ matrix.tool }}' cannot be analyzed
+  16:11   P005 unsupported   dynamic command name '"$(command -v pnpm)"' cannot be analyzed
+  17:11   P001 inline-tool   step "Substitution" in job "matrix" runs 'pnpm --filter test' directly
+
+1 error, 3 warnings, 0 tolerated, 0 allowed
