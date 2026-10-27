@@ -126,15 +126,15 @@ assets and `checksums.txt` are attached to the release. `task ci` green.
 
 ## Phase 5: SARIF output
 
-- [ ] `internal/adapters/report/sarif` per SPEC 8: SARIF 2.1.0, one run, rule metadata,
+- [x] `internal/adapters/report/sarif` per SPEC 8: SARIF 2.1.0, one run, rule metadata,
       levels, suppressions for allowed findings, `%SRCROOT%`-relative locations and
       partial fingerprints
-- [ ] `check --format sarif` in the CLI and its usage text
-- [ ] `expected/sarif.golden` for every fixture; a unit test for the required SARIF fields
-- [ ] The action: `format: sarif` writes `$RUNNER_TEMP/ci-parity.sarif` and sets the
+- [x] `check --format sarif` in the CLI and its usage text
+- [x] `expected/sarif.golden` for every fixture; a unit test for the required SARIF fields
+- [x] The action: `format: sarif` writes `$RUNNER_TEMP/ci-parity.sarif` and sets the
       `sarif-file` output
-- [ ] This repo's CI uploads its own SARIF with `github/codeql-action/upload-sarif`
-- [ ] README: the format, the action output and an upload example
+- [x] This repo's CI uploads its own SARIF with `github/codeql-action/upload-sarif`
+- [x] README: the format, the action output and an upload example
 
 Acceptance: `task ci` green; every fixture passes in all four formats; this repo's code
 scanning lists a ci-parity analysis after a push to `main`. Release v0.2.0.
