@@ -90,12 +90,11 @@ func (c *checker) task(f *workflow.File, s *workflow.Step, name string, line, co
 	switch {
 	case !c.tasks[name]:
 		msg := fmt.Sprintf("'task %s' is not defined in %s", name, c.runner.File())
-		closest := c.suggest.closest(name)
-		if closest != "" {
-			msg += fmt.Sprintf(" (closest: %s)", closest)
-		}
 		fd := c.add(f, s, UnknownTask, SeverityError, line, col, msg)
-		fd.Suggestion = closest
+		if closest := c.suggest.closest(name); closest != "" {
+			fd.Message += fmt.Sprintf(" (closest: %s)", closest)
+			fd.Suggestion = "task " + closest
+		}
 	case c.runner.IsInternal(name):
 		c.add(f, s, InternalTask, SeverityError, line, col,
 			fmt.Sprintf("'%s' is marked internal: true and should not be invoked from CI", name))
