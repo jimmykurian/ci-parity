@@ -7,6 +7,8 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 func TestParseDefaults(t *testing.T) {
@@ -15,7 +17,7 @@ func TestParseDefaults(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Parse(%q): %v", src, err)
 		}
-		if diff := cmp.Diff(Default(), cfg); diff != "" {
+		if diff := cmp.Diff(domain.Default(), cfg); diff != "" {
 			t.Errorf("Parse(%q) differs from defaults (-want +got):\n%s", src, diff)
 		}
 	}
@@ -37,11 +39,11 @@ allow:
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := Default()
+	want := domain.Default()
 	want.Workflows = []string{".github/workflows/*.yml"}
 	want.Invokers.Shell = []string{"task"}
 	want.Tools.Extend = []string{"k6x"}
-	want.Allow = []AllowRule{{
+	want.Allow = []domain.AllowRule{{
 		Match:     "docker push *",
 		Reason:    "images publish from CI only",
 		Workflows: []string{".github/workflows/release.yml"},
@@ -94,20 +96,5 @@ func TestLoad(t *testing.T) {
 	_, err = Load(root, DefaultPath, false)
 	if err == nil || !strings.Contains(err.Error(), `config .ci-parity.yml: line 1: unknown key "bogus"`) {
 		t.Errorf("Load error = %v", err)
-	}
-}
-
-func TestToolSet(t *testing.T) {
-	cfg := Default()
-	cfg.Tools.Extend = []string{"k6x"}
-	cfg.Tools.Remove = []string{"go"}
-	set := cfg.ToolSet()
-	if !set["pnpm"] || !set["k6x"] || set["go"] {
-		t.Errorf("extend/remove not applied: pnpm=%v k6x=%v go=%v", set["pnpm"], set["k6x"], set["go"])
-	}
-	cfg = Default()
-	cfg.Tools.Replace = []string{"widgetctl"}
-	if diff := cmp.Diff(map[string]bool{"widgetctl": true}, cfg.ToolSet()); diff != "" {
-		t.Errorf("replace (-want +got):\n%s", diff)
 	}
 }

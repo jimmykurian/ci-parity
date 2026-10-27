@@ -1,6 +1,7 @@
-// Package rules evaluates the ci-parity rules over loaded workflows and
-// produces findings shared by every reporter.
-package rules
+// Package domain holds ci-parity's types and pure logic: findings, the
+// workflow model, extracted commands, the config value and the baseline
+// ratchet. It imports only the standard library.
+package domain
 
 import "sort"
 

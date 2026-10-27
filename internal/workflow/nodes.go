@@ -1,6 +1,10 @@
 package workflow
 
-import "gopkg.in/yaml.v3"
+import (
+	"gopkg.in/yaml.v3"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
+)
 
 // get returns the value for key in mapping n, or nil.
 func get(n *yaml.Node, key string) *yaml.Node {
@@ -30,14 +34,14 @@ func scalar(n *yaml.Node) string {
 }
 
 // inputs returns the scalar entries of the with: mapping n.
-func inputs(n *yaml.Node) map[string]Input {
+func inputs(n *yaml.Node) map[string]domain.Input {
 	if n == nil || n.Kind != yaml.MappingNode {
 		return nil
 	}
-	m := make(map[string]Input, len(n.Content)/2)
+	m := make(map[string]domain.Input, len(n.Content)/2)
 	for i := 0; i+1 < len(n.Content); i += 2 {
 		if v := n.Content[i+1]; v.Kind == yaml.ScalarNode {
-			m[n.Content[i].Value] = Input{Value: v.Value, Line: v.Line, Col: v.Column}
+			m[n.Content[i].Value] = domain.Input{Value: v.Value, Line: v.Line, Col: v.Column}
 		}
 	}
 	return m

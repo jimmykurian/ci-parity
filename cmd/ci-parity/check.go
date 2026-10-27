@@ -10,7 +10,8 @@ import (
 	"github.com/jimmykurian/ci-parity/internal/report/github"
 	jsonreport "github.com/jimmykurian/ci-parity/internal/report/json"
 	"github.com/jimmykurian/ci-parity/internal/report/text"
-	"github.com/jimmykurian/ci-parity/internal/rules"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 func runCheck(args []string, stdout, stderr io.Writer) int {
@@ -33,7 +34,7 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
 		return exitUsage
 	}
-	findings, rows := res.findings, []baseline.Row(nil)
+	findings, rows := res.findings, []domain.Row(nil)
 	if !*strict {
 		b, err := baseline.Read(*dir, res.baseline)
 		switch {
@@ -43,7 +44,7 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 			fmt.Fprintf(stderr, "ci-parity: %v\n", err)
 			return exitUsage
 		default:
-			findings, rows = baseline.Apply(b, res.paths, findings)
+			findings, rows = domain.Apply(b, res.paths, findings)
 		}
 	}
 	if err := report(stdout, *format, findings, rows, *verbose); err != nil {
@@ -51,14 +52,14 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 		return exitUsage
 	}
 	for _, f := range findings {
-		if f.Severity == rules.SeverityError {
+		if f.Severity == domain.SeverityError {
 			return exitFindings
 		}
 	}
 	return exitOK
 }
 
-func report(w io.Writer, format string, findings []rules.Finding, rows []baseline.Row, verbose bool) error {
+func report(w io.Writer, format string, findings []domain.Finding, rows []domain.Row, verbose bool) error {
 	switch format {
 	case "github":
 		return github.Write(w, findings)

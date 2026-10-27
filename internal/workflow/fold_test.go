@@ -5,10 +5,12 @@ import (
 	"testing"
 
 	"gopkg.in/yaml.v3"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 // runScript parses a one-step workflow snippet and returns the step's script.
-func runScript(t *testing.T, src string) *Script {
+func runScript(t *testing.T, src string) *domain.Script {
 	t.Helper()
 	var doc yaml.Node
 	if err := yaml.Unmarshal([]byte(src), &doc); err != nil {
@@ -36,7 +38,7 @@ func TestScriptPosition(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			s := runScript(t, tt.src)
-			if got := s.segs != nil; got != tt.wantFoldedPositions {
+			if got := s.Segments != nil; got != tt.wantFoldedPositions {
 				t.Errorf("folded mapping used = %v, want %v (text %q)", got, tt.wantFoldedPositions, s.Text)
 			}
 			line, col := s.Position(tt.line, tt.col)

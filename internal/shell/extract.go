@@ -10,77 +10,21 @@ import (
 	"strings"
 
 	"mvdan.cc/sh/v3/syntax"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
-
-// Kind classifies an extracted command.
-type Kind int
-
-const (
-	// KindTool is a call to a command on the tools list.
-	KindTool Kind = iota + 1
-	// KindInvoker is a call to the task runner through a shell invoker.
-	KindInvoker
-)
-
-// Options configures extraction.
-type Options struct {
-	Tools       map[string]bool // tool basenames to report
-	Transparent map[string]bool // wrapper basenames to look through
-	Invokers    [][]string      // shell invokers as word sequences, e.g. {"go", "tool", "task"}
-}
-
-// Word is one argument of a command.
-type Word struct {
-	Text      string // literal value, or the source text when not literal
-	Literal   bool
-	Line, Col int // 1-based position within the script
-}
-
-// Command is one tool or invoker call found in a script.
-type Command struct {
-	Kind       Kind
-	Name       string // tool basename, or the invoker as configured
-	Normalized string // literal words from the command on, joined by single spaces
-	Args       []Word // invoker arguments after the invoker words
-	Line, Col  int    // 1-based position within the script
-	Allowed    bool
-	Reason     string
-}
-
-// Problem is a condition inside a script that prevents analysis (rule P005).
-type Problem struct {
-	Line, Col int
-	Message   string
-}
-
-// Result holds everything extracted from one script, sorted by position.
-type Result struct {
-	Commands []Command
-	Problems []Problem
-}
 
 var exprPattern = regexp.MustCompile(`(?s)\$\{\{.*?\}\}`)
 
-// ParseError reports a script that does not parse as bash. Line and Col are
-// 1-based positions in the script, or 0 when the parser gave none.
-type ParseError struct {
-	Line, Col int
-	Message   string
-}
-
-func (e *ParseError) Error() string {
-	return e.Message
-}
-
 // Extract parses script as bash and returns the tool and invoker calls in it.
 // A script that does not parse returns a *ParseError; the caller reports it as P005.
-func Extract(script string, opts Options) (Result, error) {
+func Extract(script string, opts domain.ExtractOptions) (domain.Extraction, error) {
 	e := &extractor{opts: opts, script: script, lines: strings.Split(script, "\n"), allows: map[int]allowComment{}}
 	src := e.replaceExpressions(script)
 	parser := syntax.NewParser(syntax.KeepComments(true), syntax.Variant(syntax.LangBash))
 	file, err := parser.Parse(strings.NewReader(src), "")
 	if err != nil {
-		return Result{}, e.parseError(err)
+		return domain.Extraction{}, e.parseError(err)
 	}
 	syntax.Walk(file, e.visit)
 	e.applyAllows()
@@ -93,18 +37,18 @@ func Extract(script string, opts Options) (Result, error) {
 	return e.res, nil
 }
 
-func (e *extractor) parseError(err error) *ParseError {
+func (e *extractor) parseError(err error) *domain.ParseError {
 	var pe syntax.ParseError
 	var le syntax.LangError
 	switch {
 	case errors.As(err, &pe):
 		line, col := e.position(pe.Pos)
-		return &ParseError{Line: line, Col: col, Message: e.restore(pe.Text)}
+		return &domain.ParseError{Line: line, Col: col, Message: e.restore(pe.Text)}
 	case errors.As(err, &le):
 		line, col := e.position(le.Pos)
-		return &ParseError{Line: line, Col: col, Message: e.restore(strings.TrimPrefix(le.Error(), le.Pos.String()+": "))}
+		return &domain.ParseError{Line: line, Col: col, Message: e.restore(strings.TrimPrefix(le.Error(), le.Pos.String()+": "))}
 	}
-	return &ParseError{Message: e.restore(err.Error())}
+	return &domain.ParseError{Message: e.restore(err.Error())}
 }
 
 func before(l1, c1, l2, c2 int) bool {
@@ -115,13 +59,13 @@ func before(l1, c1, l2, c2 int) bool {
 }
 
 type extractor struct {
-	opts   Options
+	opts   domain.ExtractOptions
 	script string   // original script text
 	lines  []string // original script lines
 	exprs  []string
 	repls  []replacement
 	allows map[int]allowComment
-	res    Result
+	res    domain.Extraction
 }
 
 // replacement records where a ${{ }} expression sat in the original script and
@@ -193,7 +137,7 @@ func (e *extractor) visit(n syntax.Node) bool {
 }
 
 func (e *extractor) call(c *syntax.CallExpr) {
-	words := make([]Word, len(c.Args))
+	words := make([]domain.Word, len(c.Args))
 	for i, a := range c.Args {
 		words[i] = e.word(a)
 		words[i].Line, words[i].Col = e.position(a.Pos())
@@ -209,22 +153,22 @@ func (e *extractor) call(c *syntax.CallExpr) {
 		return
 	}
 	if inv, n := e.matchInvoker(words[i:]); n > 0 {
-		e.res.Commands = append(e.res.Commands, Command{
-			Kind: KindInvoker, Name: inv, Normalized: normalize(words[i:]),
+		e.res.Commands = append(e.res.Commands, domain.Command{
+			Kind: domain.KindInvoker, Name: inv, Normalized: normalize(words[i:]),
 			Args: words[i+n:], Line: line, Col: col,
 		})
 		return
 	}
 	if name := path.Base(cmd.Text); e.opts.Tools[name] {
-		e.res.Commands = append(e.res.Commands, Command{
-			Kind: KindTool, Name: name, Normalized: normalize(words[i:]), Line: line, Col: col,
+		e.res.Commands = append(e.res.Commands, domain.Command{
+			Kind: domain.KindTool, Name: name, Normalized: normalize(words[i:]), Line: line, Col: col,
 		})
 	}
 }
 
 // word returns the literal value of w, or its source text when w contains an
 // expansion, a substitution or a ${{ }} expression.
-func (e *extractor) word(w *syntax.Word) Word {
+func (e *extractor) word(w *syntax.Word) domain.Word {
 	var b strings.Builder
 	for _, part := range w.Parts {
 		switch p := part.(type) {
@@ -236,18 +180,18 @@ func (e *extractor) word(w *syntax.Word) Word {
 			for _, q := range p.Parts {
 				lit, ok := q.(*syntax.Lit)
 				if !ok {
-					return Word{Text: e.source(w)}
+					return domain.Word{Text: e.source(w)}
 				}
 				b.WriteString(lit.Value)
 			}
 		default:
-			return Word{Text: e.source(w)}
+			return domain.Word{Text: e.source(w)}
 		}
 	}
 	if strings.Contains(b.String(), "__GHA_EXPR_") {
-		return Word{Text: e.source(w)}
+		return domain.Word{Text: e.source(w)}
 	}
-	return Word{Text: b.String(), Literal: true}
+	return domain.Word{Text: b.String(), Literal: true}
 }
 
 func (e *extractor) source(w *syntax.Word) string {
@@ -287,7 +231,7 @@ func flagSet(lists ...string) map[string]bool {
 // peel skips transparent wrappers such as sudo, env and timeout, along with
 // their options and option values and, for timeout and nice, one number. It
 // returns the index of the real command word, or len(words) when none is left.
-func (e *extractor) peel(words []Word) int {
+func (e *extractor) peel(words []domain.Word) int {
 	i := 0
 	for i < len(words) && words[i].Literal && e.opts.Transparent[path.Base(words[i].Text)] {
 		name := path.Base(words[i].Text)
@@ -317,7 +261,7 @@ func (e *extractor) peel(words []Word) int {
 
 // matchInvoker returns the longest configured invoker that words begin with,
 // and how many words it spans.
-func (e *extractor) matchInvoker(words []Word) (string, int) {
+func (e *extractor) matchInvoker(words []domain.Word) (string, int) {
 	best, bestLen := "", 0
 	for _, inv := range e.opts.Invokers {
 		if len(inv) == 0 || len(inv) > len(words) || len(inv) <= bestLen {
@@ -341,10 +285,10 @@ func (e *extractor) matchInvoker(words []Word) (string, int) {
 }
 
 func (e *extractor) problem(line, col int, msg string) {
-	e.res.Problems = append(e.res.Problems, Problem{Line: line, Col: col, Message: msg})
+	e.res.Problems = append(e.res.Problems, domain.Problem{Line: line, Col: col, Message: msg})
 }
 
-func normalize(words []Word) string {
+func normalize(words []domain.Word) string {
 	lits := make([]string, 0, len(words))
 	for _, w := range words {
 		if w.Literal {

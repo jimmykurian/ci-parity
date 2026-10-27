@@ -12,72 +12,12 @@ import (
 	"strings"
 
 	"gopkg.in/yaml.v3"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
-
-// Kind tells a workflow from a composite action.
-type Kind int
-
-const (
-	// KindWorkflow is a file under .github/workflows with jobs.
-	KindWorkflow Kind = iota + 1
-	// KindAction is a local action.yml; only composite actions have steps.
-	KindAction
-)
-
-// File is one scanned workflow or action.
-type File struct {
-	Path  string // repo-relative, forward slashes
-	Kind  Kind
-	Steps []Step
-}
-
-// Step is one job step or composite action step.
-type Step struct {
-	File  string
-	Job   string // job ID; empty for composite actions
-	Index int    // 1-based position within the job or action
-	Name  string // the step's name:, empty when absent
-	Shell string // resolved shell; empty for a composite step without shell
-	Line  int    // position of the run: or uses: key
-	Col   int
-	Run   *Script
-	Uses  string
-	With  map[string]Input
-}
-
-// Input is one scalar with: value of a uses: step and its position.
-type Input struct {
-	Value     string
-	Line, Col int
-}
-
-// Script is a step's run: value and where it sits in the file.
-type Script struct {
-	Text   string
-	line   int       // source line of the script's first line
-	col    int       // source column of the script's first character
-	indent int       // indentation of block scalar content
-	block  bool      // literal or folded block scalar
-	segs   []segment // source positions of folded text; nil when not folded
-}
-
-// Position maps a 1-based line and column inside the script to a position in
-// the file.
-func (s *Script) Position(line, col int) (int, int) {
-	switch {
-	case s.segs != nil:
-		return s.foldedPosition(line, col)
-	case s.block:
-		return s.line + line - 1, s.indent + col
-	case line == 1:
-		return s.line, s.col + col - 1
-	default:
-		return s.line + line - 1, col
-	}
-}
 
 // Load reads and parses the workflow or action at rel under root.
-func Load(root, rel string) (*File, error) {
+func Load(root, rel string) (*domain.File, error) {
 	data, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(rel)))
 	if err != nil {
 		return nil, fmt.Errorf("read %s: %w", rel, err)
@@ -86,14 +26,14 @@ func Load(root, rel string) (*File, error) {
 	if err := yaml.NewDecoder(bytes.NewReader(data)).Decode(&doc); err != nil && !errors.Is(err, io.EOF) {
 		return nil, fmt.Errorf("parse %s: %w", rel, err)
 	}
-	f := &File{Path: rel, Kind: KindWorkflow}
+	f := &domain.File{Path: rel, Kind: domain.KindWorkflow}
 	if len(doc.Content) == 0 || doc.Content[0].Kind != yaml.MappingNode {
 		return f, nil
 	}
 	top := doc.Content[0]
 	lines := strings.Split(string(data), "\n")
 	if runs := get(top, "runs"); runs != nil {
-		f.Kind = KindAction
+		f.Kind = domain.KindAction
 		if strings.EqualFold(scalar(get(runs, "using")), "composite") {
 			f.Steps = steps(rel, "", get(runs, "steps"), "", lines)
 		}
@@ -123,16 +63,16 @@ func Load(root, rel string) (*File, error) {
 
 // steps enumerates a steps: sequence. fallback is the shell for steps that do
 // not set one; it is empty for composite actions, where shell is required.
-func steps(rel, job string, seq *yaml.Node, fallback string, lines []string) []Step {
+func steps(rel, job string, seq *yaml.Node, fallback string, lines []string) []domain.Step {
 	if seq == nil || seq.Kind != yaml.SequenceNode {
 		return nil
 	}
-	var out []Step
+	var out []domain.Step
 	for i, n := range seq.Content {
 		if n.Kind != yaml.MappingNode {
 			continue
 		}
-		s := Step{File: rel, Job: job, Index: i + 1, Name: scalar(get(n, "name")), Shell: fallback}
+		s := domain.Step{File: rel, Job: job, Index: i + 1, Name: scalar(get(n, "name")), Shell: fallback}
 		if sh := scalar(get(n, "shell")); sh != "" {
 			s.Shell = sh
 		}
@@ -149,26 +89,26 @@ func steps(rel, job string, seq *yaml.Node, fallback string, lines []string) []S
 	return out
 }
 
-func script(n *yaml.Node, lines []string) *Script {
-	s := &Script{Text: n.Value, line: n.Line, col: n.Column}
+func script(n *yaml.Node, lines []string) *domain.Script {
+	s := &domain.Script{Text: n.Value, Line: n.Line, Col: n.Column}
 	switch n.Style {
 	case yaml.LiteralStyle:
-		s.block = true
-		s.line = n.Line + 1
-		s.indent = blockIndent(lines, n.Line)
+		s.Block = true
+		s.Line = n.Line + 1
+		s.Indent = blockIndent(lines, n.Line)
 	case yaml.FoldedStyle:
-		s.block = true
-		s.line = n.Line + 1
-		s.indent = blockIndent(lines, n.Line)
-		s.segs = foldedBlock(lines, n.Line, s.indent, n.Value)
+		s.Block = true
+		s.Line = n.Line + 1
+		s.Indent = blockIndent(lines, n.Line)
+		s.Segments = foldedBlock(lines, n.Line, s.Indent, n.Value)
 	case yaml.DoubleQuotedStyle, yaml.SingleQuotedStyle:
-		s.col = n.Column + 1
+		s.Col = n.Column + 1
 	default:
-		s.segs = foldedPlain(lines, n.Line, n.Column, n.Value)
+		s.Segments = foldedPlain(lines, n.Line, n.Column, n.Value)
 	}
 	// On a single-line value, `run: cmd # ci-parity: allow ...` ends in a YAML
 	// comment, not a shell one; put it back so allow comments work there too.
-	if !s.block && n.LineComment != "" && !strings.Contains(n.Value, "\n") {
+	if !s.Block && n.LineComment != "" && !strings.Contains(n.Value, "\n") {
 		s.Text += " " + n.LineComment
 	}
 	return s

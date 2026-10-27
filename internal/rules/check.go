@@ -1,3 +1,5 @@
+// Package rules evaluates the ci-parity rules over loaded workflows and
+// produces findings shared by every reporter.
 package rules
 
 import (
@@ -5,15 +7,15 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jimmykurian/ci-parity/internal/config"
 	"github.com/jimmykurian/ci-parity/internal/runner"
 	"github.com/jimmykurian/ci-parity/internal/shell"
-	"github.com/jimmykurian/ci-parity/internal/workflow"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 // Check evaluates every step of files against cfg and the task runner r and
 // returns sorted findings.
-func Check(cfg *config.Config, r runner.Runner, files []*workflow.File) []Finding {
+func Check(cfg *domain.Config, r runner.Runner, files []*domain.File) []domain.Finding {
 	c := checker{cfg: cfg, opts: shellOptions(cfg), runner: r, tasks: map[string]bool{}, suggest: newSuggester(r)}
 	for _, name := range r.Tasks() {
 		c.tasks[name] = true
@@ -23,12 +25,12 @@ func Check(cfg *config.Config, r runner.Runner, files []*workflow.File) []Findin
 			c.step(f, &f.Steps[i])
 		}
 	}
-	Sort(c.findings)
+	domain.Sort(c.findings)
 	return c.findings
 }
 
-func shellOptions(cfg *config.Config) shell.Options {
-	opts := shell.Options{Tools: cfg.ToolSet(), Transparent: map[string]bool{}}
+func shellOptions(cfg *domain.Config) domain.ExtractOptions {
+	opts := domain.ExtractOptions{Tools: cfg.ToolSet(), Transparent: map[string]bool{}}
 	for _, t := range cfg.Transparent {
 		opts.Transparent[t] = true
 	}
@@ -39,15 +41,15 @@ func shellOptions(cfg *config.Config) shell.Options {
 }
 
 type checker struct {
-	cfg      *config.Config
-	opts     shell.Options
+	cfg      *domain.Config
+	opts     domain.ExtractOptions
 	runner   runner.Runner
 	tasks    map[string]bool
 	suggest  *suggester
-	findings []Finding
+	findings []domain.Finding
 }
 
-func (c *checker) step(f *workflow.File, s *workflow.Step) {
+func (c *checker) step(f *domain.File, s *domain.Step) {
 	if s.Run == nil {
 		if s.Uses != "" {
 			c.actionInvoker(f, s)
@@ -55,11 +57,11 @@ func (c *checker) step(f *workflow.File, s *workflow.Step) {
 		return
 	}
 	switch {
-	case s.Shell == "" && f.Kind == workflow.KindAction:
-		c.add(f, s, Unsupported, SeverityWarning, s.Line, s.Col, "composite step has no shell; not analyzed")
+	case s.Shell == "" && f.Kind == domain.KindAction:
+		c.add(f, s, domain.Unsupported, domain.SeverityWarning, s.Line, s.Col, "composite step has no shell; not analyzed")
 		return
 	case !supportedShell(s.Shell):
-		c.add(f, s, Unsupported, SeverityWarning, s.Line, s.Col, fmt.Sprintf("step uses shell '%s'; not analyzed", s.Shell))
+		c.add(f, s, domain.Unsupported, domain.SeverityWarning, s.Line, s.Col, fmt.Sprintf("step uses shell '%s'; not analyzed", s.Shell))
 		return
 	}
 	res, err := shell.Extract(s.Run.Text, c.opts)
@@ -69,10 +71,10 @@ func (c *checker) step(f *workflow.File, s *workflow.Step) {
 	}
 	for _, p := range res.Problems {
 		line, col := s.Run.Position(p.Line, p.Col)
-		c.add(f, s, Unsupported, SeverityWarning, line, col, p.Message)
+		c.add(f, s, domain.Unsupported, domain.SeverityWarning, line, col, p.Message)
 	}
 	for _, cmd := range res.Commands {
-		if cmd.Kind == shell.KindTool {
+		if cmd.Kind == domain.KindTool {
 			c.inlineTool(f, s, cmd)
 			continue
 		}
@@ -85,29 +87,29 @@ func (c *checker) step(f *workflow.File, s *workflow.Step) {
 
 // parseError reports a script that does not parse, at the parser's position
 // when it gave one and at the run: key otherwise.
-func (c *checker) parseError(f *workflow.File, s *workflow.Step, err error) {
+func (c *checker) parseError(f *domain.File, s *domain.Step, err error) {
 	line, col := s.Line, s.Col
-	var pe *shell.ParseError
+	var pe *domain.ParseError
 	if errors.As(err, &pe) && pe.Line > 0 {
 		line, col = s.Run.Position(pe.Line, pe.Col)
 	}
-	c.add(f, s, Unsupported, SeverityWarning, line, col, "cannot parse step script: "+err.Error())
+	c.add(f, s, domain.Unsupported, domain.SeverityWarning, line, col, "cannot parse step script: "+err.Error())
 }
 
-func (c *checker) inlineTool(f *workflow.File, s *workflow.Step, cmd shell.Command) {
+func (c *checker) inlineTool(f *domain.File, s *domain.Step, cmd domain.Command) {
 	line, col := s.Run.Position(cmd.Line, cmd.Col)
 	msg := fmt.Sprintf("%s %s runs '%s' directly", stepRef(s), scope(f, s), cmd.Normalized)
-	sev, reason := SeverityError, ""
+	sev, reason := domain.SeverityError, ""
 	if cmd.Allowed {
-		sev, reason = SeverityAllowed, cmd.Reason
+		sev, reason = domain.SeverityAllowed, cmd.Reason
 	} else if r, ok := c.allowRule(f.Path, cmd.Normalized); ok {
-		sev, reason = SeverityAllowed, r
+		sev, reason = domain.SeverityAllowed, r
 	}
 	suggestion := c.suggest.command(cmd.Normalized)
 	if suggestion != "" {
 		msg += fmt.Sprintf("; already available as '%s'", suggestion)
 	}
-	fd := c.add(f, s, InlineTool, sev, line, col, msg)
+	fd := c.add(f, s, domain.InlineTool, sev, line, col, msg)
 	fd.Command, fd.Reason, fd.Suggestion = cmd.Normalized, reason, suggestion
 }
 
@@ -115,14 +117,14 @@ func (c *checker) inlineTool(f *workflow.File, s *workflow.Step, cmd shell.Comma
 // command in the given workflow.
 func (c *checker) allowRule(file, command string) (string, bool) {
 	for _, a := range c.cfg.Allow {
-		if !config.MatchCommand(a.Match, command) {
+		if !domain.MatchCommand(a.Match, command) {
 			continue
 		}
 		if len(a.Workflows) == 0 {
 			return a.Reason, true
 		}
 		for _, w := range a.Workflows {
-			if config.MatchPath(w, file) {
+			if domain.MatchPath(w, file) {
 				return a.Reason, true
 			}
 		}
@@ -130,12 +132,12 @@ func (c *checker) allowRule(file, command string) (string, bool) {
 	return "", false
 }
 
-func (c *checker) add(f *workflow.File, s *workflow.Step, rule string, sev Severity, line, col int, msg string) *Finding {
-	fd := Finding{
+func (c *checker) add(f *domain.File, s *domain.Step, rule string, sev domain.Severity, line, col int, msg string) *domain.Finding {
+	fd := domain.Finding{
 		Rule: rule, Severity: sev, File: f.Path, Line: line, Col: col,
 		Job: s.Job, Step: s.Name, StepIndex: s.Index, Message: msg,
 	}
-	if f.Kind == workflow.KindAction {
+	if f.Kind == domain.KindAction {
 		fd.Action = f.Path
 	}
 	c.findings = append(c.findings, fd)
@@ -148,15 +150,15 @@ func supportedShell(sh string) bool {
 }
 
 // stepRef names a step as `step "<name>"`, or `step <index>` when unnamed.
-func stepRef(s *workflow.Step) string {
+func stepRef(s *domain.Step) string {
 	if s.Name == "" {
 		return fmt.Sprintf("step %d", s.Index)
 	}
 	return fmt.Sprintf("step %q", s.Name)
 }
 
-func scope(f *workflow.File, s *workflow.Step) string {
-	if f.Kind == workflow.KindAction {
+func scope(f *domain.File, s *domain.Step) string {
+	if f.Kind == domain.KindAction {
 		return fmt.Sprintf("in action %q", f.Path)
 	}
 	return fmt.Sprintf("in job %q", s.Job)

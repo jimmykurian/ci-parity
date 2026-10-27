@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"sort"
 
-	"github.com/jimmykurian/ci-parity/internal/config"
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 // Discover returns the repo-relative, forward-slash paths of files under root
@@ -15,7 +15,7 @@ import (
 func Discover(root string, patterns []string) ([]string, error) {
 	seen := map[string]bool{}
 	for _, pattern := range patterns {
-		start := filepath.Join(root, filepath.FromSlash(config.StaticPrefix(pattern)))
+		start := filepath.Join(root, filepath.FromSlash(domain.StaticPrefix(pattern)))
 		err := filepath.WalkDir(start, func(p string, d fs.DirEntry, err error) error {
 			if err != nil {
 				if errors.Is(err, fs.ErrNotExist) {
@@ -34,7 +34,7 @@ func Discover(root string, patterns []string) ([]string, error) {
 				return err
 			}
 			rel = filepath.ToSlash(rel)
-			if config.MatchPath(pattern, rel) {
+			if domain.MatchPath(pattern, rel) {
 				seen[rel] = true
 			}
 			return nil

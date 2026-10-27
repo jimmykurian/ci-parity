@@ -6,8 +6,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/jimmykurian/ci-parity/internal/baseline"
-	"github.com/jimmykurian/ci-parity/internal/rules"
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 // nameWidth fits the longest rule name, "internal-task".
@@ -16,11 +15,11 @@ const nameWidth = 13
 // Write renders sorted findings and the ratchet rows to w. Tolerated and
 // allowed findings are shown only when verbose is set; the summary line always
 // counts them.
-func Write(w io.Writer, findings []rules.Finding, rows []baseline.Row, verbose bool) error {
+func Write(w io.Writer, findings []domain.Finding, rows []domain.Row, verbose bool) error {
 	var b strings.Builder
-	var shown []rules.Finding
+	var shown []domain.Finding
 	for _, f := range findings {
-		if verbose || f.Severity == rules.SeverityError || f.Severity == rules.SeverityWarning {
+		if verbose || f.Severity == domain.SeverityError || f.Severity == domain.SeverityWarning {
 			shown = append(shown, f)
 		}
 	}
@@ -50,7 +49,7 @@ func Write(w io.Writer, findings []rules.Finding, rows []baseline.Row, verbose b
 
 // ratchet renders files whose count moved off their baseline: improvements to
 // lock in and regressions. It returns "" when there are none.
-func ratchet(rows []baseline.Row) string {
+func ratchet(rows []domain.Row) string {
 	var lines [][4]string // file, baseline state, current count, note
 	for _, r := range rows {
 		if !r.Improved() && !r.Regressed() {
@@ -82,29 +81,29 @@ func ratchet(rows []baseline.Row) string {
 	return b.String()
 }
 
-func position(f rules.Finding) string {
+func position(f domain.Finding) string {
 	return fmt.Sprintf("%d:%d", f.Line, f.Col)
 }
 
-func label(f rules.Finding) string {
+func label(f domain.Finding) string {
 	switch f.Severity {
-	case rules.SeverityTolerated:
+	case domain.SeverityTolerated:
 		return " [tolerated]"
-	case rules.SeverityAllowed:
+	case domain.SeverityAllowed:
 		return " [allowed: " + f.Reason + "]"
 	}
 	return ""
 }
 
-func summary(findings []rules.Finding) string {
-	counts := map[rules.Severity]int{}
+func summary(findings []domain.Finding) string {
+	counts := map[domain.Severity]int{}
 	for _, f := range findings {
 		counts[f.Severity]++
 	}
 	return fmt.Sprintf("%s, %s, %d tolerated, %d allowed",
-		plural(counts[rules.SeverityError], "error"),
-		plural(counts[rules.SeverityWarning], "warning"),
-		counts[rules.SeverityTolerated], counts[rules.SeverityAllowed])
+		plural(counts[domain.SeverityError], "error"),
+		plural(counts[domain.SeverityWarning], "warning"),
+		counts[domain.SeverityTolerated], counts[domain.SeverityAllowed])
 }
 
 func plural(n int, word string) string {

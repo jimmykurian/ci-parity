@@ -6,8 +6,7 @@ import (
 	encjson "encoding/json"
 	"io"
 
-	"github.com/jimmykurian/ci-parity/internal/baseline"
-	"github.com/jimmykurian/ci-parity/internal/rules"
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 // Version is the JSON schema version. It changes only with the schema.
@@ -51,18 +50,18 @@ type ratchetItem struct {
 
 // Write renders every finding, including tolerated and allowed ones. rows is
 // nil when no baseline is in effect, which renders "ratchet": null.
-func Write(w io.Writer, findings []rules.Finding, rows []baseline.Row) error {
+func Write(w io.Writer, findings []domain.Finding, rows []domain.Row) error {
 	doc := document{Version: Version, Findings: make([]finding, 0, len(findings))}
 	for _, f := range findings {
 		doc.Findings = append(doc.Findings, convert(f))
 		switch f.Severity {
-		case rules.SeverityError:
+		case domain.SeverityError:
 			doc.Summary.Errors++
-		case rules.SeverityWarning:
+		case domain.SeverityWarning:
 			doc.Summary.Warnings++
-		case rules.SeverityTolerated:
+		case domain.SeverityTolerated:
 			doc.Summary.Tolerated++
-		case rules.SeverityAllowed:
+		case domain.SeverityAllowed:
 			doc.Summary.Allowed++
 		}
 	}
@@ -78,7 +77,7 @@ func Write(w io.Writer, findings []rules.Finding, rows []baseline.Row) error {
 	return enc.Encode(doc)
 }
 
-func convert(f rules.Finding) finding {
+func convert(f domain.Finding) finding {
 	out := finding{
 		Rule: f.Rule, Name: f.Name(), Severity: string(f.Severity), File: f.File,
 		Line: f.Line, Col: f.Col, Message: f.Message,

@@ -6,7 +6,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/jimmykurian/ci-parity/internal/shell"
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 func TestTaskNames(t *testing.T) {
@@ -32,9 +32,9 @@ func TestTaskNames(t *testing.T) {
 		{"-g setup", nil},
 	}
 	for _, tt := range tests {
-		var args []shell.Word
+		var args []domain.Word
 		for _, f := range strings.Fields(tt.args) {
-			args = append(args, shell.Word{Text: f, Literal: true})
+			args = append(args, domain.Word{Text: f, Literal: true})
 		}
 		var got []string
 		for _, w := range taskNames(args) {
@@ -44,7 +44,7 @@ func TestTaskNames(t *testing.T) {
 			t.Errorf("taskNames(%q) (-want +got):\n%s", tt.args, diff)
 		}
 	}
-	dynamic := []shell.Word{{Text: "${{ inputs.target }}"}, {Text: "build", Literal: true}}
+	dynamic := []domain.Word{{Text: "${{ inputs.target }}"}, {Text: "build", Literal: true}}
 	if got := taskNames(dynamic); len(got) != 1 || got[0].Text != "build" {
 		t.Errorf("non-literal names are skipped, got %v", got)
 	}

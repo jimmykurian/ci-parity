@@ -5,8 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/jimmykurian/ci-parity/internal/shell"
-	"github.com/jimmykurian/ci-parity/internal/workflow"
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 // valueFlags are task flags that take the next argument as their value (SPEC 5.4).
@@ -29,8 +28,8 @@ func otherTaskfile(arg string) bool {
 // taskNames returns the task names among the arguments of a shell invoker. It
 // returns none when the call selects another Taskfile. Names that are not
 // literal, such as ${{ inputs.task }}, cannot be checked and are skipped.
-func taskNames(args []shell.Word) []shell.Word {
-	var names []shell.Word
+func taskNames(args []domain.Word) []domain.Word {
+	var names []domain.Word
 	for i := 0; i < len(args); i++ {
 		a := args[i]
 		switch {
@@ -56,7 +55,7 @@ var (
 
 // actionInvoker checks the task names a configured action invoker step passes
 // in its input.
-func (c *checker) actionInvoker(f *workflow.File, s *workflow.Step) {
+func (c *checker) actionInvoker(f *domain.File, s *domain.Step) {
 	for _, inv := range c.cfg.Invokers.Actions {
 		if s.Uses != inv.Uses && !strings.HasPrefix(s.Uses, inv.Uses+"@") {
 			continue
@@ -86,17 +85,17 @@ func (c *checker) actionInvoker(f *workflow.File, s *workflow.Step) {
 
 // task reports P002 for a name the runner does not define and P003 for an
 // internal one.
-func (c *checker) task(f *workflow.File, s *workflow.Step, name string, line, col int) {
+func (c *checker) task(f *domain.File, s *domain.Step, name string, line, col int) {
 	switch {
 	case !c.tasks[name]:
 		msg := fmt.Sprintf("'task %s' is not defined in %s", name, c.runner.File())
-		fd := c.add(f, s, UnknownTask, SeverityError, line, col, msg)
+		fd := c.add(f, s, domain.UnknownTask, domain.SeverityError, line, col, msg)
 		if closest := c.suggest.closest(name); closest != "" {
 			fd.Message += fmt.Sprintf(" (closest: %s)", closest)
 			fd.Suggestion = "task " + closest
 		}
 	case c.runner.IsInternal(name):
-		c.add(f, s, InternalTask, SeverityError, line, col,
+		c.add(f, s, domain.InternalTask, domain.SeverityError, line, col,
 			fmt.Sprintf("'%s' is marked internal: true and should not be invoked from CI", name))
 	}
 }

@@ -6,9 +6,11 @@ import (
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
-var testOpts = Options{
+var testOpts = domain.ExtractOptions{
 	Tools:       set("pnpm", "npm", "go", "docker", "eslint", "python", "make"),
 	Transparent: set("sudo", "env", "time", "nice", "ionice", "timeout", "nohup"),
 	Invokers:    [][]string{{"task"}, {"go-task"}, {"go", "tool", "task"}},
@@ -23,11 +25,11 @@ func set(names ...string) map[string]bool {
 }
 
 // summary renders a Result compactly: one entry per command or problem.
-func summary(r Result) []string {
+func summary(r domain.Extraction) []string {
 	var out []string
 	for _, c := range r.Commands {
 		kind := "tool"
-		if c.Kind == KindInvoker {
+		if c.Kind == domain.KindInvoker {
 			kind = "invoker"
 		}
 		s := fmt.Sprintf("%d:%d %s %s", c.Line, c.Col, kind, c.Normalized)
@@ -147,7 +149,7 @@ func TestExtractInvokerArgs(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := []Word{
+	want := []domain.Word{
 		{Text: "--dir", Literal: true, Line: 1, Col: 6},
 		{Text: "web", Literal: true, Line: 1, Col: 12},
 		{Text: "build", Literal: true, Line: 1, Col: 16},
@@ -161,20 +163,20 @@ func TestExtractInvokerArgs(t *testing.T) {
 func TestExtractParseError(t *testing.T) {
 	tests := []struct {
 		name, script string
-		want         ParseError
+		want         domain.ParseError
 	}{
-		{"unclosed if", "echo ok\nif pnpm test; then\n  echo ${{ x }}\n", ParseError{2, 1, "`if` statement must end with `fi`"}},
-		{"position after expression", "echo ${{ github.sha }} )", ParseError{1, 24, "a command can only contain words and redirects; encountered `)`"}},
+		{"unclosed if", "echo ok\nif pnpm test; then\n  echo ${{ x }}\n", domain.ParseError{Line: 2, Col: 1, Message: "`if` statement must end with `fi`"}},
+		{"position after expression", "echo ${{ github.sha }} )", domain.ParseError{Line: 1, Col: 24, Message: "a command can only contain words and redirects; encountered `)`"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := Extract(tt.script, testOpts)
-			var pe *ParseError
+			var pe *domain.ParseError
 			if !errors.As(err, &pe) {
-				t.Fatalf("err = %v, want *ParseError", err)
+				t.Fatalf("err = %v, want *domain.ParseError", err)
 			}
 			if diff := cmp.Diff(tt.want, *pe); diff != "" {
-				t.Errorf("ParseError (-want +got):\n%s", diff)
+				t.Errorf("domain.ParseError (-want +got):\n%s", diff)
 			}
 		})
 	}

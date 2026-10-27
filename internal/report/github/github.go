@@ -7,22 +7,22 @@ import (
 	"io"
 	"strings"
 
-	"github.com/jimmykurian/ci-parity/internal/rules"
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 // Write emits one workflow command per finding and nothing else. Errors become
 // ::error, warnings ::warning and tolerated findings ::notice; allowed
 // findings are not emitted.
-func Write(w io.Writer, findings []rules.Finding) error {
+func Write(w io.Writer, findings []domain.Finding) error {
 	var b strings.Builder
 	for _, f := range findings {
 		level, title := "", f.Rule+" "+f.Name()
 		switch f.Severity {
-		case rules.SeverityError:
+		case domain.SeverityError:
 			level = "error"
-		case rules.SeverityWarning:
+		case domain.SeverityWarning:
 			level = "warning"
-		case rules.SeverityTolerated:
+		case domain.SeverityTolerated:
 			level, title = "notice", title+" (tolerated)"
 		default:
 			continue

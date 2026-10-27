@@ -7,6 +7,8 @@ import (
 	"io/fs"
 
 	"github.com/jimmykurian/ci-parity/internal/baseline"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 func runBaseline(args []string, stdout, stderr io.Writer) int {
@@ -23,14 +25,14 @@ func runBaseline(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
 		return exitUsage
 	}
-	counts := baseline.Counts(res.paths, res.findings)
+	counts := domain.Counts(res.paths, res.findings)
 	old, err := baseline.Read(*dir, res.baseline)
 	if err != nil && !errors.Is(err, fs.ErrNotExist) {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
 		return exitUsage
 	}
 	if old != nil && !*allowRegression {
-		if regs := baseline.Regressions(old, counts); len(regs) > 0 {
+		if regs := domain.Regressions(old, counts); len(regs) > 0 {
 			fmt.Fprintln(stderr, "ci-parity baseline: refusing to raise the baseline:")
 			for _, r := range regs {
 				fmt.Fprintf(stderr, "  %s  %d -> %d\n", r.File, r.Baseline, r.Current)

@@ -8,11 +8,13 @@ import (
 	"github.com/jimmykurian/ci-parity/internal/rules"
 	"github.com/jimmykurian/ci-parity/internal/runner/taskfile"
 	"github.com/jimmykurian/ci-parity/internal/workflow"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 // analysis is the result of running the rules over a repository.
 type analysis struct {
-	findings []rules.Finding
+	findings []domain.Finding
 	paths    []string // every scanned workflow and action, repo-relative
 	baseline string   // baseline path, relative to the repo root
 }
@@ -37,7 +39,7 @@ func analyze(root, configPath, baselinePath string) (*analysis, error) {
 	if err != nil {
 		return nil, err
 	}
-	files := make([]*workflow.File, 0, len(paths))
+	files := make([]*domain.File, 0, len(paths))
 	for _, p := range paths {
 		f, err := workflow.Load(root, p)
 		if err != nil {
