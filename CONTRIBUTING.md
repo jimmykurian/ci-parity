@@ -32,6 +32,10 @@ the approach.
   actionlint and gitleaks at the versions in `mise.toml`. Without mise,
   install those yourself at the same versions.
 
+Or open the repository in the devcontainer (`.devcontainer/`, for VS Code or
+GitHub Codespaces), which installs Go at the `go.mod` toolchain and every tool
+in `mise.toml`, then runs `task build`.
+
 **Setup:**
 
 ```sh
@@ -106,6 +110,15 @@ git config commit.gpgsign true
 ```
 
 Then add the same public key to GitHub as a signing key.
+
+In the devcontainer, a `user.signingkey` that names a key file on your machine
+doesn't exist, so commits fail to sign. Either commit from the host, or point
+git at the key itself, which signs through the SSH agent VS Code forwards into
+the container and works on the host too:
+
+```sh
+git config user.signingkey "key::$(cat ~/.ssh/id_ed25519.pub)"  # run on the host
+```
 
 ## Pull requests
 

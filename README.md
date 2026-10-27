@@ -106,6 +106,7 @@ Every command runs through the [Taskfile](Taskfile.yml); CI calls the same tasks
 [golangci-lint](https://golangci-lint.run/) v2 and
 [actionlint](https://github.com/rhysd/actionlint) on `PATH`. [mise.toml](mise.toml) pins
 the versions CI uses; with [mise](https://mise.jdx.dev/), `mise install` sets them up.
+The devcontainer (`.devcontainer/`) sets all of this up in VS Code or Codespaces.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose and test a change.
 
 ## License

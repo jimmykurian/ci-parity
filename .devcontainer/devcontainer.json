@@ -1,0 +1,26 @@
+// A container with Go at the toolchain go.mod pins and every tool in mise.toml.
+// Works in VS Code and GitHub Codespaces.
+{
+  "name": "ci-parity",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/mise:1": {}
+  },
+  "containerEnv": {
+    "MISE_TRUSTED_CONFIG_PATHS": "${containerWorkspaceFolder}"
+  },
+  "postCreateCommand": ".devcontainer/post-create.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "golang.go",
+        "task.vscode-task",
+        "hverlin.mise-vscode",
+        "redhat.vscode-yaml",
+        "github.vscode-github-actions",
+        "github.vscode-pull-request-github",
+        "editorconfig.editorconfig"
+      ]
+    }
+  }
+}
