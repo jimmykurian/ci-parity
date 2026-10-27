@@ -9,8 +9,10 @@ import (
 
 func TestWriteEscapes(t *testing.T) {
 	findings := []domain.Finding{
-		{Rule: "P001", Severity: domain.SeverityError, File: ".github/workflows/a,b:c.yml", Line: 3, Col: 9,
-			Message: "runs 'echo 100%' directly\nsecond line, with: colon"},
+		{
+			Rule: "P001", Severity: domain.SeverityError, File: ".github/workflows/a,b:c.yml", Line: 3, Col: 9,
+			Message: "runs 'echo 100%' directly\nsecond line, with: colon",
+		},
 		{Rule: "P001", Severity: domain.SeverityTolerated, File: "ci.yml", Line: 4, Col: 1, Message: "m"},
 		{Rule: "P001", Severity: domain.SeverityAllowed, File: "ci.yml", Line: 5, Col: 1, Message: "hidden"},
 		{Rule: "P005", Severity: domain.SeverityWarning, File: "ci.yml", Line: 6, Col: 2, Message: "w"},

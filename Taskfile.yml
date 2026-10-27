@@ -2,6 +2,7 @@ version: "3"
 
 vars:
   BIN: ./bin/ci-parity
+  MARKDOWNLINT: markdownlint-cli2@0.23.3
   VERSION:
     sh: git describe --tags --always --dirty 2>/dev/null || echo dev
   COMMIT:
@@ -22,31 +23,102 @@ tasks:
       - '{{if .CLI_ARGS}}go test ./cmd/ci-parity -run TestGolden {{.CLI_ARGS}}{{else}}go test ./...{{end}}'
 
   lint:
-    desc: Run golangci-lint and actionlint
+    desc: Run every linter
+    cmds:
+      - task: lint:go
+      - task: lint:vuln
+      - task: lint:actions
+      - task: lint:shell
+      - task: lint:yaml
+      - task: lint:markdown
+      - task: lint:spelling
+      - task: lint:editorconfig
+
+  lint:go:
+    desc: Lint Go code (golangci-lint)
     preconditions:
       - sh: command -v golangci-lint
-        msg: "golangci-lint not found on PATH; install v2: https://golangci-lint.run/welcome/install/"
-      - sh: command -v actionlint
-        msg: "actionlint not found on PATH; install: https://github.com/rhysd/actionlint/blob/main/docs/install.md"
+        msg: "golangci-lint not found on PATH; run `mise install` or see https://golangci-lint.run/welcome/install/"
     cmds:
       - golangci-lint run ./...
+
+  lint:vuln:
+    desc: Check Go dependencies and the standard library for known vulnerabilities (govulncheck)
+    preconditions:
+      - sh: command -v govulncheck
+        msg: "govulncheck not found on PATH; run `mise install` or `go install golang.org/x/vuln/cmd/govulncheck@v1.9.0`"
+    cmds:
+      - govulncheck ./...
+
+  lint:actions:
+    desc: Lint the GitHub Actions workflows (actionlint, zizmor)
+    preconditions:
+      - sh: command -v actionlint
+        msg: "actionlint not found on PATH; run `mise install` or see https://github.com/rhysd/actionlint/blob/main/docs/install.md"
+      - sh: command -v zizmor
+        msg: "zizmor not found on PATH; run `mise install` or see https://docs.zizmor.sh/installation/"
+    cmds:
       - actionlint
+      - zizmor --offline .github
+
+  lint:shell:
+    desc: Lint the shell scripts (shellcheck)
+    preconditions:
+      - sh: command -v shellcheck
+        msg: "shellcheck not found on PATH; run `mise install` or see https://github.com/koalaman/shellcheck#installing"
+    cmds:
+      - git ls-files -z '*.sh' | xargs -0 shellcheck
+
+  lint:yaml:
+    desc: Lint the repo's YAML, not the fixtures (yamllint)
+    preconditions:
+      - sh: command -v yamllint
+        msg: "yamllint not found on PATH; run `mise install` or see https://yamllint.readthedocs.io/en/stable/quickstart.html"
+    cmds:
+      - git ls-files -z '*.yml' '*.yaml' ':!:testdata/' | xargs -0 yamllint --strict -c .config/linters/yamllint.yml
+
+  lint:markdown:
+    desc: Lint the Markdown files (markdownlint-cli2, run with pnx)
+    preconditions:
+      - sh: command -v pnx
+        msg: "pnx not found on PATH; run `mise install` (it comes with pnpm)"
+    cmds:
+      - pnx {{.MARKDOWNLINT}} --config .config/linters/.markdownlint-cli2.jsonc
+
+  lint:spelling:
+    desc: Spell-check code, docs, workflows and fixtures (typos)
+    preconditions:
+      - sh: command -v typos
+        msg: "typos not found on PATH; run `mise install` or see https://github.com/crate-ci/typos#install"
+    cmds:
+      - typos --hidden --config .config/linters/typos.toml
+
+  lint:editorconfig:
+    desc: Check every file against .editorconfig (editorconfig-checker)
+    preconditions:
+      - sh: command -v editorconfig-checker
+        msg: "editorconfig-checker not found on PATH; run `mise install` or see https://editorconfig-checker.github.io"
+    cmds:
+      # Indentation is left to gofumpt, yamllint and markdownlint, which know
+      # each format; this checks charset, line endings, final newlines and
+      # trailing whitespace.
+      - editorconfig-checker -config .config/linters/editorconfig-checker.json
 
   fmt:
-    desc: Format Go code
+    desc: Format Go code (gofumpt and goimports, through golangci-lint)
+    preconditions:
+      - sh: command -v golangci-lint
+        msg: "golangci-lint not found on PATH; run `mise install` or see https://golangci-lint.run/welcome/install/"
     cmds:
-      - gofmt -w .
+      - golangci-lint fmt
 
   fmt:check:
-    desc: Fail on unformatted Go code
+    desc: Fail on unformatted Go code, printing the diff
+    preconditions:
+      - sh: command -v golangci-lint
+        msg: "golangci-lint not found on PATH; run `mise install` or see https://golangci-lint.run/welcome/install/"
     cmds:
-      - |
-        unformatted=$(gofmt -l .)
-        if [ -n "$unformatted" ]; then
-          echo "unformatted files (run 'task fmt'):"
-          echo "$unformatted"
-          exit 1
-        fi
+      - golangci-lint fmt --diff
 
   self-check:
     desc: Run ci-parity against this repo

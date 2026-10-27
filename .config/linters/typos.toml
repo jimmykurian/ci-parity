@@ -1,0 +1,10 @@
+# typos: spelling in code, docs, workflows and fixtures. Run by `task lint:spelling`.
+[files]
+extend-exclude = [".git/", "LICENSE", "go.sum"]
+
+[default.extend-words]
+# A deliberate misspelling: fixtures and tests use it to check P002's
+# closest-task suggestion.
+biuld = "biuld"
+# Spelled this way in docs/SPEC.md; both spellings are standard.
+unparseable = "unparseable"

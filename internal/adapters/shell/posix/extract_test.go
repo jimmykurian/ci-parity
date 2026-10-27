@@ -55,11 +55,13 @@ func TestExtract(t *testing.T) {
 		{"ignored commands", "echo hi\ngit status\ngh pr view", nil},
 		{"pipeline", "pnpm list | grep acme-app | sort", []string{"1:1 tool pnpm list"}},
 		{"and list", "pnpm install && pnpm build || npm run fallback", []string{
-			"1:1 tool pnpm install", "1:17 tool pnpm build", "1:31 tool npm run fallback"}},
+			"1:1 tool pnpm install", "1:17 tool pnpm build", "1:31 tool npm run fallback",
+		}},
 		{"if block", "if [ -f package.json ]; then\n  pnpm lint\nelse\n  echo skip\nfi", []string{"2:3 tool pnpm lint"}},
 		{"if condition", "if pnpm exec tsc --noEmit; then echo ok; fi", []string{"1:4 tool pnpm exec tsc --noEmit"}},
 		{"for and while", "for d in a b; do\n  docker build $d\ndone\nwhile false; do go vet; done", []string{
-			"2:3 tool docker build", "4:17 tool go vet"}},
+			"2:3 tool docker build", "4:17 tool go vet",
+		}},
 		{"case", "case $X in\n  a) make all ;;\nesac", []string{"2:6 tool make all"}},
 		{"function body", "build() {\n  go build ./...\n}\nbuild", []string{"2:3 tool go build ./..."}},
 		{"subshell", "(cd web && pnpm build)", []string{"1:12 tool pnpm build"}},
@@ -96,12 +98,14 @@ func TestExtract(t *testing.T) {
 		{"wrapped invoker", "env CI=1 task test", []string{"1:10 invoker task test"}},
 		{"dynamic variable", "$TOOL test", []string{"1:1 problem dynamic command name '$TOOL' cannot be analyzed"}},
 		{"dynamic expression", "${{ matrix.tool }} test", []string{
-			"1:1 problem dynamic command name '${{ matrix.tool }}' cannot be analyzed"}},
+			"1:1 problem dynamic command name '${{ matrix.tool }}' cannot be analyzed",
+		}},
 		{"expression argument", "pnpm --filter ${{ inputs.pkg }} build", []string{"1:1 tool pnpm --filter build"}},
 		{"column after expression", "echo ${{ github.sha }} && pnpm test", []string{"1:27 tool pnpm test"}},
 		{"line after multi-line expression", "echo ${{\n  github.sha }}\npnpm test", []string{"3:1 tool pnpm test"}},
 		{"expression in condition", "if [ \"${{ github.event_name }}\" = push ]; then\n  docker push acme\nfi", []string{
-			"2:3 tool docker push acme"}},
+			"2:3 tool docker push acme",
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -122,16 +126,21 @@ func TestExtractAllowComments(t *testing.T) {
 		want         []string
 	}{
 		{"same line", "docker push acme # ci-parity: allow images publish here", []string{
-			"1:1 tool docker push acme [allowed: images publish here]"}},
+			"1:1 tool docker push acme [allowed: images publish here]",
+		}},
 		{"line above", "# ci-parity: allow one-off migration\npnpm db:migrate\npnpm test", []string{
-			"2:1 tool pnpm db:migrate [allowed: one-off migration]", "3:1 tool pnpm test"}},
+			"2:1 tool pnpm db:migrate [allowed: one-off migration]", "3:1 tool pnpm test",
+		}},
 		{"trailing comment does not reach next line", "pnpm a # ci-parity: allow first only\npnpm b", []string{
-			"1:1 tool pnpm a [allowed: first only]", "2:1 tool pnpm b"}},
+			"1:1 tool pnpm a [allowed: first only]", "2:1 tool pnpm b",
+		}},
 		{"no reason", "pnpm test # ci-parity: allow", []string{
-			"1:1 tool pnpm test", "1:11 problem allow comment has no reason"}},
+			"1:1 tool pnpm test", "1:11 problem allow comment has no reason",
+		}},
 		{"not a directive", "pnpm test # ci-parity: allowed", []string{"1:1 tool pnpm test"}},
 		{"expression in reason", "# ci-parity: allow runs for ${{ matrix.os }}\ngo test", []string{
-			"2:1 tool go test [allowed: runs for ${{ matrix.os }}]"}},
+			"2:1 tool go test [allowed: runs for ${{ matrix.os }}]",
+		}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

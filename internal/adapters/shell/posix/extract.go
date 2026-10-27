@@ -303,11 +303,11 @@ func (e *extractor) problem(line, col int, msg string) {
 }
 
 func normalize(words []domain.Word) string {
-	lits := make([]string, 0, len(words))
+	literals := make([]string, 0, len(words))
 	for _, w := range words {
 		if w.Literal {
-			lits = append(lits, w.Text)
+			literals = append(literals, w.Text)
 		}
 	}
-	return strings.Join(lits, " ")
+	return strings.Join(literals, " ")
 }

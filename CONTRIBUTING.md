@@ -28,9 +28,9 @@ the approach.
 **Prerequisites:**
 
 - Go, at the version in `go.mod` (Go downloads the pinned toolchain itself)
-- [mise](https://mise.jdx.dev), which installs task, golangci-lint,
-  actionlint and gitleaks at the versions in `mise.toml`. Without mise,
-  install those yourself at the same versions.
+- [mise](https://mise.jdx.dev), which installs task and every linter at the
+  versions in `mise.toml`. Without mise, install those yourself at the same
+  versions. Linter configs live in `.config/linters/`.
 
 Or open the repository in the devcontainer (`.devcontainer/`, for VS Code or
 GitHub Codespaces), which installs Go at the `go.mod` toolchain and every tool
@@ -55,8 +55,16 @@ tasks:
 | `task build` | builds `./bin/ci-parity` |
 | `task test` | runs `go test ./...` |
 | `task test -- -update` | regenerates the golden files |
-| `task lint` | golangci-lint and actionlint |
-| `task fmt` | formats Go code; `task fmt:check` fails on unformatted code |
+| `task lint` | every linter below |
+| `task lint:go` | golangci-lint |
+| `task lint:vuln` | govulncheck: known vulnerabilities in Go dependencies |
+| `task lint:actions` | actionlint and zizmor on the workflows |
+| `task lint:shell` | shellcheck |
+| `task lint:yaml` | yamllint on the repo's YAML (fixtures are left out) |
+| `task lint:markdown` | markdownlint-cli2, run with `pnx` |
+| `task lint:spelling` | typos |
+| `task lint:editorconfig` | editorconfig-checker |
+| `task fmt` | formats Go code with gofumpt and goimports; `task fmt:check` prints the diff and fails |
 | `task self-check` | runs ci-parity against this repo's own workflows |
 | `task scrub` | maintainer check for private terms; passes with a warning when not set up |
 | `task ci` | all of the above, in order |

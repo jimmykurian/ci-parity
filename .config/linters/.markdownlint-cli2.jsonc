@@ -1,0 +1,19 @@
+// markdownlint for the repo's Markdown: README, AGENTS, docs and the GitHub
+// templates. Run by `task lint:markdown`.
+{
+  "config": {
+    "default": true,
+    // Prose is wrapped by the editor, not at a fixed width.
+    "MD013": false,
+    "MD024": { "siblings_only": true },
+    // The spec quotes exact output, such as ` [tolerated]` with its leading space.
+    "MD038": false,
+    "MD046": { "style": "fenced" },
+    "MD048": { "style": "backtick" },
+    // Table pipes needn't line up.
+    "MD060": false
+  },
+  "globs": ["**/*.md"],
+  "gitignore": true,
+  "ignores": ["testdata/**"]
+}

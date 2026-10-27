@@ -6,6 +6,28 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-27: linters and formatters beyond golangci-lint and actionlint (accepted)
+
+Problem: SPEC 12 named three dev tools, so YAML, Markdown, shell, spelling, workflow
+security and Go vulnerabilities went unchecked, and formatting was plain gofmt.
+
+Change: every tool is pinned in `mise.toml` and has its own `lint:<group>` task;
+`task lint` runs them all, and configs live in `.config/linters/`.
+
+- Go: golangci-lint adds copyloopvar, errorlint, gosec, misspell, nolintlint,
+  unconvert, unparam and usestdlibvars, and formats with gofumpt and goimports
+  (`task fmt` and `fmt:check` now run `golangci-lint fmt`). gosec's G304 is off: reading
+  files the user names is the tool's job. govulncheck runs as `lint:vuln`.
+- Workflows: zizmor (offline) next to actionlint. Both checkouts now set
+  `persist-credentials: false`.
+- shellcheck on `*.sh`, yamllint on the repo's YAML (not fixtures), markdownlint-cli2 run
+  with `pnx`, typos for spelling, editorconfig-checker for charset, line endings, final
+  newlines and trailing whitespace.
+- pnpm is pinned at 11.21.0: the 12.x releases fail mise's npm provenance check, and that
+  check is not bypassed.
+
+None of these touch `go.mod`, so the three-module rule is unaffected.
+
 ### 2026-10-27: add `pnx` to the built-in tools list (accepted)
 
 Problem: pnpm now ships `pnx`, an alias of `pnpm dlx` and `pnpx` that fetches and runs a

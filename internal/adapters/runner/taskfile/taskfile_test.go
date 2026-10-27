@@ -148,7 +148,8 @@ func TestLoadErrors(t *testing.T) {
 		{"templated include", map[string]string{"Taskfile.yml": "includes:\n  os: ./{{OS}}.yml\n"}, "uses a template"},
 		{"version 2", map[string]string{"Taskfile.yml": "version: '2'\n"}, `unsupported Taskfile version "2"`},
 		{"version in include", map[string]string{
-			"Taskfile.yml": "includes:\n  old: old.yml\n", "old.yml": "version: 2\n"}, "parse old.yml"},
+			"Taskfile.yml": "includes:\n  old: old.yml\n", "old.yml": "version: 2\n",
+		}, "parse old.yml"},
 		{"bad yaml", map[string]string{"Taskfile.yml": "tasks: [\n"}, "parse Taskfile.yml"},
 	}
 	for _, tt := range tests {

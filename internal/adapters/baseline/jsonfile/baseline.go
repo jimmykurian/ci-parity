@@ -51,6 +51,7 @@ func Write(root, path string, counts map[string]int) error {
 	if err != nil {
 		return fmt.Errorf("encode baseline: %w", err)
 	}
+	//nolint:gosec // G306: the baseline is committed and read by everyone, like source.
 	if err := os.WriteFile(join(root, path), append(data, '\n'), 0o644); err != nil {
 		return fmt.Errorf("write baseline %s: %w", filepath.ToSlash(path), err)
 	}

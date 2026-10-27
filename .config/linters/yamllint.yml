@@ -1,0 +1,19 @@
+# yamllint for the repo's own YAML: workflows, Taskfile, golangci-lint config and
+# issue forms. Run by `task lint:yaml`. Fixtures are test inputs, some invalid on
+# purpose, so testdata/ is left out.
+extends: default
+
+rules:
+  # Long lines are fine in commands and descriptions; editors wrap.
+  line-length: disable
+  # No leading `---`: none of these files hold more than one document.
+  document-start: disable
+  # GitHub Actions' `on:` key reads as a boolean to YAML 1.1.
+  truthy:
+    allowed-values: ["true", "false"]
+    check-keys: false
+  comments:
+    min-spaces-from-content: 1
+  indentation:
+    spaces: 2
+    indent-sequences: consistent

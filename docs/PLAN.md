@@ -6,7 +6,7 @@ the next phase until asked. Phase 5 is a backlog, not work.
 
 Fixture layout, used from Phase 1 on:
 
-```
+```text
 testdata/fixtures/<case>/
   .ci-parity.yml                 (optional; defaults apply when absent)
   .ci-parity-baseline.json       (optional)

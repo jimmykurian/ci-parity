@@ -114,12 +114,21 @@ func TestCheck(t *testing.T) {
 		wantRows int
 		failed   bool
 	}{
-		{"no baseline file is strict", nil, false,
-			[]string{"a.yml:P001:error", "a.yml:P001:error", "b.yml:P001:error"}, 0, true},
-		{"baseline tolerates", tolerant, false,
-			[]string{"a.yml:P001:tolerated", "a.yml:P001:tolerated", "b.yml:P001:tolerated"}, 2, false},
-		{"strict ignores the baseline", tolerant, true,
-			[]string{"a.yml:P001:error", "a.yml:P001:error", "b.yml:P001:error"}, 0, true},
+		{
+			"no baseline file is strict", nil, false,
+			[]string{"a.yml:P001:error", "a.yml:P001:error", "b.yml:P001:error"},
+			0, true,
+		},
+		{
+			"baseline tolerates", tolerant, false,
+			[]string{"a.yml:P001:tolerated", "a.yml:P001:tolerated", "b.yml:P001:tolerated"},
+			2, false,
+		},
+		{
+			"strict ignores the baseline", tolerant, true,
+			[]string{"a.yml:P001:error", "a.yml:P001:error", "b.yml:P001:error"},
+			0, true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

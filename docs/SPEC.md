@@ -270,8 +270,7 @@ exits 2). Collect:
   unless `optional: true`. An include path holding a template (`{{OS}}`) is treated as
   missing.
 - An included Taskfile with a `default` task also makes the bare namespace a valid name.
-
-File names are matched exactly against the directory listing.
+- File names are matched exactly against the directory listing.
 - Each task's command strings for suggestion matching: `cmd:` on the task, string
   entries of `cmds`, and `cmd:` map entries of `cmds`. Ignore `task:`, `for:` and
   `defer:` entries.
@@ -317,7 +316,7 @@ A step without a `name:` is referred to as `step <index>` (1-based) in place of
 
 ## 7. CLI
 
-```
+```text
 ci-parity check    [--config PATH] [--baseline PATH] [--format text|github|json]
                    [--strict] [--verbose] [-C DIR]
 ci-parity baseline [--config PATH] [--baseline PATH] [--allow-regression] [-C DIR]
@@ -335,7 +334,7 @@ ci-parity version
 
 Findings are sorted by file, line, column, rule ID. Text format:
 
-```
+```text
 .github/workflows/ci.yml
   42:9   P001 inline-tool   step "Run tests" in job "test" runs 'pnpm test' directly; already available as 'task test'
   58:9   P002 unknown-task  'task lint:all' is not defined in Taskfile.yml (closest: lint:ci)
@@ -363,7 +362,7 @@ Text format details:
 
 GitHub format emits one workflow command per finding, nothing else:
 
-```
+```text
 ::error file=.github/workflows/ci.yml,line=42,col=9,title=P001 inline-tool::step "Run tests" in job "test" runs 'pnpm test' directly; already available as 'task test'
 ::warning file=...,title=P005 unsupported::step uses shell 'pwsh'; not analyzed
 ::notice file=...,title=P001 inline-tool (tolerated)::...
@@ -459,13 +458,14 @@ with `gh`; those `run:` lines carry `# ci-parity: allow` comments with reasons.
 The repo ships `.ci-parity.yml` and a `.ci-parity-baseline.json` with every workflow
 locked at 0.
 
-Dev tools (golangci-lint v2, actionlint, gitleaks) are installed as pinned binaries and
+Dev tools (golangci-lint v2, govulncheck, actionlint, zizmor, gitleaks, shellcheck,
+yamllint, markdownlint-cli2, typos, editorconfig-checker) are pinned in `mise.toml` and
 never added to `go.mod`, as `tool` directives or otherwise; the dependency rule in
-`AGENTS.md` covers `go.mod` and stays at three modules. In CI they come from `uses:`
-steps pinned to commit SHAs (golangci-lint and actionlint installed before `run: task
-ci`; gitleaks as its own `uses:` step, not part of `task ci`). Locally the developer
-installs them; `task lint` checks each binary is on `PATH` and fails with an install
-hint naming the missing one. `.golangci.yml` uses the v2 format (`version: "2"`).
+`AGENTS.md` covers `go.mod` and stays at three modules. In CI they come from a
+SHA-pinned `jdx/mise-action` step before `run: task ci`; gitleaks also runs as its own
+`uses:` step, not part of `task ci`. Locally `mise install` sets them up; each
+`task lint:<group>` checks its binaries are on `PATH` and fails with an install hint
+naming the missing one. `.golangci.yml` uses the v2 format (`version: "2"`).
 
 gitleaks-action needs a `GITLEAKS_LICENSE` secret only for repos owned by an
 organization. For a personal-account repo it runs with `GITHUB_TOKEN` alone.

@@ -14,8 +14,9 @@ repo's own workflows, so the repo is its own first customer.
 
 - `task build` builds `./bin/ci-parity`
 - `task test` runs `go test ./...`; `task test -- -update` regenerates golden files
-- `task lint` runs golangci-lint and actionlint
-- `task fmt` formats; `task fmt:check` fails on unformatted code
+- `task lint` runs every linter; `task lint:<group>` runs one (go, vuln, actions, shell,
+  yaml, markdown, spelling, editorconfig). Tools are pinned in `mise.toml`
+- `task fmt` formats Go (gofumpt, goimports); `task fmt:check` fails on unformatted code
 - `task self-check` runs the tool against this repo
 - `task scrub` greps the tree for terms in `$SCRUB_TERMS_FILE` (see Clean room)
 - `task ci` runs fmt:check, lint, test, build, self-check, scrub
