@@ -80,6 +80,9 @@ gitleaks runs in CI. Treat a hit as a build failure, never as something to allow
 - When a phase's acceptance criteria pass and `task ci` is green, commit, summarize what
   changed in a few lines, and stop. Do not start the next phase until asked.
 - Conventional commits (`feat:`, `fix:`, `test:`, `docs:`, `chore:`). Small commits.
+- `main` takes changes only through pull requests. Work on a branch; the git hooks
+  (`task hooks:install`) refuse commits and pushes on `main` and check staged files and
+  commit messages. Scopes come from `.gitmessage`.
 - Every `run:` step in this repo's workflows must invoke `task`. Setup goes in `uses:`
   steps. Anything else needs a `# ci-parity: allow <reason>` comment on the line.
 - Pin third-party actions to a full commit SHA with a version comment.

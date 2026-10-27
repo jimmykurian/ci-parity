@@ -62,12 +62,12 @@ tasks:
       - zizmor --offline .github
 
   lint:shell:
-    desc: Lint the shell scripts (shellcheck)
+    desc: Lint the shell scripts and git hooks (shellcheck)
     preconditions:
       - sh: command -v shellcheck
         msg: "shellcheck not found on PATH; run `mise install` or see https://github.com/koalaman/shellcheck#installing"
     cmds:
-      - git ls-files -z '*.sh' | xargs -0 shellcheck
+      - git ls-files -z '*.sh' '.githooks/*' | xargs -0 shellcheck
 
   lint:yaml:
     desc: Lint the repo's YAML, not the fixtures (yamllint)
@@ -119,6 +119,11 @@ tasks:
         msg: "golangci-lint not found on PATH; run `mise install` or see https://golangci-lint.run/welcome/install/"
     cmds:
       - golangci-lint fmt --diff
+
+  hooks:install:
+    desc: Use the git hooks in .githooks/ (pre-commit, commit-msg, pre-push)
+    cmds:
+      - git config core.hooksPath .githooks
 
   self-check:
     desc: Run ci-parity against this repo

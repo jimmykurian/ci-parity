@@ -44,6 +44,7 @@ cd ci-parity
 git config commit.template .gitmessage
 
 mise install
+task hooks:install
 task ci
 ```
 
@@ -68,6 +69,7 @@ tasks:
 | `task self-check` | runs ci-parity against this repo's own workflows |
 | `task scrub` | maintainer check for private terms; passes with a warning when not set up |
 | `task ci` | all of the above, in order |
+| `task hooks:install` | turns on the git hooks in `.githooks/` |
 
 ## How the code is organized
 
@@ -128,8 +130,27 @@ the container and works on the host too:
 git config user.signingkey "key::$(cat ~/.ssh/id_ed25519.pub)"  # run on the host
 ```
 
+## Git hooks
+
+`task hooks:install` points git at `.githooks/`:
+
+- **pre-commit** refuses commits on `main`, then checks what's staged: gitleaks and
+  `task scrub` on every commit, then golangci-lint (format and lint), editorconfig-checker,
+  typos, markdownlint, yamllint, shellcheck, actionlint and zizmor on the files they cover.
+- **commit-msg** checks the header against Conventional Commits, with the types and
+  scopes in `.gitmessage`.
+- **pre-push** refuses pushes to `main`, then runs `task test` and `task self-check`
+  when the pushed commits touch Go code, fixtures, the module, the Taskfile, the
+  workflows or `.ci-parity*`. It runs on the working tree, so it refuses when that
+  isn't a clean checkout of what's being pushed.
+
+A check whose tool isn't installed is skipped with a warning; CI runs everything.
+`--no-verify` skips the hooks once.
+
 ## Pull requests
 
+- `main` takes changes only through pull requests: work on a branch, and the hooks
+  refuse commits and pushes on `main`.
 - Keep each pull request to one change, and fill in the
   [template](.github/PULL_REQUEST_TEMPLATE.md).
 - The PR title follows Conventional Commits.

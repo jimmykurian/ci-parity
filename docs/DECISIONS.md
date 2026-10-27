@@ -6,6 +6,21 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-27: git hooks, and main only through pull requests (accepted)
+
+Problem: the checks ran only in `task ci` and CI, so a forbidden term, a secret or a
+malformed commit message was caught after the commit, and work landed on `main` directly.
+
+Change: `.githooks/` holds pre-commit, commit-msg and pre-push hooks, turned on with
+`task hooks:install` (the devcontainer runs it). pre-commit refuses commits on `main` and
+runs gitleaks, `task scrub` and the linters on the staged files; commit-msg checks
+Conventional Commits against the types and scopes in `.gitmessage`; pre-push refuses
+pushes to `main` and runs `task test` and `task self-check` when Go code, fixtures, the
+module, the Taskfile, the workflows or `.ci-parity*` change. Missing tools are skipped
+with a warning, and `--no-verify` bypasses once. Every change now reaches `main` through
+a branch and pull request. GitHub branch protection is a separate setting, not changed
+here.
+
 ### 2026-10-27: linters and formatters beyond golangci-lint and actionlint (accepted)
 
 Problem: SPEC 12 named three dev tools, so YAML, Markdown, shell, spelling, workflow

@@ -1,0 +1,70 @@
+#!/bin/bash
+set -eo pipefail
+
+# Refuses commits on main, then checks the staged files. A check whose tool isn't
+# installed is skipped with a warning (run `mise install`); CI runs every check.
+# The checks read files as they are on disk, so a partly staged file is checked
+# whole. Install with `task hooks:install`. Skip once with `git commit --no-verify`.
+
+cd "$(git rev-parse --show-toplevel)"
+FAILED=0
+
+if [[ "$(git symbolic-ref --short -q HEAD)" == "main" ]]; then
+  echo "pre-commit: main takes changes only through pull requests. Create a branch first"
+  echo "(git switch -c <branch>), or bypass once with git commit --no-verify."
+  exit 1
+fi
+
+# Sets FILES to the staged (added, copied, modified or renamed) files matching a
+# regex, and fails when there are none.
+stage() {
+  FILES=()
+  while IFS= read -r file; do FILES+=("$file"); done < <(git diff --cached --name-only --diff-filter=ACMR | grep -E "$1" || true)
+  [[ ${#FILES[@]} -gt 0 ]]
+}
+
+# Runs a check, or skips it when its tool isn't installed.
+check() {
+  local name="$1" tool="$2"
+  shift 2
+  if ! command -v "$tool" > /dev/null; then
+    echo "pre-commit: $name skipped ($tool not installed)"
+    return 0
+  fi
+  "$@" || { echo "pre-commit: $name failed"; FAILED=1; }
+}
+
+check "secrets" gitleaks gitleaks git --pre-commit --staged --no-banner --log-level warn --redact .
+check "scrub" task task --silent scrub
+
+if stage '\.go$'; then
+  check "go format" golangci-lint golangci-lint fmt --diff "${FILES[@]}"
+  check "go lint" golangci-lint golangci-lint run ./...
+fi
+if stage '.'; then
+  check "editorconfig" editorconfig-checker editorconfig-checker -config .config/linters/editorconfig-checker.json "${FILES[@]}"
+  check "spelling" typos typos --config .config/linters/typos.toml --force-exclude "${FILES[@]}"
+fi
+if stage '\.md$'; then
+  # The whole set, through the task, so the markdownlint-cli2 version is pinned once.
+  check "markdown" pnx task --silent lint:markdown
+fi
+if stage '\.ya?ml$'; then
+  # Fixtures are test inputs, some invalid on purpose.
+  YAML=()
+  for file in "${FILES[@]}"; do
+    if [[ "$file" != testdata/* ]]; then YAML+=("$file"); fi
+  done
+  if [[ ${#YAML[@]} -gt 0 ]]; then
+    check "yaml" yamllint yamllint --strict -c .config/linters/yamllint.yml "${YAML[@]}"
+  fi
+fi
+if stage '\.sh$|^\.githooks/'; then
+  check "shell" shellcheck shellcheck "${FILES[@]}"
+fi
+if stage '^\.github/workflows/'; then
+  check "actionlint" actionlint actionlint "${FILES[@]}"
+  check "zizmor" zizmor zizmor --offline --quiet "${FILES[@]}"
+fi
+
+exit "$FAILED"

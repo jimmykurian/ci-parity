@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-# Runs once when the devcontainer is created: Go, the tools in mise.toml, and a
-# first build.
+# Runs once when the devcontainer is created: Go, the tools in mise.toml, a first
+# build and the git hooks.
 
 cd "$(dirname "$0")/.."
 
@@ -24,6 +24,7 @@ eval "$(mise activate bash --shims)"
 
 go mod download
 task build
+task hooks:install
 
 # The repo's git config may sign commits with a key file that only exists on
 # the host. Say so now rather than on the first commit.

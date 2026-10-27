@@ -105,7 +105,9 @@ Every command runs through the [Taskfile](Taskfile.yml); CI calls the same tasks
 `task ci` runs formatting, lint, tests, build, self-check and scrub. The linters and
 formatters, from golangci-lint to typos, are pinned in [mise.toml](mise.toml) at the
 versions CI uses; with [mise](https://mise.jdx.dev/), `mise install` sets them up.
-The devcontainer (`.devcontainer/`) sets all of this up in VS Code or Codespaces.
+`task hooks:install` turns on the pre-commit, commit-msg and pre-push hooks in
+`.githooks/`. The devcontainer (`.devcontainer/`) sets all of this up in VS Code or
+Codespaces.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose and test a change.
 
 ## License
