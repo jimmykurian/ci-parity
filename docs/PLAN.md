@@ -47,22 +47,22 @@ version string.
 
 ## Phase 1: workflows, shell extraction, P001, text output
 
-- [ ] `internal/config`: load `.ci-parity.yml`, apply defaults, validate per SPEC 4.2,
+- [x] `internal/config`: load `.ci-parity.yml`, apply defaults, validate per SPEC 4.2,
       unknown keys are errors
-- [ ] Path glob matcher with `**` per SPEC 4.1 and command glob for `allow.match` per
+- [x] Path glob matcher with `**` per SPEC 4.1 and command glob for `allow.match` per
       SPEC 4.2, both in `internal/config` with table tests (`**` at start, middle, end,
       zero segments; `*` across `/` in commands only)
-- [ ] `internal/workflow`: enumerate steps with positions per SPEC 5.1 and 5.2,
+- [x] `internal/workflow`: enumerate steps with positions per SPEC 5.1 and 5.2,
       including composite actions and composite steps without `shell` (P005)
-- [ ] `internal/shell`: command extraction per SPEC 5.3, including transparent wrappers,
+- [x] `internal/shell`: command extraction per SPEC 5.3, including transparent wrappers,
       `${{ }}` replacement, allow comments
-- [ ] `internal/rules`: P001 and P005; a `Finding` type shared by every reporter
-- [ ] `internal/report/text`
-- [ ] `check --format text` wired end to end; `self-check` switched to `check`
-- [ ] Fixtures: `clean`, `inline-tools`, `wrappers`, `allow-comment`, `allow-config`,
+- [x] `internal/rules`: P001 and P005; a `Finding` type shared by every reporter
+- [x] `internal/report/text`
+- [x] `check --format text` wired end to end; `self-check` switched to `check`
+- [x] Fixtures: `clean`, `inline-tools`, `wrappers`, `allow-comment`, `allow-config`,
       `dynamic-command`, `pwsh-step`, `composite-action-steps`, `composite-no-shell`,
       `nested-actions-glob`, `block-scalar-lines`
-- [ ] Unit tests for the extractor: pipelines, `&&` lists, `if` blocks, functions,
+- [x] Unit tests for the extractor: pipelines, `&&` lists, `if` blocks, functions,
       heredocs, `cd dir && tool`, `env FOO=1 tool`, `timeout 30 tool`
 
 Acceptance: all fixtures pass in text format. `task self-check` passes on this repo.
