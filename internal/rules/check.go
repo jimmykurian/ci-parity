@@ -1,6 +1,7 @@
 package rules
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -52,7 +53,7 @@ func (c *checker) step(f *workflow.File, s *workflow.Step) {
 	}
 	res, err := shell.Extract(s.Run.Text, c.opts)
 	if err != nil {
-		c.add(f, s, Unsupported, SeverityWarning, s.Line, s.Col, "cannot parse step script: "+err.Error())
+		c.parseError(f, s, err)
 		return
 	}
 	for _, p := range res.Problems {
@@ -64,6 +65,17 @@ func (c *checker) step(f *workflow.File, s *workflow.Step) {
 			c.inlineTool(f, s, cmd)
 		}
 	}
+}
+
+// parseError reports a script that does not parse, at the parser's position
+// when it gave one and at the run: key otherwise.
+func (c *checker) parseError(f *workflow.File, s *workflow.Step, err error) {
+	line, col := s.Line, s.Col
+	var pe *shell.ParseError
+	if errors.As(err, &pe) && pe.Line > 0 {
+		line, col = s.Run.Position(pe.Line, pe.Col)
+	}
+	c.add(f, s, Unsupported, SeverityWarning, line, col, "cannot parse step script: "+err.Error())
 }
 
 func (c *checker) inlineTool(f *workflow.File, s *workflow.Step, cmd shell.Command) {
