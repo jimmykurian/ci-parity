@@ -1,0 +1,23 @@
+# Normalize text to LF everywhere so line and column numbers in goldens
+# match on every OS, including Windows checkouts.
+* text=auto eol=lf
+
+*.go       text eol=lf diff=golang
+*.mod      text eol=lf
+*.sum      text eol=lf merge=union
+*.yml      text eol=lf
+*.yaml     text eol=lf
+*.json     text eol=lf
+*.md       text eol=lf diff=markdown
+*.sh       text eol=lf
+
+# Golden files are compared byte for byte.
+**/expected/*.golden  text eol=lf
+**/expected/exitcode  text eol=lf
+
+# Fixtures are synthetic repos, not project source.
+testdata/**  linguist-vendored
+
+*.png  binary
+*.gz   binary
+*.zip  binary

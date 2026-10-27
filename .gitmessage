@@ -1,0 +1,42 @@
+# <type>(<scope>): <description>
+# │       │             │
+# │       │             └─> Summary in present tense. Not capitalized. No period at the end.
+# │       │
+# │       └─> Scope: cli|config|workflow|shell|runner|rules|baseline|report|fixtures|action|release|deps|docs|tooling (optional)
+# │
+# └─> Type: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+
+# Body (optional): Explain *what* and *why* vs. *how*
+
+
+# Footer (optional): Reference issues, breaking changes
+# Examples:
+#   Fixes #123
+#   BREAKING CHANGE: <description>
+
+# ─────────────────────────────────────────────────────────────
+# Conventional Commits v1.0.0 - https://conventionalcommits.org
+# ─────────────────────────────────────────────────────────────
+# Types:
+#   feat:     A new feature (MINOR version bump)
+#   fix:      A bug fix (PATCH version bump)
+#   docs:     Documentation only changes
+#   style:    Formatting only (no code change)
+#   refactor: Code change that neither fixes a bug nor adds a feature
+#   perf:     Performance improvement
+#   test:     Adding or correcting tests or fixtures
+#   build:    Changes to the build system, Taskfile, goreleaser or dependencies
+#   ci:       Changes to CI configuration files and scripts
+#   chore:    Other changes that don't modify src or test files
+#
+# Breaking Changes:
+#   Add ! after type/scope: feat!: or feat(baseline)!:
+#   Or add footer: BREAKING CHANGE: <description>
+#   Rule IDs, the baseline format and the JSON schema are public contracts.
+#
+# Examples:
+#   feat(shell): peel transparent wrappers before matching tools
+#   fix(workflow): report block-scalar run lines one line below the key
+#   test(fixtures): add includes-nested fixture
+#   feat(baseline)!: rename the workflows key
+# ─────────────────────────────────────────────────────────────
