@@ -20,6 +20,7 @@ const (
 	InlineTool   = "P001"
 	UnknownTask  = "P002"
 	InternalTask = "P003"
+	Regression   = "P004"
 	Unsupported  = "P005"
 )
 
