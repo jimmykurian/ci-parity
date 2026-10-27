@@ -40,6 +40,8 @@ Delete the options that don't apply.
       comment
 - [ ] `README.md` and `AGENTS.md` are updated if a command, flag or decision
       changed
+- [ ] New or changed output follows `ACCESSIBILITY.md`:
+      meaning in words, errors that name what and where
 
 ## Output
 

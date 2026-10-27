@@ -25,6 +25,7 @@ body:
         - CLI
         - GitHub Action
         - Install and releases
+        - Accessibility of output or docs
         - Documentation
         - Other
     validations:

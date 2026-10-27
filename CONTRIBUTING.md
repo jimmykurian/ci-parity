@@ -118,6 +118,9 @@ Then add the same public key to GitHub as a signing key.
   `uses:` steps pinned to a full commit SHA with a version comment. Anything
   else needs a `# ci-parity: allow <reason>` comment on the line.
 - Update `README.md` when a command, flag or output changes.
+- Output and message changes follow the rules in
+  [ACCESSIBILITY.md](ACCESSIBILITY.md): meaning in words, never color or
+  symbols alone.
 
 ## License
 
