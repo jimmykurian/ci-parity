@@ -6,10 +6,10 @@ import (
 	"io"
 	"io/fs"
 
-	"github.com/jimmykurian/ci-parity/internal/baseline"
-	"github.com/jimmykurian/ci-parity/internal/report/github"
-	jsonreport "github.com/jimmykurian/ci-parity/internal/report/json"
-	"github.com/jimmykurian/ci-parity/internal/report/text"
+	"github.com/jimmykurian/ci-parity/internal/adapters/baseline/jsonfile"
+	"github.com/jimmykurian/ci-parity/internal/adapters/report/github"
+	jsonreport "github.com/jimmykurian/ci-parity/internal/adapters/report/json"
+	"github.com/jimmykurian/ci-parity/internal/adapters/report/text"
 
 	"github.com/jimmykurian/ci-parity/internal/domain"
 )
@@ -36,7 +36,7 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 	}
 	findings, rows := res.findings, []domain.Row(nil)
 	if !*strict {
-		b, err := baseline.Read(*dir, res.baseline)
+		b, err := jsonfile.Read(*dir, res.baseline)
 		switch {
 		case errors.Is(err, fs.ErrNotExist):
 			// No baseline file: strict mode, every P001 is an error.

@@ -1,4 +1,4 @@
-package workflow
+package ghactions
 
 import (
 	"gopkg.in/yaml.v3"

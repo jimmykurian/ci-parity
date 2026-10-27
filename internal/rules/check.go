@@ -7,16 +7,13 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jimmykurian/ci-parity/internal/runner"
-	"github.com/jimmykurian/ci-parity/internal/shell"
-
 	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
-// Check evaluates every step of files against cfg and the task runner r and
-// returns sorted findings.
-func Check(cfg *domain.Config, r runner.Runner, files []*domain.File) []domain.Finding {
-	c := checker{cfg: cfg, opts: shellOptions(cfg), runner: r, tasks: map[string]bool{}, suggest: newSuggester(r)}
+// Check evaluates every step of files against cfg and the task runner r,
+// using ex to read run: scripts, and returns sorted findings.
+func Check(cfg *domain.Config, r TaskSource, ex CommandExtractor, files []*domain.File) []domain.Finding {
+	c := checker{cfg: cfg, opts: shellOptions(cfg), runner: r, extract: ex, tasks: map[string]bool{}, suggest: newSuggester(r)}
 	for _, name := range r.Tasks() {
 		c.tasks[name] = true
 	}
@@ -43,7 +40,8 @@ func shellOptions(cfg *domain.Config) domain.ExtractOptions {
 type checker struct {
 	cfg      *domain.Config
 	opts     domain.ExtractOptions
-	runner   runner.Runner
+	runner   TaskSource
+	extract  CommandExtractor
 	tasks    map[string]bool
 	suggest  *suggester
 	findings []domain.Finding
@@ -60,11 +58,11 @@ func (c *checker) step(f *domain.File, s *domain.Step) {
 	case s.Shell == "" && f.Kind == domain.KindAction:
 		c.add(f, s, domain.Unsupported, domain.SeverityWarning, s.Line, s.Col, "composite step has no shell; not analyzed")
 		return
-	case !supportedShell(s.Shell):
+	case !c.extract.Supports(s.Shell):
 		c.add(f, s, domain.Unsupported, domain.SeverityWarning, s.Line, s.Col, fmt.Sprintf("step uses shell '%s'; not analyzed", s.Shell))
 		return
 	}
-	res, err := shell.Extract(s.Run.Text, c.opts)
+	res, err := c.extract.Extract(s.Run.Text, c.opts)
 	if err != nil {
 		c.parseError(f, s, err)
 		return
@@ -142,11 +140,6 @@ func (c *checker) add(f *domain.File, s *domain.Step, rule string, sev domain.Se
 	}
 	c.findings = append(c.findings, fd)
 	return &c.findings[len(c.findings)-1]
-}
-
-// supportedShell reports whether a step's shell is one the extractor parses.
-func supportedShell(sh string) bool {
-	return sh == "bash" || sh == "sh" || strings.HasPrefix(sh, "bash ") || strings.HasPrefix(sh, "sh ")
 }
 
 // stepRef names a step as `step "<name>"`, or `step <index>` when unnamed.

@@ -1,4 +1,4 @@
-package shell
+package posix
 
 import (
 	"errors"
@@ -8,6 +8,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/jimmykurian/ci-parity/internal/domain"
+
+	"github.com/jimmykurian/ci-parity/internal/rules"
 )
 
 var testOpts = domain.ExtractOptions{
@@ -181,3 +183,5 @@ func TestExtractParseError(t *testing.T) {
 		})
 	}
 }
+
+var _ rules.CommandExtractor = Extractor{}

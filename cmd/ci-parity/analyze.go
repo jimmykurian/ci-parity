@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jimmykurian/ci-parity/internal/config"
+	"github.com/jimmykurian/ci-parity/internal/adapters/config/yamlconfig"
+	"github.com/jimmykurian/ci-parity/internal/adapters/runner/taskfile"
+	"github.com/jimmykurian/ci-parity/internal/adapters/workflow/ghactions"
 	"github.com/jimmykurian/ci-parity/internal/rules"
-	"github.com/jimmykurian/ci-parity/internal/runner/taskfile"
-	"github.com/jimmykurian/ci-parity/internal/workflow"
 
 	"github.com/jimmykurian/ci-parity/internal/domain"
+
+	"github.com/jimmykurian/ci-parity/internal/adapters/shell/posix"
 )
 
 // analysis is the result of running the rules over a repository.
@@ -29,19 +31,19 @@ func analyze(root, configPath, baselinePath string) (*analysis, error) {
 	}
 	required := configPath != ""
 	if !required {
-		configPath = config.DefaultPath
+		configPath = yamlconfig.DefaultPath
 	}
-	cfg, err := config.Load(root, configPath, required)
+	cfg, err := yamlconfig.Load(root, configPath, required)
 	if err != nil {
 		return nil, err
 	}
-	paths, err := workflow.Discover(root, cfg.Workflows)
+	paths, err := ghactions.Discover(root, cfg.Workflows)
 	if err != nil {
 		return nil, err
 	}
 	files := make([]*domain.File, 0, len(paths))
 	for _, p := range paths {
-		f, err := workflow.Load(root, p)
+		f, err := ghactions.Load(root, p)
 		if err != nil {
 			return nil, err
 		}
@@ -54,5 +56,5 @@ func analyze(root, configPath, baselinePath string) (*analysis, error) {
 	if baselinePath == "" {
 		baselinePath = cfg.Baseline
 	}
-	return &analysis{findings: rules.Check(cfg, tf, files), paths: paths, baseline: baselinePath}, nil
+	return &analysis{findings: rules.Check(cfg, tf, posix.Extractor{}, files), paths: paths, baseline: baselinePath}, nil
 }

@@ -1,5 +1,6 @@
-// Package shell extracts tool and task-runner invocations from run: scripts.
-package shell
+// Package posix extracts tool and task-runner invocations from bash and sh
+// run: scripts with mvdan.cc/sh.
+package posix
 
 import (
 	"errors"
@@ -15,6 +16,19 @@ import (
 )
 
 var exprPattern = regexp.MustCompile(`(?s)\$\{\{.*?\}\}`)
+
+// Extractor implements rules.CommandExtractor for bash and sh steps.
+type Extractor struct{}
+
+// Supports reports whether sh is bash or sh, with or without arguments.
+func (Extractor) Supports(sh string) bool {
+	return sh == "bash" || sh == "sh" || strings.HasPrefix(sh, "bash ") || strings.HasPrefix(sh, "sh ")
+}
+
+// Extract calls the package-level Extract.
+func (Extractor) Extract(script string, opts domain.ExtractOptions) (domain.Extraction, error) {
+	return Extract(script, opts)
+}
 
 // Extract parses script as bash and returns the tool and invoker calls in it.
 // A script that does not parse returns a *ParseError; the caller reports it as P005.

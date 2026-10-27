@@ -6,7 +6,7 @@ import (
 	"io"
 	"io/fs"
 
-	"github.com/jimmykurian/ci-parity/internal/baseline"
+	"github.com/jimmykurian/ci-parity/internal/adapters/baseline/jsonfile"
 
 	"github.com/jimmykurian/ci-parity/internal/domain"
 )
@@ -26,7 +26,7 @@ func runBaseline(args []string, stdout, stderr io.Writer) int {
 		return exitUsage
 	}
 	counts := domain.Counts(res.paths, res.findings)
-	old, err := baseline.Read(*dir, res.baseline)
+	old, err := jsonfile.Read(*dir, res.baseline)
 	if err != nil && !errors.Is(err, fs.ErrNotExist) {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
 		return exitUsage
@@ -41,7 +41,7 @@ func runBaseline(args []string, stdout, stderr io.Writer) int {
 			return exitFindings
 		}
 	}
-	if err := baseline.Write(*dir, res.baseline, counts); err != nil {
+	if err := jsonfile.Write(*dir, res.baseline, counts); err != nil {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
 		return exitUsage
 	}

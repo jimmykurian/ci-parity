@@ -2,8 +2,6 @@ package rules
 
 import (
 	"strings"
-
-	"github.com/jimmykurian/ci-parity/internal/runner"
 )
 
 // suggester proposes tasks for inline commands and unknown task names. Internal
@@ -13,7 +11,7 @@ type suggester struct {
 	names     []string          // invocable, non-internal names
 }
 
-func newSuggester(r runner.Runner) *suggester {
+func newSuggester(r TaskSource) *suggester {
 	s := &suggester{byCommand: map[string]string{}}
 	for _, name := range r.Tasks() {
 		if r.IsInternal(name) {

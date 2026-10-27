@@ -9,10 +9,10 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/jimmykurian/ci-parity/internal/runner"
+	"github.com/jimmykurian/ci-parity/internal/rules"
 )
 
-var _ runner.Runner = (*Taskfile)(nil)
+var _ rules.TaskSource = (*Taskfile)(nil)
 
 // writeTree writes files (path -> content) under a new temp dir and returns it.
 func writeTree(t *testing.T, files map[string]string) string {

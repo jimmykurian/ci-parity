@@ -1,6 +1,6 @@
-// Package workflow loads GitHub Actions workflows and local composite actions
+// Package ghactions loads GitHub Actions workflows and local composite actions
 // and enumerates their steps with source positions.
-package workflow
+package ghactions
 
 import (
 	"bytes"

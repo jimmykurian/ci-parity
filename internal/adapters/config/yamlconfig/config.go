@@ -1,5 +1,5 @@
-// Package config loads, defaults and validates .ci-parity.yml.
-package config
+// Package yamlconfig loads, defaults and validates .ci-parity.yml.
+package yamlconfig
 
 import (
 	"bytes"

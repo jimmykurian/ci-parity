@@ -1,5 +1,5 @@
-// Package baseline reads and writes .ci-parity-baseline.json.
-package baseline
+// Package jsonfile reads and writes .ci-parity-baseline.json.
+package jsonfile
 
 import (
 	"bytes"
