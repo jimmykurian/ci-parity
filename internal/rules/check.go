@@ -6,13 +6,18 @@ import (
 	"strings"
 
 	"github.com/jimmykurian/ci-parity/internal/config"
+	"github.com/jimmykurian/ci-parity/internal/runner"
 	"github.com/jimmykurian/ci-parity/internal/shell"
 	"github.com/jimmykurian/ci-parity/internal/workflow"
 )
 
-// Check evaluates every step of files against cfg and returns sorted findings.
-func Check(cfg *config.Config, files []*workflow.File) []Finding {
-	c := checker{cfg: cfg, opts: shellOptions(cfg)}
+// Check evaluates every step of files against cfg and the task runner r and
+// returns sorted findings.
+func Check(cfg *config.Config, r runner.Runner, files []*workflow.File) []Finding {
+	c := checker{cfg: cfg, opts: shellOptions(cfg), runner: r, tasks: map[string]bool{}, suggest: newSuggester(r)}
+	for _, name := range r.Tasks() {
+		c.tasks[name] = true
+	}
 	for _, f := range files {
 		for i := range f.Steps {
 			c.step(f, &f.Steps[i])
@@ -36,11 +41,17 @@ func shellOptions(cfg *config.Config) shell.Options {
 type checker struct {
 	cfg      *config.Config
 	opts     shell.Options
+	runner   runner.Runner
+	tasks    map[string]bool
+	suggest  *suggester
 	findings []Finding
 }
 
 func (c *checker) step(f *workflow.File, s *workflow.Step) {
 	if s.Run == nil {
+		if s.Uses != "" {
+			c.actionInvoker(f, s)
+		}
 		return
 	}
 	switch {
@@ -63,6 +74,11 @@ func (c *checker) step(f *workflow.File, s *workflow.Step) {
 	for _, cmd := range res.Commands {
 		if cmd.Kind == shell.KindTool {
 			c.inlineTool(f, s, cmd)
+			continue
+		}
+		for _, w := range taskNames(cmd.Args) {
+			line, col := s.Run.Position(w.Line, w.Col)
+			c.task(f, s, w.Text, line, col)
 		}
 	}
 }
@@ -87,8 +103,12 @@ func (c *checker) inlineTool(f *workflow.File, s *workflow.Step, cmd shell.Comma
 	} else if r, ok := c.allowRule(f.Path, cmd.Normalized); ok {
 		sev, reason = SeverityAllowed, r
 	}
+	suggestion := c.suggest.command(cmd.Normalized)
+	if suggestion != "" {
+		msg += fmt.Sprintf("; already available as '%s'", suggestion)
+	}
 	fd := c.add(f, s, InlineTool, sev, line, col, msg)
-	fd.Command, fd.Reason = cmd.Normalized, reason
+	fd.Command, fd.Reason, fd.Suggestion = cmd.Normalized, reason, suggestion
 }
 
 // allowRule returns the reason of the first config allow entry matching the

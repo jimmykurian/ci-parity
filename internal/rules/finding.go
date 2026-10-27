@@ -17,8 +17,10 @@ const (
 
 // Rule IDs, per docs/SPEC.md section 6.
 const (
-	InlineTool  = "P001"
-	Unsupported = "P005"
+	InlineTool   = "P001"
+	UnknownTask  = "P002"
+	InternalTask = "P003"
+	Unsupported  = "P005"
 )
 
 // Names maps rule IDs to their names.
