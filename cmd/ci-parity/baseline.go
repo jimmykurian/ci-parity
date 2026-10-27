@@ -1,14 +1,12 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
-	"io/fs"
 
-	"github.com/jimmykurian/ci-parity/internal/adapters/baseline/jsonfile"
-
-	"github.com/jimmykurian/ci-parity/internal/domain"
+	"github.com/jimmykurian/ci-parity/internal/app"
 )
 
 func runBaseline(args []string, stdout, stderr io.Writer) int {
@@ -20,36 +18,30 @@ func runBaseline(args []string, stdout, stderr io.Writer) int {
 	if code, ok := parseFlags(flags, args); !ok {
 		return code
 	}
-	res, err := analyze(*dir, *configPath, *baselinePath)
+	a, err := newApp(*dir)
 	if err != nil {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
 		return exitUsage
 	}
-	counts := domain.Counts(res.paths, res.findings)
-	old, err := jsonfile.Read(*dir, res.baseline)
-	if err != nil && !errors.Is(err, fs.ErrNotExist) {
-		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
-		return exitUsage
-	}
-	if old != nil && !*allowRegression {
-		if regs := domain.Regressions(old, counts); len(regs) > 0 {
-			fmt.Fprintln(stderr, "ci-parity baseline: refusing to raise the baseline:")
-			for _, r := range regs {
-				fmt.Fprintf(stderr, "  %s  %d -> %d\n", r.File, r.Baseline, r.Current)
-			}
-			fmt.Fprintln(stderr, "fix the new inline-tool findings, or rerun with --allow-regression to accept them")
-			return exitFindings
+	res, err := a.WriteBaseline(context.Background(), app.BaselineOptions{
+		ConfigPath:      *configPath,
+		BaselinePath:    *baselinePath,
+		AllowRegression: *allowRegression,
+	})
+	var regs *app.RegressionError
+	switch {
+	case errors.As(err, &regs):
+		fmt.Fprintln(stderr, "ci-parity baseline: refusing to raise the baseline:")
+		for _, r := range regs.Rows {
+			fmt.Fprintf(stderr, "  %s  %d -> %d\n", r.File, r.Baseline, r.Current)
 		}
-	}
-	if err := jsonfile.Write(*dir, res.baseline, counts); err != nil {
+		fmt.Fprintln(stderr, "fix the new inline-tool findings, or rerun with --allow-regression to accept them")
+		return exitFindings
+	case err != nil:
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
 		return exitUsage
 	}
-	total := 0
-	for _, n := range counts {
-		total += n
-	}
-	fmt.Fprintf(stdout, "wrote %s: %s, %s\n", res.baseline, plural(len(counts), "workflow"), plural(total, "inline-tool finding"))
+	fmt.Fprintf(stdout, "wrote %s: %s, %s\n", res.Path, plural(res.Workflows, "workflow"), plural(res.Findings, "inline-tool finding"))
 	return exitOK
 }
 

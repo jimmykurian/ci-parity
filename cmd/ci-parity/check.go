@@ -1,17 +1,11 @@
 package main
 
 import (
-	"errors"
+	"context"
 	"fmt"
 	"io"
-	"io/fs"
 
-	"github.com/jimmykurian/ci-parity/internal/adapters/baseline/jsonfile"
-	"github.com/jimmykurian/ci-parity/internal/adapters/report/github"
-	jsonreport "github.com/jimmykurian/ci-parity/internal/adapters/report/json"
-	"github.com/jimmykurian/ci-parity/internal/adapters/report/text"
-
-	"github.com/jimmykurian/ci-parity/internal/domain"
+	"github.com/jimmykurian/ci-parity/internal/app"
 )
 
 func runCheck(args []string, stdout, stderr io.Writer) int {
@@ -29,43 +23,23 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 		fmt.Fprintf(stderr, "ci-parity check: unknown format %q; use text, github or json\n", *format)
 		return exitUsage
 	}
-	res, err := analyze(*dir, *configPath, *baselinePath)
+	a, err := newApp(*dir)
 	if err != nil {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
 		return exitUsage
 	}
-	findings, rows := res.findings, []domain.Row(nil)
-	if !*strict {
-		b, err := jsonfile.Read(*dir, res.baseline)
-		switch {
-		case errors.Is(err, fs.ErrNotExist):
-			// No baseline file: strict mode, every P001 is an error.
-		case err != nil:
-			fmt.Fprintf(stderr, "ci-parity: %v\n", err)
-			return exitUsage
-		default:
-			findings, rows = domain.Apply(b, res.paths, findings)
-		}
-	}
-	if err := report(stdout, *format, findings, rows, *verbose); err != nil {
-		fmt.Fprintf(stderr, "ci-parity: write report: %v\n", err)
+	res, err := a.Check(context.Background(), app.CheckOptions{
+		ConfigPath:   *configPath,
+		BaselinePath: *baselinePath,
+		Strict:       *strict,
+		Reporter:     reporter(stdout, *format, *verbose),
+	})
+	if err != nil {
+		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
 		return exitUsage
 	}
-	for _, f := range findings {
-		if f.Severity == domain.SeverityError {
-			return exitFindings
-		}
+	if res.Failed() {
+		return exitFindings
 	}
 	return exitOK
-}
-
-func report(w io.Writer, format string, findings []domain.Finding, rows []domain.Row, verbose bool) error {
-	switch format {
-	case "github":
-		return github.Write(w, findings)
-	case "json":
-		return jsonreport.Write(w, findings, rows)
-	default:
-		return text.Write(w, findings, rows, verbose)
-	}
 }
