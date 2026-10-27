@@ -70,19 +70,19 @@ Reported line numbers are exact for both plain and block-scalar `run:` values.
 
 ## Phase 2: Taskfile, invokers, P002 and P003, suggestions
 
-- [ ] `internal/runner`: `Runner` interface (`Tasks()`, `IsInternal(name)`,
+- [x] `internal/runner`: `Runner` interface (`Tasks()`, `IsInternal(name)`,
       `Commands(name)`) so Make, just and mise can be added later without touching rules
-- [ ] `internal/runner/taskfile`: static reader per SPEC 5.5 with includes, aliases,
+- [x] `internal/runner/taskfile`: static reader per SPEC 5.5 with includes, aliases,
       flatten, internal, optional
-- [ ] Shell invoker parsing per SPEC 5.4, including `go tool task`, flag values in both
+- [x] Shell invoker parsing per SPEC 5.4, including `go tool task`, flag values in both
       `--flag value` and `--flag=value` forms
-- [ ] Action invoker matching per SPEC 5.4
-- [ ] P002 and P003
-- [ ] Suggestions per SPEC 5.6 (P001 "already available as", P002 "closest")
-- [ ] Fixtures: `includes-nested`, `includes-optional-missing`, `internal-task`,
+- [x] Action invoker matching per SPEC 5.4
+- [x] P002 and P003
+- [x] Suggestions per SPEC 5.6 (P001 "already available as", P002 "closest")
+- [x] Fixtures: `includes-nested`, `includes-optional-missing`, `internal-task`,
       `unknown-task`, `composite-invoker`, `go-tool-task`, `suggestion-match`,
       `task-vars-and-flags`
-- [ ] Unit tests for the Taskfile reader with three levels of includes and a cycle
+- [x] Unit tests for the Taskfile reader with three levels of includes and a cycle
 
 Acceptance: all fixtures pass. A Taskfile with nested includes resolves namespaced
 names. Unknown-task suggestions appear only within the distance rule.
