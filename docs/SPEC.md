@@ -90,17 +90,23 @@ tools:
   remove: []                      # removed from the built-in list
   replace: []                     # non-empty replaces the built-in list entirely
 transparent: [sudo, env, time, nice, ionice, timeout, nohup, xvfb-run, chronic]
-allow:
-  - match: "gh release *"         # glob matched against the normalized command
-    reason: "release steps are CI-only by design"   # required
-    workflows: []                 # optional path globs; empty means every workflow
+allow: []                         # no commands are allowed by default
 baseline: .ci-parity-baseline.json
+```
+
+An `allow` entry looks like this:
+
+```yaml
+allow:
+  - match: "docker push *"        # glob matched against the normalized command
+    reason: "images publish only from CI"   # required
+    workflows: []                 # optional path globs; empty means every workflow
 ```
 
 `allow[].match` is a command glob, not a path glob: it is matched against the whole
 normalized command (5.3 step 6), `*` matches any run of characters including `/` and
-spaces, and `?` matches exactly one character. `gh release *` therefore matches
-`gh release upload dist/acme-app.tar.gz`. Matching is case-sensitive.
+spaces, and `?` matches exactly one character. `docker push *` therefore matches
+`docker push ghcr.io/acme/widget-service:1.0.0`. Matching is case-sensitive.
 
 Built-in tools, matched on the command's basename so `./node_modules/.bin/eslint` and
 `./gradlew` match:
@@ -158,7 +164,16 @@ otherwise ignored. Steps with `run:` are analyzed.
 
 For a `run:` scalar in literal or folded block style, the script's first line is the
 node's line plus one; for a plain or quoted scalar it is the node's line. Report the
-line of the command inside the script. Columns are best effort.
+line of the command inside the script. Lines and columns are exact for plain, quoted,
+literal and folded values. For a folded value, rebuild the folding from the source
+lines to map each script position back to the source line it came from; if the rebuilt
+text does not equal the parsed value, fall back to counting lines from the first one.
+Positions found after the `${{ }}` replacement below are mapped back to the original
+script text, so an expression earlier on the line does not shift the column.
+
+On a plain or quoted single-line `run:` value, ` # ...` after the value is a YAML
+comment that YAML strips from the value. Append it to the script before shell parsing
+so `run: docker push acme # ci-parity: allow <reason>` works.
 
 Replace every `${{ ... }}` expression in the script with the token `__GHA_EXPR_<n>__`
 before shell parsing, where `<n>` is the expression index within the step.
@@ -178,14 +193,31 @@ and the step is skipped.
 ### 5.3 Command extraction
 
 1. Parse the script with `mvdan.cc/sh/v3/syntax` using `syntax.LangBash` and
-   `KeepComments(true)`. A parse error produces one P005 finding for the step; the step
-   is skipped.
+   `KeepComments(true)`. A parse error produces one P005 finding for the step, located
+   at the error's position mapped back into the file, and the step is skipped. The
+   message carries the parser's text without its script-relative position.
 2. Walk the tree. For every `*syntax.CallExpr`, ignore its assignments and take the
    first argument. If the word is not a plain literal (it contains an expansion or an
    `__GHA_EXPR_` token), emit P005 "dynamic command name" and continue.
 3. Peel transparent wrappers: while the command's basename is in `transparent`, drop it
-   along with following arguments that start with `-`, contain `=`, or (for `timeout`
-   and `nice`) a leading numeric argument, then re-read the command.
+   along with its options, then re-read the command. Options are arguments that start
+   with `-` or contain `=`. A flag listed below for that wrapper also drops the argument
+   after it; `--flag=value` and attached short forms (`-uroot`) carry their own value.
+   For `timeout` and `nice`, one numeric argument after the options (`30`, `30s`) is
+   dropped too. Wrappers added through config get the generic rule only.
+
+   | Wrapper    | Flags that take a separate value |
+   |------------|----------------------------------|
+   | `sudo`     | `-u -g -h -p -C -D -R -r -t -T -U --user --group --host --prompt --close-from --chdir --chroot --role --type --command-timeout --other-user` |
+   | `env`      | `-u -C -S --unset --chdir --split-string` |
+   | `time`     | `-f -o --format --output` |
+   | `nice`     | `-n --adjustment` |
+   | `ionice`   | `-c -n -p -P -u --class --classdata --pid --pgid --uid` |
+   | `timeout`  | `-k -s --kill-after --signal` |
+   | `xvfb-run` | `-n -s -f -e -p -w --server-num --server-args --auth-file --error-file --xauth-protocol --wait` |
+
+   `env -S`/`--split-string` hides the command inside a string, so the call is dropped
+   once its value is consumed, as is a wrapper left with no command (`sudo -v`).
 4. Take the basename of the command.
 5. If it begins an invoker pattern (5.4), extract task names and continue to rule
    evaluation for P002 and P003.
@@ -269,7 +301,8 @@ Message wording (normative, because users grep for it):
   analyzed`, `cannot parse step script: <error>`,
   `dynamic command name '<word>' cannot be analyzed`, `allow comment has no reason`.
 
-A step without a `name:` is referred to as `step <index>` (1-based).
+A step without a `name:` is referred to as `step <index>` (1-based) in place of
+`step "<step>"`, unquoted: `step 4 in job "web" runs 'pnpm test' directly`.
 
 ## 7. CLI
 
@@ -304,6 +337,18 @@ ratchet
 ```
 
 The ratchet block is omitted when there is nothing to report.
+
+Text format details:
+
+- Position and rule name are padded into columns: the position column is as wide as
+  the longest `line:col` among the lines shown plus three spaces, and the name column
+  is 13 characters (`internal-task`) plus one space.
+- Files with no lines shown are omitted, and file groups are separated by a blank line.
+- The summary line is always printed, also when there are no findings. `error` and
+  `warning` are singular for a count of one (`1 error, 2 warnings`); `tolerated` and
+  `allowed` never change.
+- With `--verbose`, tolerated lines end in ` [tolerated]` and allowed lines end in
+  ` [allowed: <reason>]`.
 
 GitHub format emits one workflow command per finding, nothing else:
 
