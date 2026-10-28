@@ -66,6 +66,7 @@ tasks:
 | `task lint:markdown` | markdownlint-cli2, run with `pnx` |
 | `task lint:spelling` | typos |
 | `task lint:editorconfig` | editorconfig-checker |
+| `task lint:headers` | Every file starts with the license header |
 | `task lint:release` | goreleaser check on `.goreleaser.yaml` |
 | `task fmt` | formats Go code with gofumpt and goimports; `task fmt:check` prints the diff and fails |
 | `task self-check` | runs ci-parity against this repo's own workflows |
@@ -137,7 +138,7 @@ git config user.signingkey "key::$(cat ~/.ssh/id_ed25519.pub)"  # run on the hos
 
 - **pre-commit** refuses commits on `main`, then checks what's staged: gitleaks on
   every commit, then golangci-lint (format and lint), editorconfig-checker,
-  typos, markdownlint, yamllint, shellcheck, actionlint and zizmor on the files they cover.
+  the license headers, typos, markdownlint, yamllint, shellcheck, actionlint and zizmor on the files they cover.
 - **commit-msg** checks the header against Conventional Commits, with the types and
   scopes in `.gitmessage`.
 - **pre-push** refuses pushes to `main`, then runs `task test` and `task self-check`

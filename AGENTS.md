@@ -45,7 +45,8 @@ Dependencies point inward: `cmd` → `adapters` → `app` → `rules` → `domai
   `main`.
 - Every `run:` step in this repo's workflows calls `task`; setup goes in `uses:` steps,
   pinned to a full commit SHA with a version comment.
-- Apache-2.0 lives in `LICENSE`; no per-file headers.
+- Every file starts with the Apache-2.0 header (`task lint:headers`; exceptions in
+  `.config/linters/headers-exclude.txt`). Every Go type and function has a doc comment.
 - Fix a gitleaks hit; never allowlist it.
 
 ## Read before starting
