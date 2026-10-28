@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package sarif renders findings as a SARIF 2.1.0 log, described in
 // docs/reference/output-formats.md, for GitHub code scanning and other SARIF readers.
 package sarif
@@ -38,21 +41,25 @@ var rules = []struct {
 	{domain.Unsupported, "A step that ci-parity cannot analyze.", "warning"},
 }
 
+// log is the top-level SARIF log object.
 type log struct {
 	Schema  string `json:"$schema"`
 	Version string `json:"version"`
 	Runs    []run  `json:"runs"`
 }
 
+// run is one run of one tool: ci-parity and its results.
 type run struct {
 	Tool    tool     `json:"tool"`
 	Results []result `json:"results"`
 }
 
+// tool describes the tool that produced the run.
 type tool struct {
 	Driver driver `json:"driver"`
 }
 
+// driver is the tool's main component: its name, version and rules.
 type driver struct {
 	Name            string `json:"name"`
 	Version         string `json:"version"`
@@ -61,6 +68,7 @@ type driver struct {
 	Rules           []rule `json:"rules"`
 }
 
+// rule is a reportingDescriptor: one rule's ID, name, description and default level.
 type rule struct {
 	ID                   string        `json:"id"`
 	Name                 string        `json:"name"`
@@ -69,14 +77,18 @@ type rule struct {
 	DefaultConfiguration configuration `json:"defaultConfiguration"`
 }
 
+// configuration is a rule's default configuration; only its level is set.
 type configuration struct {
 	Level string `json:"level"`
 }
 
+// text is a SARIF message: plain text only.
 type text struct {
 	Text string `json:"text"`
 }
 
+// result is one finding: its rule, level, message, location and fingerprint, and a
+// suppression when it is allowed.
 type result struct {
 	RuleID              string            `json:"ruleId"`
 	Level               string            `json:"level"`
@@ -86,25 +98,30 @@ type result struct {
 	Suppressions        []suppression     `json:"suppressions,omitempty"`
 }
 
+// location wraps where a result was found.
 type location struct {
 	PhysicalLocation physicalLocation `json:"physicalLocation"`
 }
 
+// physicalLocation is a file and a region in it.
 type physicalLocation struct {
 	ArtifactLocation artifactLocation `json:"artifactLocation"`
 	Region           region           `json:"region"`
 }
 
+// artifactLocation is a repo-relative path, resolved against the %SRCROOT% base.
 type artifactLocation struct {
 	URI       string `json:"uri"`
 	URIBaseID string `json:"uriBaseId"`
 }
 
+// region is where in the file a result starts. Lines and columns are 1-based.
 type region struct {
 	StartLine   int `json:"startLine"`
 	StartColumn int `json:"startColumn"`
 }
 
+// suppression marks an allowed finding as suppressed in source, with its reason.
 type suppression struct {
 	Kind          string `json:"kind"`
 	Justification string `json:"justification"`
@@ -134,6 +151,7 @@ func Write(w io.Writer, findings []domain.Finding, version string) error {
 	return enc.Encode(doc)
 }
 
+// convert maps a finding to a SARIF result.
 func convert(f domain.Finding) result {
 	r := result{
 		RuleID:  f.Rule,

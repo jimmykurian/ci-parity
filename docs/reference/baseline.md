@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+
 # Baseline
 
 The `.ci-parity-baseline.json` file and how its counts tolerate, lock and ratchet inline-tool findings.

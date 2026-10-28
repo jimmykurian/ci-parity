@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 package ghactions
 
 import "github.com/jimmykurian/ci-parity/internal/domain"

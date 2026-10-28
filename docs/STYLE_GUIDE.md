@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+
 # Documentation style guide
 
 How to write and maintain the docs in `docs/`, the READMEs and CONTRIBUTING.md.
@@ -17,6 +19,8 @@ How to write and maintain the docs in `docs/`, the READMEs and CONTRIBUTING.md.
 Every document in `docs/` follows this shape:
 
 ```markdown
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+
 # Title
 
 One line on what this document covers.
@@ -29,9 +33,10 @@ Content.
 
 - [Related document](../path/to/doc.md)
 
-Last reviewed: YYYY-MM-DD
+Last reviewed: 2026-10-28
 ```
 
+- **The license header** on the first line. `task lint:headers` fails without it.
 - **One H1**, matching the topic, then a one-line description.
 - **"See also"** when the document points to other docs.
 - **"Last reviewed"** as the last line, updated whenever the document changes.

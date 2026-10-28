@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package rules evaluates the ci-parity rules over loaded workflows and
 // produces findings shared by every reporter.
 package rules
@@ -27,6 +30,8 @@ func Check(cfg *domain.Config, r TaskSource, ex CommandExtractor, files []*domai
 	return c.findings
 }
 
+// shellOptions builds the extractor's options from the config: the tools, the
+// transparent wrappers and the shell invokers.
 func shellOptions(cfg *domain.Config) domain.ExtractOptions {
 	opts := domain.ExtractOptions{Tools: cfg.ToolSet(), Transparent: map[string]bool{}}
 	for _, t := range cfg.Transparent {
@@ -38,6 +43,8 @@ func shellOptions(cfg *domain.Config) domain.ExtractOptions {
 	return opts
 }
 
+// checker holds one run of the rules: the config, the task runner, the extractor,
+// the suggester, and the findings so far.
 type checker struct {
 	cfg      *domain.Config
 	opts     domain.ExtractOptions
@@ -48,6 +55,8 @@ type checker struct {
 	findings []domain.Finding
 }
 
+// step checks one step: a uses: step for an action invoker, or a run: step's
+// script for inline tools and task calls. Steps it can't analyze are P005.
 func (c *checker) step(f *domain.File, s *domain.Step) {
 	if s.Run == nil {
 		if s.Uses != "" {
@@ -95,6 +104,9 @@ func (c *checker) parseError(f *domain.File, s *domain.Step, err error) {
 	c.add(f, s, domain.Unsupported, domain.SeverityWarning, line, col, "cannot parse step script: "+err.Error())
 }
 
+// inlineTool reports P001 for a tool called directly, allowed when an allow
+// comment or rule covers it, with the task that runs it and a fix when there
+// is one.
 func (c *checker) inlineTool(f *domain.File, s *domain.Step, cmd domain.Command) {
 	line, col := s.Run.Position(cmd.Line, cmd.Col)
 	msg := fmt.Sprintf("%s %s runs '%s' directly", stepRef(s), scope(f, s), cmd.Normalized)
@@ -162,6 +174,8 @@ func (c *checker) allowRule(file, command string) (string, bool) {
 	return "", false
 }
 
+// add appends a finding for step s and returns it, so the caller can fill in
+// more fields.
 func (c *checker) add(f *domain.File, s *domain.Step, rule string, sev domain.Severity, line, col int, msg string) *domain.Finding {
 	fd := domain.Finding{
 		Rule: rule, Severity: sev, File: f.Path, Line: line, Col: col,
@@ -182,6 +196,8 @@ func stepRef(s *domain.Step) string {
 	return fmt.Sprintf("step %q", s.Name)
 }
 
+// scope names where a step sits: `in job "<id>"`, or `in action "<path>"` for a
+// composite action.
 func scope(f *domain.File, s *domain.Step) string {
 	if f.Kind == domain.KindAction {
 		return fmt.Sprintf("in action %q", f.Path)

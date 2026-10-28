@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+
 # Design decisions
 
 The decisions that shape ci-parity and the reason for each. Changing one of them, or the
@@ -39,6 +41,10 @@ or pull request and the maintainer's agreement before any code.
 
 ## How it is built
 
+- **Every file carries an SPDX license header,** `SPDX-License-Identifier: Apache-2.0`
+  under a copyright line, so a file copied out of the repository keeps its license.
+  "All rights reserved" is left out: it contradicts the license. `task lint:headers`
+  checks it.
 - **Clean architecture with ports.** Rules and use cases never import a parser or a file
   format, so a new runner or output format is a new adapter. See [Packages](packages.md).
 - **Four Go dependencies:** `gopkg.in/yaml.v3`, `mvdan.cc/sh/v3`,

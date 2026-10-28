@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+
 # Accessibility
 
 ci-parity is a command-line tool and a GitHub Action, so accessibility here means

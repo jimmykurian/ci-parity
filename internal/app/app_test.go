@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 package app
 
 import (
@@ -12,6 +15,7 @@ import (
 	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
+// fakeConfig loads the default config, scanning every workflow.
 type fakeConfig struct{}
 
 func (fakeConfig) Load(string) (*domain.Config, error) {
@@ -38,6 +42,7 @@ func (w fakeWorkflows) Load(path string) (*domain.File, error) {
 	return f, nil
 }
 
+// fakeTasks is a task loader and an empty Taskfile.
 type fakeTasks struct{}
 
 func (fakeTasks) Load(string, string) (TaskSource, error) { return fakeTasks{}, nil }
@@ -62,6 +67,7 @@ func (fakeExtractor) Extract(script string, _ domain.ExtractOptions) (domain.Ext
 	}}, nil
 }
 
+// fakeStore keeps a baseline in memory and records what is written.
 type fakeStore struct {
 	baseline *domain.Baseline // nil means no file
 	written  map[string]int
@@ -79,6 +85,7 @@ func (s *fakeStore) Write(_ string, counts map[string]int) error {
 	return nil
 }
 
+// fakeReporter records what it is asked to report.
 type fakeReporter struct {
 	findings []domain.Finding
 	rows     []domain.Row

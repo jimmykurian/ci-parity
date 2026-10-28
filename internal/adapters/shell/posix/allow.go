@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 package posix
 
 import (
@@ -15,6 +18,8 @@ type allowComment struct {
 	alone  bool // the comment is the only thing on its line
 }
 
+// comment records a `# ci-parity: allow <reason>` comment by line, or a problem
+// when it has no reason.
 func (e *extractor) comment(c *syntax.Comment) {
 	m := allowPattern.FindStringSubmatch(c.Text)
 	if m == nil {

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 package makefile
 
 import (
@@ -71,6 +74,7 @@ func selectsOtherFile(arg string) bool {
 	return len(arg) > 2 && !strings.HasPrefix(arg, "--") && (strings.HasPrefix(arg, "-f") || strings.HasPrefix(arg, "-C"))
 }
 
+// isNumber reports whether s is a number, the optional value of flags such as -j.
 func isNumber(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
 	return err == nil

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 package domain
 
 import "strings"
@@ -9,6 +12,8 @@ func MatchPath(pattern, name string) bool {
 	return matchSegments(strings.Split(pattern, "/"), strings.Split(name, "/"))
 }
 
+// matchSegments matches path segments against pattern segments; a `**` segment
+// may take any number of them.
 func matchSegments(pats, segs []string) bool {
 	for len(pats) > 0 {
 		if pats[0] == "**" {

@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+
 # Configuration
 
 Which files ci-parity scans, and every key in `.ci-parity.yml` with its default.

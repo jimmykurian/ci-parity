@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package posix extracts tool and task-runner invocations from bash and sh
 // run: scripts with mvdan.cc/sh.
 package posix
@@ -51,6 +54,8 @@ func Extract(script string, opts domain.ExtractOptions) (domain.Extraction, erro
 	return e.res, nil
 }
 
+// parseError converts a parser error to a domain.ParseError with its position in
+// the original script and any ${{ }} expressions restored.
 func (e *extractor) parseError(err error) *domain.ParseError {
 	var pe syntax.ParseError
 	var le syntax.LangError
@@ -65,6 +70,7 @@ func (e *extractor) parseError(err error) *domain.ParseError {
 	return &domain.ParseError{Message: e.restore(err.Error())}
 }
 
+// before reports whether line l1, column c1 comes before line l2, column c2.
 func before(l1, c1, l2, c2 int) bool {
 	if l1 != l2 {
 		return l1 < l2
@@ -72,6 +78,8 @@ func before(l1, c1, l2, c2 int) bool {
 	return c1 < c2
 }
 
+// extractor holds the state of one Extract call: the original script, its
+// ${{ }} replacements, the allow comments found, and the result so far.
 type extractor struct {
 	opts   domain.ExtractOptions
 	script string   // original script text
@@ -134,6 +142,8 @@ func (e *extractor) position(p syntax.Pos) (int, int) {
 	return strings.Count(e.script[:orig], "\n") + 1, orig - lineStart + 1
 }
 
+// visit is the syntax walker: it records comments and calls, and skips heredoc
+// bodies.
 func (e *extractor) visit(n syntax.Node) bool {
 	switch n := n.(type) {
 	case *syntax.Redirect:
@@ -150,6 +160,8 @@ func (e *extractor) visit(n syntax.Node) bool {
 	return true
 }
 
+// call records one simple command, after peeling transparent wrappers, as an
+// invoker or a tool, or a problem when its name is dynamic.
 func (e *extractor) call(c *syntax.CallExpr) {
 	words := make([]domain.Word, len(c.Args))
 	for i, a := range c.Args {
@@ -208,6 +220,7 @@ func (e *extractor) word(w *syntax.Word) domain.Word {
 	return domain.Word{Text: b.String(), Literal: true}
 }
 
+// source returns w as written in the script, with ${{ }} expressions restored.
 func (e *extractor) source(w *syntax.Word) string {
 	var b strings.Builder
 	if err := syntax.NewPrinter().Print(&b, w); err != nil {
@@ -232,6 +245,7 @@ var valueFlags = map[string]map[string]bool{
 // hidesCommand lists flags whose value contains the command itself.
 var hidesCommand = map[string]bool{"-S": true, "--split-string": true}
 
+// flagSet builds a set from space-separated flag lists.
 func flagSet(lists ...string) map[string]bool {
 	m := map[string]bool{}
 	for _, l := range lists {
@@ -298,10 +312,13 @@ func (e *extractor) matchInvoker(words []domain.Word) (string, int) {
 	return best, bestLen
 }
 
+// problem records something that stops part of the script being analyzed.
 func (e *extractor) problem(line, col int, msg string) {
 	e.res.Problems = append(e.res.Problems, domain.Problem{Line: line, Col: col, Message: msg})
 }
 
+// normalize joins a command's literal words with single spaces, dropping words
+// whose value is only known at run time.
 func normalize(words []domain.Word) string {
 	literals := make([]string, 0, len(words))
 	for _, w := range words {

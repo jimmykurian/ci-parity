@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // markdownlint for the repo's Markdown: README, AGENTS, docs and the GitHub
 // templates. Run by `task lint:markdown`.
 {

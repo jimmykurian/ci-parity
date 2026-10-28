@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 package yamlconfig
 
 import "github.com/jimmykurian/ci-parity/internal/domain"
@@ -15,22 +18,30 @@ type file struct {
 	Baseline    string      `yaml:"baseline"`
 }
 
+// invokers is the `invokers` key: extra shell prefixes and composite actions that
+// run a task.
 type invokers struct {
 	Shell   []string        `yaml:"shell"`
 	Actions []actionInvoker `yaml:"actions"`
 }
 
+// actionInvoker is one `invokers.actions` entry: a local action and the input that
+// names the task.
 type actionInvoker struct {
 	Uses  string `yaml:"uses"`
 	Input string `yaml:"input"`
 }
 
+// toolList is the `tools` key: names to add to, remove from or replace the
+// built-in tools list.
 type toolList struct {
 	Extend  []string `yaml:"extend"`
 	Remove  []string `yaml:"remove"`
 	Replace []string `yaml:"replace"`
 }
 
+// allowRule is one `allow` entry: a command pattern, why it is allowed, and the
+// workflows it applies to (all when empty).
 type allowRule struct {
 	Match     string   `yaml:"match"`
 	Reason    string   `yaml:"reason"`

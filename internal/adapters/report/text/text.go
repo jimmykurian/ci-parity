@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package text renders findings as human-readable text grouped by file.
 package text
 
@@ -81,10 +84,13 @@ func ratchet(rows []domain.Row) string {
 	return b.String()
 }
 
+// position formats a finding's line and column as line:col.
 func position(f domain.Finding) string {
 	return fmt.Sprintf("%d:%d", f.Line, f.Col)
 }
 
+// label returns the suffix that marks a tolerated or allowed finding, or "" for
+// others.
 func label(f domain.Finding) string {
 	switch f.Severity {
 	case domain.SeverityTolerated:
@@ -95,6 +101,7 @@ func label(f domain.Finding) string {
 	return ""
 }
 
+// summary formats the closing line: the count of each severity.
 func summary(findings []domain.Finding) string {
 	counts := map[domain.Severity]int{}
 	for _, f := range findings {
@@ -106,6 +113,7 @@ func summary(findings []domain.Finding) string {
 		counts[domain.SeverityTolerated], counts[domain.SeverityAllowed])
 }
 
+// plural formats n with word, adding an s unless n is 1.
 func plural(n int, word string) string {
 	if n == 1 {
 		return fmt.Sprintf("%d %s", n, word)

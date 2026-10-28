@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 package taskfile
 
 import (
@@ -19,6 +22,7 @@ type file struct {
 	includes []include
 }
 
+// task is one task: its name, aliases, whether it is internal, and its commands.
 type task struct {
 	name     string
 	aliases  []string
@@ -26,6 +30,8 @@ type task struct {
 	cmds     []string
 }
 
+// include is one `includes` entry: its namespace and aliases, the file it reads,
+// and whether it is optional, internal or flattened.
 type include struct {
 	namespace string
 	path      string
@@ -125,6 +131,8 @@ func each(n *yaml.Node, fn func(key string, value *yaml.Node)) {
 	}
 }
 
+// get returns the value of key in mapping n, or nil when n isn't a mapping or has
+// no such key.
 func get(n *yaml.Node, key string) *yaml.Node {
 	if n == nil || n.Kind != yaml.MappingNode {
 		return nil
@@ -137,6 +145,7 @@ func get(n *yaml.Node, key string) *yaml.Node {
 	return nil
 }
 
+// scalar returns n's value when it is a scalar, or "".
 func scalar(n *yaml.Node) string {
 	if n == nil || n.Kind != yaml.ScalarNode {
 		return ""
@@ -144,6 +153,7 @@ func scalar(n *yaml.Node) string {
 	return n.Value
 }
 
+// scalars returns the scalar items of sequence n, skipping any others.
 func scalars(n *yaml.Node) []string {
 	if n == nil || n.Kind != yaml.SequenceNode {
 		return nil

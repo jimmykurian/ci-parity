@@ -1,4 +1,7 @@
 #!/bin/bash
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+
 set -eo pipefail
 
 # Refuses commits on main, then checks the staged files. A check whose tool isn't
@@ -43,6 +46,10 @@ fi
 if stage '.'; then
   check "editorconfig" editorconfig-checker editorconfig-checker -config .config/linters/editorconfig-checker.json "${FILES[@]}"
   check "spelling" typos typos --config .config/linters/typos.toml --force-exclude "${FILES[@]}"
+  HEADER_FILES="$(mktemp)"
+  printf '%s\n' "${FILES[@]}" > "$HEADER_FILES"
+  check "license headers" task env HEADER_FILES="$HEADER_FILES" task --silent lint:headers
+  rm -f "$HEADER_FILES"
 fi
 if stage '\.md$'; then
   # The whole set, through the task, so the markdownlint-cli2 version is pinned once.

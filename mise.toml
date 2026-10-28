@@ -1,3 +1,6 @@
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+
 # Pinned dev tools. CI installs these with jdx/mise-action; locally, run
 # `mise install`. Go is pinned by the toolchain line in go.mod, not here.
 [tools]

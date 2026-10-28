@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package ghactions loads GitHub Actions workflows and local composite actions
 // and enumerates their steps with source positions.
 package ghactions
@@ -89,6 +92,9 @@ func steps(rel, job string, seq *yaml.Node, fallback string, lines []string) []d
 	return out
 }
 
+// script reads a run: value with what's needed to map script positions back to
+// the file: where it starts, its block style and indent, and how folded lines
+// map.
 func script(n *yaml.Node, lines []string) *domain.Script {
 	s := &domain.Script{Text: n.Value, Value: n.Value, Line: n.Line, Col: n.Column}
 	switch n.Style {
@@ -130,6 +136,7 @@ func blockIndent(lines []string, header int) int {
 	return 0
 }
 
+// shellDefault returns n's defaults.run.shell, or "" when unset.
 func shellDefault(n *yaml.Node) string {
 	return scalar(get(get(get(n, "defaults"), "run"), "shell"))
 }
@@ -151,6 +158,8 @@ func osDefaultShell(runsOn *yaml.Node) string {
 	return "bash"
 }
 
+// labelsOf returns the runner labels in a runs-on value: a string, a list, or a
+// mapping with labels.
 func labelsOf(n *yaml.Node) []string {
 	if n == nil {
 		return nil

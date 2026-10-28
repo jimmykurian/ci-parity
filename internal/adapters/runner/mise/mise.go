@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package mise reads mise task definitions statically, without running mise:
 // tasks from the config files and their includes, and file tasks from the task
 // directories.
@@ -187,6 +190,8 @@ func (m *Mise) readTaskDir(dir string) error {
 	})
 }
 
+// hiddenFile reports whether a file task's header sets hide=true, in a #MISE or
+// # [MISE] comment.
 func hiddenFile(path string) bool {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -202,6 +207,8 @@ func hiddenFile(path string) bool {
 	return false
 }
 
+// rel makes path repo-relative with forward slashes, or leaves it as is when it
+// sits outside the repository.
 func (m *Mise) rel(path string) string {
 	if r, err := filepath.Rel(m.root, path); err == nil && !strings.HasPrefix(r, "..") {
 		return filepath.ToSlash(r)

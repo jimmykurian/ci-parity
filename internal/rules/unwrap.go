@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 package rules
 
 import "strings"
@@ -59,6 +62,7 @@ func unwrap(words []string) ([]string, bool) {
 	return nil, false
 }
 
+// hasPrefix reports whether words starts with prefix.
 func hasPrefix(words, prefix []string) bool {
 	if len(words) < len(prefix) {
 		return false

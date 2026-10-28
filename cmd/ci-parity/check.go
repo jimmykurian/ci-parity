@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 package main
 
 import (
@@ -8,6 +11,8 @@ import (
 	"github.com/jimmykurian/ci-parity/internal/app"
 )
 
+// runCheck runs `ci-parity check`: it reports findings in the chosen format and
+// returns the exit code.
 func runCheck(args []string, stdout, stderr io.Writer) int {
 	flags := newFlagSet("check", stderr)
 	configPath := flags.String("config", "", "path to the config file")

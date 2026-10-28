@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 package justfile
 
 import (
@@ -5,11 +8,14 @@ import (
 	"strings"
 )
 
+// importLine is an `import 'path'` line; `import?` makes it optional.
 type importLine struct {
 	path     string
 	optional bool
 }
 
+// module is a `mod name` line, with its path when one is given; `mod?` makes it
+// optional.
 type module struct {
 	name, path string
 	optional   bool
@@ -33,12 +39,16 @@ var (
 	recipeHead = regexp.MustCompile(`^@?([A-Za-z_][A-Za-z0-9_-]*)`)
 )
 
+// parse reads text line by line.
 func (p *parser) parse(text string) {
 	for _, line := range strings.Split(strings.ReplaceAll(text, "\r\n", "\n"), "\n") {
 		p.line(line)
 	}
 }
 
+// line reads one line: an indented line belongs to the current recipe's body;
+// otherwise it is a comment, an attribute, an alias, an import, a module, or
+// anything else, which recipe reads.
 func (p *parser) line(line string) {
 	if line != "" && (line[0] == ' ' || line[0] == '\t') {
 		p.body(line)

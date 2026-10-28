@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package yamlconfig loads, defaults and validates .ci-parity.yml.
 package yamlconfig
 
@@ -78,6 +81,9 @@ func Parse(data []byte) (*domain.Config, error) {
 	return cfg, nil
 }
 
+// validate checks the rules that span keys or values, which decoding alone can't:
+// a known runner, taskfile only with runner taskfile, tools.replace on its own,
+// and no empty invoker or allow entry.
 func validate(c *domain.Config) error {
 	if !slices.Contains(domain.Runners, c.Runner) {
 		return fmt.Errorf("runner: unsupported runner %q; use %s", c.Runner, strings.Join(domain.Runners, ", "))

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package justfile reads justfiles statically, without running just: recipes
 // with their parameters, aliases, imports and modules, and the body lines used
 // to suggest a recipe for an inline command.
@@ -149,6 +152,8 @@ func (j *Justfile) resolveAliases() {
 	}
 }
 
+// rel makes path repo-relative with forward slashes, or leaves it as is when it
+// sits outside the repository.
 func (j *Justfile) rel(path string) string {
 	if r, err := filepath.Rel(j.root, path); err == nil && !strings.HasPrefix(r, "..") {
 		return filepath.ToSlash(r)

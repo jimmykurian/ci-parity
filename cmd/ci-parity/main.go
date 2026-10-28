@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Command ci-parity checks that GitHub Actions workflows run project commands
 // through the repository's task runner instead of calling tools inline.
 package main
@@ -32,6 +35,7 @@ const usageText = `Usage:
   ci-parity version
 `
 
+// main runs the command line and exits with its code.
 func main() {
 	os.Exit(run(os.Args[1:], os.Stdout, os.Stderr))
 }
@@ -61,6 +65,7 @@ func run(args []string, stdout, stderr io.Writer) int {
 	}
 }
 
+// runVersion prints the version, commit and build date stamped in at release.
 func runVersion(args []string, stdout, stderr io.Writer) int {
 	fs := newFlagSet("version", stderr)
 	if code, ok := parseFlags(fs, args); !ok {
@@ -70,6 +75,8 @@ func runVersion(args []string, stdout, stderr io.Writer) int {
 	return exitOK
 }
 
+// newFlagSet returns a flag set for a subcommand that reports errors to stderr
+// instead of exiting.
 func newFlagSet(name string, stderr io.Writer) *flag.FlagSet {
 	fs := flag.NewFlagSet("ci-parity "+name, flag.ContinueOnError)
 	fs.SetOutput(stderr)

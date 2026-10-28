@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+
 # Rules
 
 Rules P001 to P005: when each fires, its severity, its exact message, and how suggestions are chosen.

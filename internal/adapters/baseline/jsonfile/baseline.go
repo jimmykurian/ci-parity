@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package jsonfile reads and writes .ci-parity-baseline.json.
 package jsonfile
 
@@ -58,6 +61,7 @@ func Write(root, path string, counts map[string]int) error {
 	return nil
 }
 
+// join resolves path against root unless it is already absolute.
 func join(root, path string) string {
 	if filepath.IsAbs(path) {
 		return path

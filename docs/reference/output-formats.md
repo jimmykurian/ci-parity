@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+
 # Output formats
 
 The text, `github`, JSON and SARIF formats of `ci-parity check`, exactly as they are printed.
