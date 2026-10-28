@@ -32,6 +32,19 @@ Semantics:
   baseline, suggesting `ci-parity baseline` to lock in the improvement. Not an error.
 - `--strict` on `check` ignores the baseline entirely.
 
+The file is described by the [baseline schema](https://jimmykurian.github.io/ci-parity/schemas/baseline.schema.json).
+
+## Why a count
+
+The baseline stores how many findings a workflow may have, not which ones. This is part
+of the [stable contract](compatibility.md): a count survives reformatting, renamed steps
+and moved lines, and the file stays small enough to review in a diff.
+
+The trade-off: the first N findings in file order are the tolerated ones, so a new inline
+step above older ones moves the boundary, and an older step becomes the reported `error`.
+The P004 finding always reports the rise itself, and the P001 errors show every step over
+the count, so nothing new goes unreported.
+
 ## See also
 
 - [Reference index](README.md)

@@ -45,7 +45,7 @@ GitHub format emits one workflow command per finding, nothing else:
 Errors use `::error`, warnings `::warning`, tolerated `::notice`, allowed nothing.
 Messages are escaped per the workflow-command rules (`%`, `\r`, `\n`, `:`, `,`).
 
-JSON format:
+JSON format (described by the [output schema](https://jimmykurian.github.io/ci-parity/schemas/output.schema.json)):
 
 ```json
 {

@@ -81,9 +81,17 @@ or pull request and the maintainer's agreement before any code.
 
 ## Qualities
 
-- A repository with 50 workflows checks in well under a second.
+- A repository with 50 workflows checks in well under a second: `test/perf` times a
+  generated one (1,200 steps) on every OS in CI and fails above one second, and
+  `task bench` reports the numbers.
 - Output is identical across platforms: paths use forward slashes and findings are
-  sorted by file, line, column and rule.
+  sorted by file, line, column and rule. CI runs every test on Linux, macOS and Windows.
+- **The baseline stays a count.** Fingerprint lists (one entry per tolerated finding)
+  would name exactly the new step, but they'd mean a breaking v2 format whose entries
+  change whenever a step is reformatted. See [Baseline: why a count](../reference/baseline.md#why-a-count).
+- **The formats have JSON Schemas** in `schemas/`, published with the docs site, checked
+  against every fixture by `task lint:schemas`, and the config schema's keys are tested
+  against the parser's.
 - A config error names the key at fault and exits 2.
 
 ## Ideas not yet planned

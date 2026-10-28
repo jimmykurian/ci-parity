@@ -16,6 +16,7 @@ schemas change only with a recorded decision and a new version.
 | [CLI](cli.md) | `check`, `baseline`, `fix` and `version`, their flags, and the exit codes |
 | [Output formats](output-formats.md) | The text, `github`, JSON and SARIF formats |
 | [GitHub Action](action.md) | `action.yml`'s inputs, outputs and steps |
+| [Compatibility](compatibility.md) | What stays stable between releases, what may change, deprecation, and the platforms tested |
 
 ## Vocabulary
 
