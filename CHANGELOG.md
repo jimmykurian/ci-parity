@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.3.0](https://github.com/jimmykurian/ci-parity/compare/v0.2.0...v0.3.0) (2026-10-28)
+
+
+### Features
+
+* **runner:** read justfiles with runner: just ([#13](https://github.com/jimmykurian/ci-parity/issues/13)) ([cd17b86](https://github.com/jimmykurian/ci-parity/commit/cd17b86d05d516e60ed2a44dbbe7ccc78d9bea78))
+* **runner:** read Makefiles with runner: make ([#11](https://github.com/jimmykurian/ci-parity/issues/11)) ([64b380b](https://github.com/jimmykurian/ci-parity/commit/64b380baacc89a8912bb7b4e7b23cef759511b6b))
+* **runner:** read mise tasks with runner: mise ([#14](https://github.com/jimmykurian/ci-parity/issues/14)) ([d6c36de](https://github.com/jimmykurian/ci-parity/commit/d6c36dea39bef4768b97b67f5a1639ea31c61ee3))
+
 ## [0.2.0](https://github.com/jimmykurian/ci-parity/compare/v0.1.1...v0.2.0) (2026-10-28)
 
 
