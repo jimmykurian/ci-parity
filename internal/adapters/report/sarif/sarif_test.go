@@ -36,7 +36,10 @@ func decode(t *testing.T, fs []domain.Finding, version string) map[string]any {
 }
 
 func TestRequiredFields(t *testing.T) {
+	// Act
 	doc := decode(t, findings(), "0.2.0")
+
+	// Assert
 	if doc["version"] != "2.1.0" || doc["$schema"] == nil {
 		t.Fatalf("version = %v, $schema = %v", doc["version"], doc["$schema"])
 	}
@@ -75,7 +78,13 @@ func TestRequiredFields(t *testing.T) {
 }
 
 func TestLevelsAndSuppressions(t *testing.T) {
+	// Arrange
+	want := []string{"error", "note", "error suppressed:inSource:images publish only from CI", "warning"}
+
+	// Act
 	results := decode(t, findings(), "dev")["runs"].([]any)[0].(map[string]any)["results"].([]any)
+
+	// Assert
 	var got []string
 	for _, r := range results {
 		res := r.(map[string]any)
@@ -86,15 +95,19 @@ func TestLevelsAndSuppressions(t *testing.T) {
 		}
 		got = append(got, entry)
 	}
-	want := []string{"error", "note", "error suppressed:inSource:images publish only from CI", "warning"}
 	if diff := cmp.Diff(want, got); diff != "" {
 		t.Errorf("levels (-want +got):\n%s", diff)
 	}
 }
 
 func TestSemanticVersionOnlyForReleases(t *testing.T) {
-	for version, want := range map[string]any{"0.2.0": "0.2.0", "dev": nil, "0.0.0-SNAPSHOT-abc1234": nil, "v0.2.0": nil} {
+	// Arrange
+	tests := map[string]any{"0.2.0": "0.2.0", "dev": nil, "0.0.0-SNAPSHOT-abc1234": nil, "v0.2.0": nil}
+	for version, want := range tests {
+		// Act
 		driver := decode(t, nil, version)["runs"].([]any)[0].(map[string]any)["tool"].(map[string]any)["driver"].(map[string]any)
+
+		// Assert
 		if driver["semanticVersion"] != want {
 			t.Errorf("version %q: semanticVersion = %v, want %v", version, driver["semanticVersion"], want)
 		}
@@ -102,21 +115,46 @@ func TestSemanticVersionOnlyForReleases(t *testing.T) {
 }
 
 func TestFingerprintIgnoresPosition(t *testing.T) {
+	// Arrange
 	a := findings()[0]
 	b := a
 	b.Line, b.Col = 40, 3
-	if fingerprint(a) != fingerprint(b) {
+
+	// Act
+	gotA, gotB := fingerprint(a), fingerprint(b)
+
+	// Assert
+	if gotA != gotB {
 		t.Error("moving a finding changed its fingerprint")
 	}
+}
+
+func TestFingerprintDependsOnCommand(t *testing.T) {
+	// Arrange
+	a := findings()[0]
 	c := a
 	c.Command = "pnpm lint"
-	if fingerprint(a) == fingerprint(c) {
+
+	// Act
+	gotA, gotC := fingerprint(a), fingerprint(c)
+
+	// Assert
+	if gotA == gotC {
 		t.Error("a different command kept the same fingerprint")
 	}
+}
+
+func TestFingerprintDependsOnUnnamedStep(t *testing.T) {
+	// Arrange
 	d := findings()[1]
 	e := d
 	e.StepIndex = 4
-	if fingerprint(d) == fingerprint(e) {
+
+	// Act
+	gotD, gotE := fingerprint(d), fingerprint(e)
+
+	// Assert
+	if gotD == gotE {
 		t.Error("a different unnamed step kept the same fingerprint")
 	}
 }

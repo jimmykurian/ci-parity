@@ -12,22 +12,36 @@ import (
 )
 
 func TestFixtureDirsReportsUnreadableRoot(t *testing.T) {
+	// Arrange
 	file := filepath.Join(t.TempDir(), "not-a-dir")
 	if err := os.WriteFile(file, nil, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := FixtureDirs(file); err == nil {
+
+	// Act
+	_, err := FixtureDirs(file)
+
+	// Assert
+	if err == nil {
 		t.Error("FixtureDirs on a file: want an error")
 	}
 }
 
 func TestFixturesMissingRoot(t *testing.T) {
-	if got := Fixtures(t, filepath.Join(t.TempDir(), "absent")); got != nil {
+	// Arrange
+	root := filepath.Join(t.TempDir(), "absent")
+
+	// Act
+	got := Fixtures(t, root)
+
+	// Assert
+	if got != nil {
 		t.Errorf("Fixtures = %v, want nil", got)
 	}
 }
 
 func TestFixturesSortedDirsOnly(t *testing.T) {
+	// Arrange
 	root := t.TempDir()
 	for _, name := range []string{"widget-service", "acme-app"} {
 		if err := os.Mkdir(filepath.Join(root, name), 0o755); err != nil {
@@ -37,14 +51,19 @@ func TestFixturesSortedDirsOnly(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(root, ".gitkeep"), nil, 0o644); err != nil {
 		t.Fatal(err)
 	}
-	got := Fixtures(t, root)
 	want := []string{filepath.Join(root, "acme-app"), filepath.Join(root, "widget-service")}
+
+	// Act
+	got := Fixtures(t, root)
+
+	// Assert
 	if fmt.Sprint(got) != fmt.Sprint(want) {
 		t.Errorf("Fixtures = %v, want %v", got, want)
 	}
 }
 
 func TestRunGoldenPassesMatchingFixture(t *testing.T) {
+	// Arrange
 	root := t.TempDir()
 	expected := filepath.Join(root, "example-api", "expected")
 	if err := os.MkdirAll(expected, 0o755); err != nil {
@@ -59,11 +78,15 @@ func TestRunGoldenPassesMatchingFixture(t *testing.T) {
 		t.Fatal(err)
 	}
 	var calls int
+
+	// Act
 	RunGolden(t, root, Formats, func(args []string, stdout, _ io.Writer) int {
 		calls++
 		fmt.Fprintln(stdout, args[len(args)-1])
 		return 1
 	})
+
+	// Assert
 	if calls != len(Formats) {
 		t.Errorf("run called %d times, want %d", calls, len(Formats))
 	}

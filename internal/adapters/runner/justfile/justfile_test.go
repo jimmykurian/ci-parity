@@ -87,16 +87,9 @@ func load(t *testing.T) *Justfile {
 }
 
 func TestRecipes(t *testing.T) {
-	j := load(t)
+	// Arrange
 	want := []string{"_helper", "b", "build", "ci", "db::migrate", "db::seed::load", "deploy", "fmt", "lint", "r", "release", "test"}
-	if diff := cmp.Diff(want, j.Tasks()); diff != "" {
-		t.Errorf("recipes (-want +got):\n%s", diff)
-	}
-	for name, internal := range map[string]bool{"build": false, "release": true, "_helper": true, "fmt": true, "r": true, "b": false, "db::migrate": false} {
-		if got := j.IsInternal(name); got != internal {
-			t.Errorf("IsInternal(%s) = %v, want %v", name, got, internal)
-		}
-	}
+	wantInternal := map[string]bool{"build": false, "release": true, "_helper": true, "fmt": true, "r": true, "b": false, "db::migrate": false}
 	commands := map[string][]string{
 		"build":       {"go build ./..."},
 		"test":        {"go test {{args}} ./..."},
@@ -104,6 +97,19 @@ func TestRecipes(t *testing.T) {
 		"release":     {"goreleaser release"},
 		"db::migrate": {"goose up {{target}}"},
 		"b":           nil,
+	}
+
+	// Act
+	j := load(t)
+
+	// Assert
+	if diff := cmp.Diff(want, j.Tasks()); diff != "" {
+		t.Errorf("recipes (-want +got):\n%s", diff)
+	}
+	for name, internal := range wantInternal {
+		if got := j.IsInternal(name); got != internal {
+			t.Errorf("IsInternal(%s) = %v, want %v", name, got, internal)
+		}
 	}
 	for name, want := range commands {
 		if diff := cmp.Diff(want, j.Commands(name)); diff != "" {
@@ -115,22 +121,60 @@ func TestRecipes(t *testing.T) {
 	}
 }
 
-func TestMissingFiles(t *testing.T) {
-	if _, err := Load(write(t, map[string]string{"README.md": "x"})); err == nil || !strings.Contains(err.Error(), "no justfile found") {
+func TestLoadReportsMissingJustfile(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"README.md": "x"})
+
+	// Act
+	_, err := Load(root)
+
+	// Assert
+	if err == nil || !strings.Contains(err.Error(), "no justfile found") {
 		t.Errorf("no justfile: err = %v", err)
 	}
-	if _, err := Load(write(t, map[string]string{"justfile": "import 'nope.just'\n"})); err == nil || !strings.Contains(err.Error(), `import "nope.just" not found`) {
+}
+
+func TestLoadReportsMissingImport(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"justfile": "import 'nope.just'\n"})
+
+	// Act
+	_, err := Load(root)
+
+	// Assert
+	if err == nil || !strings.Contains(err.Error(), `import "nope.just" not found`) {
 		t.Errorf("missing import: err = %v", err)
 	}
-	if _, err := Load(write(t, map[string]string{"justfile": "mod nope\n"})); err == nil || !strings.Contains(err.Error(), `module "nope" not found`) {
+}
+
+func TestLoadReportsMissingModule(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"justfile": "mod nope\n"})
+
+	// Act
+	_, err := Load(root)
+
+	// Assert
+	if err == nil || !strings.Contains(err.Error(), `module "nope" not found`) {
 		t.Errorf("missing module: err = %v", err)
 	}
-	if _, err := Load(write(t, map[string]string{"justfile": "import 'a.just'\n", "a.just": "import 'justfile'\nx:\n    true\n"})); err != nil {
-		t.Errorf("import cycle: err = %v", err)
+}
+
+func TestLoadToleratesImportCycle(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"justfile": "import 'a.just'\n", "a.just": "import 'justfile'\nx:\n    true\n"})
+
+	// Act
+	_, loadErr := Load(root)
+
+	// Assert
+	if loadErr != nil {
+		t.Errorf("import cycle: err = %v", loadErr)
 	}
 }
 
 func TestNames(t *testing.T) {
+	// Arrange
 	j := load(t)
 	words := func(s string) []domain.Word {
 		var out []domain.Word
@@ -169,8 +213,12 @@ func TestNames(t *testing.T) {
 		{"--show build", nil},
 	}
 	for _, tt := range tests {
+		// Act
+		names := j.Names(words(tt.args))
+
+		// Assert
 		var got []string
-		for _, w := range j.Names(words(tt.args)) {
+		for _, w := range names {
 			got = append(got, w.Text)
 		}
 		if diff := cmp.Diff(tt.want, got); diff != "" {

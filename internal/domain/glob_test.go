@@ -6,6 +6,7 @@ package domain
 import "testing"
 
 func TestMatchPath(t *testing.T) {
+	// Arrange
 	tests := []struct {
 		pattern, name string
 		want          bool
@@ -34,13 +35,18 @@ func TestMatchPath(t *testing.T) {
 		{".github/[ab].yml", ".github/a.yml", false},
 	}
 	for _, tt := range tests {
-		if got := MatchPath(tt.pattern, tt.name); got != tt.want {
+		// Act
+		got := MatchPath(tt.pattern, tt.name)
+
+		// Assert
+		if got != tt.want {
 			t.Errorf("MatchPath(%q, %q) = %v, want %v", tt.pattern, tt.name, got, tt.want)
 		}
 	}
 }
 
 func TestMatchCommand(t *testing.T) {
+	// Arrange
 	tests := []struct {
 		pattern, command string
 		want             bool
@@ -57,13 +63,18 @@ func TestMatchCommand(t *testing.T) {
 		{"pnpm test", "pnpm test", true},
 	}
 	for _, tt := range tests {
-		if got := MatchCommand(tt.pattern, tt.command); got != tt.want {
+		// Act
+		got := MatchCommand(tt.pattern, tt.command)
+
+		// Assert
+		if got != tt.want {
 			t.Errorf("MatchCommand(%q, %q) = %v, want %v", tt.pattern, tt.command, got, tt.want)
 		}
 	}
 }
 
 func TestStaticPrefix(t *testing.T) {
+	// Arrange
 	tests := map[string]string{
 		".github/workflows/*.yml":       ".github/workflows",
 		".github/actions/**/action.yml": ".github/actions",
@@ -71,7 +82,11 @@ func TestStaticPrefix(t *testing.T) {
 		"action.yml":                    "",
 	}
 	for pattern, want := range tests {
-		if got := StaticPrefix(pattern); got != want {
+		// Act
+		got := StaticPrefix(pattern)
+
+		// Assert
+		if got != want {
 			t.Errorf("StaticPrefix(%q) = %q, want %q", pattern, got, want)
 		}
 	}

@@ -13,6 +13,7 @@ import (
 )
 
 func TestFixEdit(t *testing.T) {
+	// Arrange
 	plain := func(v string) *domain.Script {
 		return &domain.Script{Text: v, Value: v, SingleLine: true, Line: 5, Col: 14}
 	}
@@ -40,7 +41,10 @@ func TestFixEdit(t *testing.T) {
 		{"not one line", &domain.Script{Value: "pnpm test", Line: 5, Col: 14}, "pnpm test", nil},
 	}
 	for _, tt := range tests {
+		// Act
 		got := fixEdit("ci.yml", tt.run, cmd(strings.TrimSuffix(tt.run.Value, "\n"), tt.command), "task test")
+
+		// Assert
 		if diff := cmp.Diff(tt.want, got); diff != "" {
 			t.Errorf("%s (-want +got):\n%s", tt.name, diff)
 		}

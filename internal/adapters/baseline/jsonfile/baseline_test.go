@@ -12,11 +12,22 @@ import (
 	"testing"
 )
 
-func TestReadErrors(t *testing.T) {
+func TestReadMissingFile(t *testing.T) {
+	// Arrange
 	root := t.TempDir()
-	if _, err := Read(root, "missing.json"); !errors.Is(err, fs.ErrNotExist) {
+
+	// Act
+	_, err := Read(root, "missing.json")
+
+	// Assert
+	if !errors.Is(err, fs.ErrNotExist) {
 		t.Errorf("missing file error = %v, want fs.ErrNotExist", err)
 	}
+}
+
+func TestReadErrors(t *testing.T) {
+	// Arrange
+	root := t.TempDir()
 	tests := map[string]string{
 		`{"version": 2, "workflows": {}}`:             "unsupported version 2",
 		`{"version": 1, "workflows": {"a.yml": -1}}`:  "negative count",
@@ -24,10 +35,16 @@ func TestReadErrors(t *testing.T) {
 		`{"version": 1, "workflows": {"a.yml": "x"}}`: "cannot unmarshal",
 	}
 	for content, want := range tests {
+		// Arrange
 		if err := os.WriteFile(filepath.Join(root, "b.json"), []byte(content), 0o644); err != nil {
 			t.Fatal(err)
 		}
-		if _, err := Read(root, "b.json"); err == nil || !strings.Contains(err.Error(), want) {
+
+		// Act
+		_, err := Read(root, "b.json")
+
+		// Assert
+		if err == nil || !strings.Contains(err.Error(), want) {
 			t.Errorf("Read(%s) error = %v, want %q", content, err, want)
 		}
 	}

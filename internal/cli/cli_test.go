@@ -10,6 +10,7 @@ import (
 )
 
 func TestRun(t *testing.T) {
+	// Arrange
 	tests := []struct {
 		name       string
 		args       []string
@@ -29,8 +30,13 @@ func TestRun(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Arrange
 			var stdout, stderr bytes.Buffer
+
+			// Act
 			code := Run(tt.args, &stdout, &stderr)
+
+			// Assert
 			if code != tt.wantCode {
 				t.Errorf("exit code = %d, want %d", code, tt.wantCode)
 			}

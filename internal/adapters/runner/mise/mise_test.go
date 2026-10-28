@@ -79,11 +79,8 @@ func load(t *testing.T) *Mise {
 }
 
 func TestTasks(t *testing.T) {
-	m := load(t)
+	// Arrange
 	want := []string{"b", "build", "check", "db:migrate", "docs", "fmt", "legacy", "lg", "lint-go", "lint:go", "release", "secret", "seed"}
-	if diff := cmp.Diff(want, m.Tasks()); diff != "" {
-		t.Errorf("tasks (-want +got):\n%s", diff)
-	}
 	commands := map[string][]string{
 		"build":      {"go build ./..."}, // mise.toml wins over .config/mise.toml
 		"check":      {"go vet ./...", "go test ./..."},
@@ -93,12 +90,21 @@ func TestTasks(t *testing.T) {
 		"db:migrate": nil,
 		"b":          nil,
 	}
+	wantHidden := map[string]bool{"release": true, "secret": true, "build": false, "db:migrate": false}
+
+	// Act
+	m := load(t)
+
+	// Assert
+	if diff := cmp.Diff(want, m.Tasks()); diff != "" {
+		t.Errorf("tasks (-want +got):\n%s", diff)
+	}
 	for name, want := range commands {
 		if diff := cmp.Diff(want, m.Commands(name)); diff != "" {
 			t.Errorf("Commands(%s) (-want +got):\n%s", name, diff)
 		}
 	}
-	for name, hidden := range map[string]bool{"release": true, "secret": true, "build": false, "db:migrate": false} {
+	for name, hidden := range wantHidden {
 		if got := m.IsInternal(name); got != hidden {
 			t.Errorf("IsInternal(%s) = %v, want %v", name, got, hidden)
 		}
@@ -108,20 +114,47 @@ func TestTasks(t *testing.T) {
 	}
 }
 
-func TestLoadErrors(t *testing.T) {
-	if _, err := Load(write(t, map[string]string{"README.md": "x"})); err == nil || !strings.Contains(err.Error(), "no mise config found") {
+func TestLoadReportsMissingConfig(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"README.md": "x"})
+
+	// Act
+	_, err := Load(root)
+
+	// Assert
+	if err == nil || !strings.Contains(err.Error(), "no mise config found") {
 		t.Errorf("no config: err = %v", err)
 	}
-	if _, err := Load(write(t, map[string]string{"mise.toml": "[tasks\n"})); err == nil || !strings.Contains(err.Error(), "parse mise.toml") {
+}
+
+func TestLoadReportsBadTOML(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"mise.toml": "[tasks\n"})
+
+	// Act
+	_, err := Load(root)
+
+	// Assert
+	if err == nil || !strings.Contains(err.Error(), "parse mise.toml") {
 		t.Errorf("bad TOML: err = %v", err)
 	}
-	m, err := Load(write(t, map[string]string{"mise-tasks/only*": "#!/bin/sh\n"}))
+}
+
+func TestLoadReadsFileTasksWithoutConfig(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"mise-tasks/only*": "#!/bin/sh\n"})
+
+	// Act
+	m, err := Load(root)
+
+	// Assert
 	if err != nil || m.File() != "mise.toml" || len(m.Tasks()) != 1 {
 		t.Errorf("file tasks only: m = %+v, err = %v", m, err)
 	}
 }
 
 func TestNames(t *testing.T) {
+	// Arrange
 	words := func(s string) []domain.Word {
 		var out []domain.Word
 		for _, f := range strings.Fields(s) {
@@ -147,8 +180,12 @@ func TestNames(t *testing.T) {
 	}
 	m := &Mise{}
 	for _, tt := range tests {
+		// Act
+		names := m.Names(words(tt.args))
+
+		// Assert
 		var got []string
-		for _, w := range m.Names(words(tt.args)) {
+		for _, w := range names {
 			got = append(got, w.Text)
 		}
 		if diff := cmp.Diff(tt.want, got); diff != "" {

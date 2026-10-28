@@ -9,22 +9,38 @@ import (
 	"github.com/google/go-cmp/cmp"
 )
 
-func TestToolSet(t *testing.T) {
+func TestToolSetExtendsAndRemoves(t *testing.T) {
+	// Arrange
 	cfg := Default()
 	cfg.Tools.Extend = []string{"k6x"}
 	cfg.Tools.Remove = []string{"go"}
+
+	// Act
 	set := cfg.ToolSet()
+
+	// Assert
 	if !set["pnpm"] || !set["k6x"] || set["go"] {
 		t.Errorf("extend/remove not applied: pnpm=%v k6x=%v go=%v", set["pnpm"], set["k6x"], set["go"])
 	}
-	cfg = Default()
+}
+
+func TestToolSetReplaces(t *testing.T) {
+	// Arrange
+	cfg := Default()
 	cfg.Tools.Replace = []string{"widgetctl"}
-	if diff := cmp.Diff(map[string]bool{"widgetctl": true}, cfg.ToolSet()); diff != "" {
+	want := map[string]bool{"widgetctl": true}
+
+	// Act
+	set := cfg.ToolSet()
+
+	// Assert
+	if diff := cmp.Diff(want, set); diff != "" {
 		t.Errorf("replace (-want +got):\n%s", diff)
 	}
 }
 
 func TestToolSetFollowsRunner(t *testing.T) {
+	// Arrange
 	tests := []struct {
 		runner  string
 		tools   ToolList
@@ -36,7 +52,10 @@ func TestToolSetFollowsRunner(t *testing.T) {
 		{RunnerMake, ToolList{Replace: []string{"pnpm"}}, []string{"pnpm"}, []string{"task", "make"}},
 	}
 	for _, tt := range tests {
+		// Act
 		set := (&Config{Runner: tt.runner, Tools: tt.tools}).ToolSet()
+
+		// Assert
 		for _, tool := range tt.in {
 			if !set[tool] {
 				t.Errorf("runner %s, %+v: %s is not a tool", tt.runner, tt.tools, tool)

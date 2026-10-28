@@ -9,6 +9,7 @@ import (
 )
 
 func TestClosest(t *testing.T) {
+	// Arrange
 	s := &suggester{names: []string{"build", "ds", "lint", "lint:ci", "test:unit", "web:lint", "web:ui:build"}}
 	tests := map[string]string{
 		"biuld":        "build",        // distance 2
@@ -22,13 +23,18 @@ func TestClosest(t *testing.T) {
 		"lintt":        "lint",         // distance 1 beats "lint:ci" at distance 3
 	}
 	for unknown, want := range tests {
-		if got := s.closest(unknown); got != want {
+		// Act
+		got := s.closest(unknown)
+
+		// Assert
+		if got != want {
 			t.Errorf("closest(%q) = %q, want %q", unknown, got, want)
 		}
 	}
 }
 
 func TestCanonical(t *testing.T) {
+	// Arrange
 	tests := map[string]string{
 		"  pnpm   test ":  "pnpm test",
 		"pnpm run lint":   "pnpm lint",
@@ -38,13 +44,18 @@ func TestCanonical(t *testing.T) {
 		"go test   ./...": "go test ./...",
 	}
 	for in, want := range tests {
-		if got := canonical(in); got != want {
+		// Act
+		got := canonical(in)
+
+		// Assert
+		if got != want {
 			t.Errorf("canonical(%q) = %q, want %q", in, got, want)
 		}
 	}
 }
 
 func TestUnwrap(t *testing.T) {
+	// Arrange
 	tests := map[string]string{
 		"npx eslint .":                             "eslint .",
 		"pnpx eslint .":                            "eslint .",
@@ -67,8 +78,12 @@ func TestUnwrap(t *testing.T) {
 		"uv pip install x":                         "",
 	}
 	for in, want := range tests {
+		// Act
+		rest, ok := unwrap(strings.Fields(in))
+
+		// Assert
 		got := ""
-		if rest, ok := unwrap(strings.Fields(in)); ok {
+		if ok {
 			got = strings.Join(rest, " ")
 		}
 		if got != want {
@@ -78,6 +93,7 @@ func TestUnwrap(t *testing.T) {
 }
 
 func TestCommandSuggestionUnwraps(t *testing.T) {
+	// Arrange
 	s := &suggester{byCommand: map[string]string{}, invoke: "task"}
 	for name, cmd := range map[string]string{"lint": "eslint .", "test": "uv run pytest", "fmt": "npx prettier --check .", "check": "pnpm run check"} {
 		for _, key := range keys(cmd) {
@@ -95,7 +111,11 @@ func TestCommandSuggestionUnwraps(t *testing.T) {
 		"npx eslint src":     "",
 	}
 	for in, want := range tests {
-		if got := s.command(in); got != want {
+		// Act
+		got := s.command(in)
+
+		// Assert
+		if got != want {
 			t.Errorf("command(%q) = %q, want %q", in, got, want)
 		}
 	}

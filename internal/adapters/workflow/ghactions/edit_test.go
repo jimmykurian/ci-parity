@@ -14,6 +14,7 @@ import (
 )
 
 func TestApply(t *testing.T) {
+	// Arrange
 	root := t.TempDir()
 	path := filepath.Join(root, "ci.yml")
 	in := "steps:\r\n  - run: pnpm test # note\r\n  - run: pnpm lint\r\n  - run: énv pnpm x\r\n"
@@ -26,14 +27,19 @@ func TestApply(t *testing.T) {
 		{File: "ci.yml", Line: 4, Col: 14, Old: "pnpm x", New: "task x"},         // after a multibyte character; yaml.v3 columns count characters
 		{File: "ci.yml", Line: 9, Col: 1, Old: "x", New: "y"},                    // no such line
 	}
+	wantApplied := []domain.Edit{edits[0], edits[2]}
+	want := "steps:\r\n  - run: task test # note\r\n  - run: pnpm lint\r\n  - run: énv task x\r\n"
+
+	// Act
 	applied, err := Source{Root: root}.Apply("ci.yml", edits)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if diff := cmp.Diff([]domain.Edit{edits[0], edits[2]}, applied); diff != "" {
+
+	// Assert
+	if diff := cmp.Diff(wantApplied, applied); diff != "" {
 		t.Errorf("applied (-want +got):\n%s", diff)
 	}
-	want := "steps:\r\n  - run: task test # note\r\n  - run: pnpm lint\r\n  - run: énv task x\r\n"
 	got, _ := os.ReadFile(path)
 	if diff := cmp.Diff(want, string(got)); diff != "" {
 		t.Errorf("file (-want +got):\n%s", diff)
@@ -44,8 +50,16 @@ func TestApply(t *testing.T) {
 }
 
 func TestApplyRefusesPathsOutsideRoot(t *testing.T) {
+	// Arrange
 	root := t.TempDir()
-	if _, err := (Source{Root: filepath.Join(root, "repo")}).Apply("../outside.yml", []domain.Edit{{Line: 1, Col: 1, Old: "a", New: "b"}}); err == nil {
+	src := Source{Root: filepath.Join(root, "repo")}
+	edits := []domain.Edit{{Line: 1, Col: 1, Old: "a", New: "b"}}
+
+	// Act
+	_, err := src.Apply("../outside.yml", edits)
+
+	// Assert
+	if err == nil {
 		t.Error("an edit outside the repository was accepted")
 	}
 }
