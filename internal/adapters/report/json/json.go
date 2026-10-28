@@ -1,5 +1,5 @@
 // Package json renders findings as the versioned JSON document described in
-// docs/SPEC.md section 8 and the README.
+// docs/reference/output-formats.md and the README.
 package json
 
 import (

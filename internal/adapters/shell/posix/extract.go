@@ -217,7 +217,7 @@ func (e *extractor) source(w *syntax.Word) string {
 }
 
 // valueFlags lists, per built-in transparent wrapper, the flags that take the
-// next argument as their value (SPEC 5.3).
+// next argument as their value (docs/reference/analysis.md, Commands).
 var valueFlags = map[string]map[string]bool{
 	"sudo": flagSet("-u -g -h -p -C -D -R -r -t -T -U --user --group --host --prompt --close-from",
 		"--chdir --chroot --role --type --command-timeout --other-user"),

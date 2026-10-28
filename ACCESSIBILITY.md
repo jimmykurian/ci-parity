@@ -35,7 +35,8 @@ in order (1.3.2), and errors that are identified and described in text (3.3.1).
    the position, rule and message but not the file path, so a screen reader
    user who jumps to a single line, or a `grep` for one, loses which file it's
    in. Workaround: `--format json` or `--format github`, which repeat the file
-   on every finding. Changing the text layout is a spec change (SPEC section 8).
+   on every finding. Changing the text layout is a contract change
+   ([output formats](docs/reference/output-formats.md)).
 2. **Long lines.** Text output doesn't wrap, and a line with a long command can
    pass 150 characters. Terminals and screen readers wrap it, but magnified
    views may need horizontal scrolling.

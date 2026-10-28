@@ -447,6 +447,39 @@ everywhere, add it to `tools.remove`.
 **Are PowerShell or cmd steps checked?** No. They're reported as P005 warnings and
 skipped, as are steps in any shell other than bash and sh.
 
+## Architecture
+
+ci-parity reads the repository's files, never runs them, and reports through one of four
+formats. The core (rules and use cases) depends only on ports; each file format, shell,
+runner and output is an adapter behind one.
+
+```mermaid
+flowchart LR
+    subgraph inputs["Repository files"]
+        wf["Workflows and<br/>composite actions"]
+        rf["Taskfile, Makefile,<br/>justfile or mise"]
+        cfg[".ci-parity.yml"]
+        bl[".ci-parity-baseline.json"]
+    end
+    subgraph cip["ci-parity"]
+        cli["CLI<br/>check, baseline, fix"]
+        adapters["Adapters<br/>YAML, POSIX shell,<br/>runner readers, baseline file"]
+        core["Core<br/>use cases, rules P001 to P005,<br/>baseline ratchet"]
+        cli --> core
+        adapters -->|"implement the ports"| core
+    end
+    inputs --> adapters
+    core --> out["text, github,<br/>JSON or SARIF"]
+    out --> term["Terminal"]
+    out --> ann["Pull request<br/>annotations"]
+    out --> cs["Code scanning"]
+    core -->|"fix"| wf
+    action["GitHub Action<br/>action.yml"] -->|"downloads, verifies, runs"| cli
+```
+
+[docs/architecture/](docs/architecture/README.md) has the package layers, the ports, the
+check, fix and release flows, and the design decisions.
+
 ## Development
 
 Every command runs through the [Taskfile](Taskfile.yml); CI calls the same tasks.
@@ -456,7 +489,8 @@ versions CI uses; with [mise](https://mise.jdx.dev/), `mise install` sets them u
 `task hooks:install` turns on the pre-commit, commit-msg and pre-push hooks in
 `.githooks/`. The devcontainer (`.devcontainer/`) sets all of this up in VS Code or
 Codespaces.
-See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose and test a change.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose and test a change, and
+[docs/](docs/README.md) for the full reference, the architecture and how releases work.
 
 ## License
 

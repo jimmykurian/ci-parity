@@ -32,9 +32,8 @@ tests:
 spec:
   - changed-files:
       - any-glob-to-any-file:
-          - "docs/SPEC.md"
-          - "docs/PLAN.md"
-          - "docs/DECISIONS.md"
+          - "docs/reference/**"
+          - "docs/architecture/decisions.md"
 
 documentation:
   - changed-files:

@@ -7,16 +7,15 @@ requests are all welcome. Everyone taking part follows the
 
 ## Before you start
 
-ci-parity is built to a written spec, so most changes start in the docs:
+ci-parity's behavior is documented as a contract, so most changes start in the docs:
 
-- [docs/SPEC.md](docs/SPEC.md) says what the tool does: rules, config keys,
-  output formats, the baseline format and exit codes.
-- [docs/PLAN.md](docs/PLAN.md) says in what order. Items under "Backlog" are
-  deliberately not started; open an issue before working on one.
-- [docs/DECISIONS.md](docs/DECISIONS.md) records every change to a decision or
-  contract. A new config key, rule, dependency, or a change to a rule ID, the
-  baseline format or the JSON schema needs an entry there, agreed in an issue,
-  before the code.
+- [docs/reference/](docs/reference/README.md) says exactly what the tool does: the
+  rules and their messages, config keys, the baseline format, output formats and exit
+  codes. A new config key, rule or dependency, or a change to a rule ID, a message, the
+  baseline format or the JSON or SARIF schema, needs agreement in an issue first, and
+  updates the reference in the same pull request as the code.
+- [docs/architecture/](docs/architecture/README.md) shows how it fits together and why,
+  including ideas not yet planned.
 - [AGENTS.md](AGENTS.md) has the working rules for this repo, for people and
   coding agents alike.
 

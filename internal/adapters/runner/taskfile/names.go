@@ -12,7 +12,7 @@ func (t *Taskfile) Command() string { return "task" }
 // Internal is how P003 describes an internal task.
 func (t *Taskfile) Internal() string { return "is marked internal: true" }
 
-// valueFlags are task flags that take the next argument as their value (SPEC 5.4).
+// valueFlags are task flags that take the next argument as their value (docs/reference/analysis.md, Invokers).
 var valueFlags = map[string]bool{
 	"-t": true, "--taskfile": true, "-d": true, "--dir": true,
 	"-C": true, "--concurrency": true, "-I": true, "--interval": true, "-o": true, "--output": true,

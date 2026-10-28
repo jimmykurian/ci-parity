@@ -8,7 +8,7 @@ import "sort"
 // Severity is how a finding affects the result.
 type Severity string
 
-// Severities, per docs/SPEC.md section 3.
+// Severities, per docs/reference/README.md.
 const (
 	SeverityError     Severity = "error"
 	SeverityWarning   Severity = "warning"
@@ -16,7 +16,7 @@ const (
 	SeverityAllowed   Severity = "allowed"
 )
 
-// Rule IDs, per docs/SPEC.md section 6.
+// Rule IDs, per docs/reference/rules.md.
 const (
 	InlineTool   = "P001"
 	UnknownTask  = "P002"

@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-// Exit codes per docs/SPEC.md section 9.
+// Exit codes, per docs/reference/cli.md.
 const (
 	exitOK       = 0
 	exitFindings = 1
