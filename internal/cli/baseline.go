@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package cli
 
 import (
 	"context"
@@ -26,7 +26,7 @@ func runBaseline(args []string, stdout, stderr io.Writer) int {
 	a, err := newApp(*dir)
 	if err != nil {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
-		return exitUsage
+		return ExitUsage
 	}
 	res, err := a.WriteBaseline(context.Background(), app.BaselineOptions{
 		ConfigPath:      *configPath,
@@ -41,13 +41,13 @@ func runBaseline(args []string, stdout, stderr io.Writer) int {
 			fmt.Fprintf(stderr, "  %s  %d -> %d\n", r.File, r.Baseline, r.Current)
 		}
 		fmt.Fprintln(stderr, "fix the new inline-tool findings, or rerun with --allow-regression to accept them")
-		return exitFindings
+		return ExitFindings
 	case err != nil:
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
-		return exitUsage
+		return ExitUsage
 	}
 	fmt.Fprintf(stdout, "wrote %s: %s, %s\n", res.Path, plural(res.Workflows, "workflow"), plural(res.Findings, "inline-tool finding"))
-	return exitOK
+	return ExitOK
 }
 
 // plural formats n with word, adding an s unless n is 1.

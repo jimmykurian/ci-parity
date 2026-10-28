@@ -19,7 +19,7 @@ builds:
     flags:
       - -trimpath
     ldflags:
-      - -s -w -X main.version={{ .Version }} -X main.commit={{ .ShortCommit }} -X main.date={{ .CommitDate }}
+      - -s -w -X github.com/jimmykurian/ci-parity/internal/cli.version={{ .Version }} -X github.com/jimmykurian/ci-parity/internal/cli.commit={{ .ShortCommit }} -X github.com/jimmykurian/ci-parity/internal/cli.date={{ .CommitDate }}
     # Reproducible: file times come from the commit, not the build machine.
     mod_timestamp: "{{ .CommitTimestamp }}"
 

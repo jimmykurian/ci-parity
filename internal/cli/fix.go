@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package cli
 
 import (
 	"context"
@@ -24,12 +24,12 @@ func runFix(args []string, stdout, stderr io.Writer) int {
 	a, err := newApp(*dir)
 	if err != nil {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
-		return exitUsage
+		return ExitUsage
 	}
 	res, err := a.Fix(context.Background(), app.FixOptions{ConfigPath: *configPath, DryRun: *dryRun})
 	if err != nil {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
-		return exitUsage
+		return ExitUsage
 	}
 	for _, e := range res.Edits {
 		fmt.Fprintf(stdout, "%s:%d:%d '%s' -> '%s'\n", e.File, e.Line, e.Col, e.Old, e.New)
@@ -43,7 +43,7 @@ func runFix(args []string, stdout, stderr io.Writer) int {
 	if res.Baseline && len(res.Edits) > 0 && !*dryRun {
 		fmt.Fprintln(stdout, "run `ci-parity baseline` to lock in the lower counts")
 	}
-	return exitOK
+	return ExitOK
 }
 
 // needs phrases how many inline-tool findings still need a hand edit.
