@@ -109,6 +109,17 @@ func (c *checker) inlineTool(f *domain.File, s *domain.Step, cmd domain.Command)
 	}
 	fd := c.add(f, s, domain.InlineTool, sev, line, col, msg)
 	fd.Command, fd.Reason, fd.Suggestion = cmd.Normalized, reason, suggestion
+	if suggestion != "" && sev != domain.SeverityAllowed && fixable(s.Run, cmd) {
+		fd.Fix = &domain.Edit{File: f.Path, Line: s.Run.Line, Col: s.Run.Col, Old: s.Run.Value, New: suggestion}
+	}
+}
+
+// fixable reports whether replacing the whole run: value with the suggestion
+// keeps its meaning: an unquoted single-line value that is exactly the
+// command, with no wrapper, assignment, operator, quoting or expression.
+func fixable(run *domain.Script, cmd domain.Command) bool {
+	return run.Plain && !strings.Contains(run.Value, "${{") &&
+		strings.Join(strings.Fields(run.Value), " ") == cmd.Normalized
 }
 
 // allowRule returns the reason of the first config allow entry matching the

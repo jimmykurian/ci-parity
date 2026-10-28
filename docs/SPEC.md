@@ -386,6 +386,7 @@ A step without a `name:` is referred to as `step <index>` (1-based) in place of
 ci-parity check    [--config PATH] [--baseline PATH] [--format text|github|json|sarif]
                    [--strict] [--verbose] [-C DIR]
 ci-parity baseline [--config PATH] [--baseline PATH] [--allow-regression] [-C DIR]
+ci-parity fix      [--config PATH] [--dry-run] [-C DIR]
 ci-parity version
 ```
 
@@ -395,6 +396,15 @@ ci-parity version
   includes them.
 - `version` prints `ci-parity <version> (<commit>, <date>)`, with values injected by
   the build via `-ldflags`.
+- `fix` (from v0.4) rewrites a P001 finding to its suggestion when that cannot change
+  what the step does: its `run:` is an unquoted single-line value that is exactly the
+  flagged command (no wrapper, assignment, operator, quoting or `${{ }}`), a suggestion
+  exists, and the finding is not allowed. Only the value is replaced, so comments and
+  the rest of the file are unchanged; an edit whose text no longer matches the file is
+  skipped. It prints `<file>:<line>:<col> '<old>' -> '<new>'` per edit, then
+  `fixed <n> steps in <m> files; <k> inline-tool findings need a manual change`, and,
+  when a baseline file exists, a hint to run `ci-parity baseline`. `--dry-run` prints
+  `would fix` and writes nothing. It exits 0, or 2 on a usage or input error.
 
 ## 8. Output formats
 

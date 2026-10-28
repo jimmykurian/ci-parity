@@ -42,6 +42,8 @@ type Input struct {
 // Script is a step's run: value and where it sits in the file.
 type Script struct {
 	Text     string
+	Value    string    // the YAML value as written, without a trailing YAML comment
+	Plain    bool      // an unquoted, single-line value: the only kind fix rewrites
 	Line     int       // source line of the script's first line
 	Col      int       // source column of the script's first character
 	Indent   int       // indentation of block scalar content

@@ -1,0 +1,24 @@
+name: ci
+on: [push]
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Install
+        run: pnpm install --frozen-lockfile
+      - name: Test
+        run: pnpm test # keep this comment
+      - name: Lint with a wrapper
+        run: sudo pnpm lint
+      - name: Chain
+        run: pnpm build && pnpm test
+      - name: Block
+        run: |
+          pnpm test
+      - name: Quoted
+        run: "pnpm test"
+      - name: No task
+        run: pnpm audit
+      - name: Allowed
+        run: pnpm publish # ci-parity: allow publishes from CI

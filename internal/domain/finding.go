@@ -48,6 +48,14 @@ type Finding struct {
 	Message    string
 	Suggestion string
 	Reason     string // allow reason for allowed findings
+	Fix        *Edit  // for P001, the rewrite to its suggestion when fix can make it
+}
+
+// Edit replaces Old with New at a 1-based line and column of a file.
+type Edit struct {
+	File      string // repo-relative, forward slashes
+	Line, Col int
+	Old, New  string
 }
 
 // Name returns the rule name, such as "inline-tool".

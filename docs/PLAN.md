@@ -165,7 +165,14 @@ all four formats. Release v0.3.0.
 
 ## Phase 8: fix mode
 
-Spec proposed in `docs/DECISIONS.md` when the phase starts. Release v0.4.0.
+- [x] `ci-parity fix` per SPEC 7: safe single-command steps only, value-only edits checked
+      against the file, `--dry-run`, a baseline hint
+- [x] End-to-end test on `testdata/fix/basic` (fix, dry run, second run, baseline hint) and
+      unit tests for the editor
+- [x] README: fixing findings
+
+Acceptance: `task ci` green; a fixed workflow differs from its input only in the
+rewritten values. Release v0.4.0.
 
 ## Backlog (do not start)
 

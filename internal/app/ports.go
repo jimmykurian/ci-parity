@@ -29,6 +29,13 @@ type WorkflowSource interface {
 	Load(path string) (*domain.File, error)
 }
 
+// WorkflowEditor rewrites workflow and action files for fix.
+type WorkflowEditor interface {
+	// Apply makes the edits to the repo-relative file and returns those it made.
+	// An edit whose Old text is no longer at its position is skipped.
+	Apply(path string, edits []domain.Edit) ([]domain.Edit, error)
+}
+
 // TaskLoader opens the configured runner's file.
 type TaskLoader interface {
 	// Load reads the file of the runner named runner (a domain.Runner* value) at
@@ -59,4 +66,5 @@ type App struct {
 	Tasks     TaskLoader
 	Extractor CommandExtractor
 	Baselines BaselineStore
+	Editor    WorkflowEditor
 }
