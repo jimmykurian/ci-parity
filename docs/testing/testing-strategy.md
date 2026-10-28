@@ -17,20 +17,38 @@ The test suites, what each one proves, and how to add to them. `task test` runs 
 | End-to-end | `test/e2e/` | The built binary, run as a process: the stamped version, exit codes, stdout and stderr, the working directory in place of `-C`, and `fix` writing to disk |
 | Action tests | the **Self-check** CI job | The action itself, on this repository and on a fixture with findings |
 
-Unit tests stay in their package so they can test unexported functions; the integration
-and end-to-end tests use the program only from outside, so they live under `test/`.
+Unit tests stay in their package so they can test unexported functions, and are plain
+`testing` table tests. The integration and end-to-end tests use the program only from
+outside, so they live under `test/`, written as [Ginkgo](https://onsi.github.io/ginkgo/)
+specs with [Gomega](https://onsi.github.io/gomega/) matchers.
+
+## Ginkgo specs
+
+Each package under `test/` has one `TestX` function that runs its specs, so `go test` and
+the `task test:*` commands run them like any other test; the Ginkgo CLI isn't needed.
+
+- Specs read as behavior: `Describe("ci-parity baseline")`, `Context("when the
+  inline-tool counts rose")`, `It("refuses, listing the workflow, and leaves the file
+  unchanged")`. Table tests are `DescribeTable` with one `Entry` per case.
+- Labels: `integration`, `e2e`, and `golden` on the golden table. Select with
+  `go test ./test/... -ginkgo.label-filter=golden`; focus on specs by name with
+  `-ginkgo.focus='ci-parity fix'`.
+- Spec order is randomized, so each spec copies the fixture it writes to.
+- The end-to-end suite builds the binary once in `BeforeSuite` with `gexec.Build` and runs
+  it with `gexec.Start`, asserting on `gexec.Exit` and `gbytes.Say`.
 
 ## Golden fixtures
 
 Each case is a complete miniature repository: config, runner file, workflows and an
 optional baseline, plus `expected/{text,github,json,sarif}.golden` and `expected/exitcode`.
-The harness (`internal/testutil/golden.go`), called from `test/integration`, runs
-`cli.Run` in process against every fixture in every format, so a new fixture needs no test
-code.
+The golden table in `test/integration/golden_test.go` has one entry per fixture and
+format, built from `testutil.FixtureDirs`, and runs `cli.Run` in process; the comparisons
+in `internal/testutil/golden.go` take either a `*testing.T` or `GinkgoT()`. A new fixture
+needs no test code.
 
 - Prefer a new fixture to a mock. Use invented names such as `acme-app`, `example-api` and
   `widget-service`.
-- `task test -- -update` rewrites the goldens. Read the diff: every changed line should be
+- `task test -- -update` rewrites the goldens (it runs the `golden` label). Read the diff: every changed line should be
   one you meant.
 
 ## Unit tests
