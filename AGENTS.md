@@ -22,7 +22,7 @@ Dependencies point inward: `cmd` → `adapters` → `app` → `rules` → `domai
 
 - Everything runs through the Taskfile, and `task ci` must pass before a change is done.
   `task test -- -update` regenerates goldens; read the diff, every change must be meant.
-- Run `task hooks:install` once. The hooks run the linters, the scrub and the commit-message
+- Run `task hooks:install` once. The hooks run gitleaks, the linters and the commit-message
   check, and refuse commits and pushes on `main`: work on a branch and open a pull request.
 - Prefer a new fixture to a mock. Fixtures are synthetic (`acme-app`, `widget-service`).
 - Work one `docs/PLAN.md` phase at a time, tick its boxes, and stop when it's done. Never
@@ -44,14 +44,7 @@ Dependencies point inward: `cmd` → `adapters` → `app` → `rules` → `domai
 - Every `run:` step in this repo's workflows calls `task`; setup goes in `uses:` steps,
   pinned to a full commit SHA with a version comment.
 - Apache-2.0 lives in `LICENSE`; no per-file headers.
-
-## Clean room
-
-This is a from-scratch implementation. Don't read, copy or adapt code, workflows, fixtures
-or identifiers from other repositories, and don't name other companies, products or
-internal tickets in the tree. `task scrub` checks for the private terms in
-`$SCRUB_TERMS_FILE`; never write those terms into a tracked file. Fix a gitleaks hit,
-never allowlist it.
+- Fix a gitleaks hit; never allowlist it.
 
 ## Read before starting
 

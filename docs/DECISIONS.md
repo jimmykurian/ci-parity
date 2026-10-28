@@ -6,10 +6,22 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-28: drop the clean-room rule and the scrub check (accepted)
+
+Problem: the clean-room section and `task scrub` were the maintainer's private
+constraints written as project rules. In a public repository they make no sense to a
+contributor: the scrub reads a terms file only the maintainer has, and "don't read other
+repositories on this machine" only applies to one machine.
+
+Change, at the owner's request: the Clean room section leaves AGENTS.md, and `task scrub`
+leaves the Taskfile, `task ci`, the pre-commit hook, CI, the PR check table and the README
+badges. Copying is covered the usual open-source way, by CONTRIBUTING's Apache-2.0 terms,
+and secrets by gitleaks, whose hits are fixed, never allowlisted.
+
 ### 2026-10-28: a shorter AGENTS.md (accepted)
 
 Problem: AGENTS.md had grown to 95 lines, much of it rules that tools already enforce
-(formatting, exported doc comments, commit messages, the scrub) or detail kept elsewhere
+(formatting, exported doc comments, commit messages) or detail kept elsewhere
 (the task list, the test harness), which dilutes the rules no tool checks.
 
 Change, at the owner's request and following HumanLayer's guidance on agent instruction

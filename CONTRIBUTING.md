@@ -68,7 +68,6 @@ tasks:
 | `task lint:release` | goreleaser check on `.goreleaser.yaml` |
 | `task fmt` | formats Go code with gofumpt and goimports; `task fmt:check` prints the diff and fails |
 | `task self-check` | runs ci-parity against this repo's own workflows |
-| `task scrub` | maintainer check for private terms; passes with a warning when not set up |
 | `task ci` | all of the above, in order |
 | `task hooks:install` | turns on the git hooks in `.githooks/` |
 
@@ -135,8 +134,8 @@ git config user.signingkey "key::$(cat ~/.ssh/id_ed25519.pub)"  # run on the hos
 
 `task hooks:install` points git at `.githooks/`:
 
-- **pre-commit** refuses commits on `main`, then checks what's staged: gitleaks and
-  `task scrub` on every commit, then golangci-lint (format and lint), editorconfig-checker,
+- **pre-commit** refuses commits on `main`, then checks what's staged: gitleaks on
+  every commit, then golangci-lint (format and lint), editorconfig-checker,
   typos, markdownlint, yamllint, shellcheck, actionlint and zizmor on the files they cover.
 - **commit-msg** checks the header against Conventional Commits, with the types and
   scopes in `.gitmessage`.

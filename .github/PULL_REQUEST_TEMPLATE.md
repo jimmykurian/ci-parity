@@ -19,7 +19,7 @@ Delete the options that don't apply.
 
 ## How Has This Been Tested?
 
-- [ ] `task ci` passes (fmt, lint, test, build, self-check, scrub)
+- [ ] `task ci` passes (fmt, lint, test, build, self-check)
 - [ ] Added or updated a fixture under `testdata/fixtures/` for the behavior,
       with `text`, `github` and `json` goldens and an `exitcode`
 - [ ] Golden changes from `task test -- -update` are reviewed and intended
