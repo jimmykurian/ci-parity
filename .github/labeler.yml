@@ -16,6 +16,7 @@ cli:
   - changed-files:
       - any-glob-to-any-file:
           - "cmd/**"
+          - "internal/cli/**"
           - "internal/app/**"
 
 adapters:
@@ -28,6 +29,7 @@ tests:
       - any-glob-to-any-file:
           - "testdata/**"
           - "internal/testutil/**"
+          - "test/**"
           - "**/*_test.go"
 
 # Contracts and docs

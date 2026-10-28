@@ -8,17 +8,21 @@ baseline that only shrinks. A Go CLI plus a composite GitHub Action (`action.yml
 
 ## Map
 
-- `cmd/ci-parity/`: the CLI; `wire.go` builds the adapters and hands them to `app`
+- `cmd/ci-parity/`: `main`, which calls `internal/cli`
+- `internal/cli/`: flags, exit codes and `wire.go`, which builds the adapters and hands
+  them to `app`
 - `internal/domain/`: types and pure logic, standard library only
 - `internal/rules/`: rules P001 to P005; the ports they use are in `ports.go`
 - `internal/app/`: the check, baseline and fix use cases; ports in `ports.go`
 - `internal/adapters/`: config, workflow YAML, shell parsing, runner readers, baseline file,
   output formats
 - `testdata/fixtures/<case>/`: golden fixtures; `testdata/fix/`: fix fixtures
+- Unit tests sit next to the code; `test/integration/` runs the CLI in-process on the
+  fixtures; `test/e2e/` builds the binary and runs it as a process
 - `docs/reference/` is the contract; `docs/architecture/` shows how it fits together and
   why; `docs/README.md` indexes the rest
 
-Dependencies point inward: `cmd` → `adapters` → `app` → `rules` → `domain`.
+Dependencies point inward: `cmd` → `cli` → `adapters` → `app` → `rules` → `domain`.
 
 ## How to work
 

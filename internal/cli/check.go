@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
 // SPDX-License-Identifier: Apache-2.0
 
-package main
+package cli
 
 import (
 	"context"
@@ -26,12 +26,12 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 	}
 	if *format != "text" && *format != "github" && *format != "json" && *format != "sarif" {
 		fmt.Fprintf(stderr, "ci-parity check: unknown format %q; use text, github, json or sarif\n", *format)
-		return exitUsage
+		return ExitUsage
 	}
 	a, err := newApp(*dir)
 	if err != nil {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
-		return exitUsage
+		return ExitUsage
 	}
 	res, err := a.Check(context.Background(), app.CheckOptions{
 		ConfigPath:   *configPath,
@@ -41,10 +41,10 @@ func runCheck(args []string, stdout, stderr io.Writer) int {
 	})
 	if err != nil {
 		fmt.Fprintf(stderr, "ci-parity: %v\n", err)
-		return exitUsage
+		return ExitUsage
 	}
 	if res.Failed() {
-		return exitFindings
+		return ExitFindings
 	}
-	return exitOK
+	return ExitOK
 }
