@@ -44,6 +44,7 @@ jobs:
       markdown: ${{ steps.markdown.outcome }}
       spelling: ${{ steps.spelling.outcome }}
       editorconfig: ${{ steps.editorconfig.outcome }}
+      headers: ${{ steps.headers.outcome }}
       release: ${{ steps.release.outcome }}
       test: ${{ steps.test.outcome }}
       build: ${{ steps.build.outcome }}
@@ -93,6 +94,9 @@ jobs:
       - id: editorconfig
         if: ${{ !cancelled() }}
         run: task lint:editorconfig
+      - id: headers
+        if: ${{ !cancelled() }}
+        run: task lint:headers
       - id: release
         if: ${{ !cancelled() }}
         run: task lint:release
@@ -201,6 +205,7 @@ jobs:
                   ['Markdown lint (markdownlint)', 'lint:markdown', 'markdown'],
                   ['Spelling (typos)', 'lint:spelling', 'spelling'],
                   ['EditorConfig', 'lint:editorconfig', 'editorconfig'],
+                  ['License headers', 'lint:headers', 'headers'],
                   ['Release config (goreleaser check)', 'lint:release', 'release'],
                   ['Tests and golden fixtures', 'test', 'test'],
                   ['Build', 'build', 'build'],
@@ -292,6 +297,7 @@ jobs:
               'checks/markdown.json': status(c.markdown),
               'checks/spelling.json': status(c.spelling),
               'checks/editorconfig.json': status(c.editorconfig),
+              'checks/headers.json': status(c.headers),
               'checks/release.json': status(c.release),
               'build/tests.json': status(c.test),
               'build/build.json': status(c.build),

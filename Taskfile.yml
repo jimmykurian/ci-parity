@@ -36,6 +36,7 @@ tasks:
       - task: lint:markdown
       - task: lint:spelling
       - task: lint:editorconfig
+      - task: lint:headers
       - task: lint:release
 
   lint:go:
@@ -107,6 +108,34 @@ tasks:
       # each format; this checks charset, line endings, final newlines and
       # trailing whitespace.
       - editorconfig-checker -config .config/linters/editorconfig-checker.json
+
+  lint:headers:
+    desc: Check every file starts with the Apache-2.0 license header (exceptions in .config/linters/headers-exclude.txt)
+    cmds:
+      - silent: true
+        cmd: |
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          grep -vE '^[[:space:]]*(#|$)' .config/linters/headers-exclude.txt > "$tmp/patterns"
+          # HEADER_FILES names a file listing paths one per line (the pre-commit hook's staged
+          # files); the paths are read as data, never expanded by the shell.
+          if [ -n "${HEADER_FILES:-}" ]; then cat "$HEADER_FILES"; else git ls-files; fi > "$tmp/all"
+          # grep exits 1 when every path is excluded; that isn't a failure.
+          grep -vE -f "$tmp/patterns" "$tmp/all" > "$tmp/files" || [ $? -eq 1 ]
+          status=0
+          while IFS= read -r file; do
+            [ -f "$file" ] || continue
+            head -n 5 "$file" > "$tmp/top"
+            if ! grep -qE 'Copyright \(c\) 20[0-9]{2} Jimmy Kurian\. Licensed under Apache-2\.0' "$tmp/top"; then
+              echo "lint:headers: $file: no copyright line"
+              status=1
+            fi
+            if ! grep -q 'SPDX-License-Identifier: Apache-2.0' "$tmp/top"; then
+              echo "lint:headers: $file: no SPDX-License-Identifier line"
+              status=1
+            fi
+          done < "$tmp/files"
+          exit $status
 
   fmt:
     desc: Format Go code (gofumpt and goimports, through golangci-lint)
