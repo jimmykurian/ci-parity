@@ -97,7 +97,7 @@ Each [release](https://github.com/jimmykurian/ci-parity/releases) has archives f
 linux, darwin and windows on amd64 and arm64, and a `checksums.txt`:
 
 ```sh
-VERSION=0.5.1 # x-release-please-version
+VERSION=0.6.0 # x-release-please-version
 gh release download "v$VERSION" --repo jimmykurian/ci-parity \
   --pattern "ci-parity_${VERSION}_linux_amd64.tar.gz" --pattern checksums.txt
 sha256sum --ignore-missing -c checksums.txt
@@ -120,14 +120,14 @@ version, commit and date.
 from GitHub Releases:
 
 ```sh
-mise use github:jimmykurian/ci-parity@0.5.1 # x-release-please-version
+mise use github:jimmykurian/ci-parity@0.6.0 # x-release-please-version
 ```
 
 Or pin it in `mise.toml` with the repository's other tools:
 
 ```toml
 [tools]
-"github:jimmykurian/ci-parity" = "0.5.1" # x-release-please-version
+"github:jimmykurian/ci-parity" = "0.6.0" # x-release-please-version
 ```
 
 ### pre-commit
@@ -137,7 +137,7 @@ With [pre-commit](https://pre-commit.com), add the hook to `.pre-commit-config.y
 ```yaml
 repos:
   - repo: https://github.com/jimmykurian/ci-parity
-    rev: v0.5.1 # x-release-please-version
+    rev: v0.6.0 # x-release-please-version
     hooks:
       - id: ci-parity
 ```
