@@ -74,7 +74,7 @@ allowed, so `internal/domain` implements this matcher itself, with table tests.
 Every key is optional. Defaults are shown.
 
 ```yaml
-runner: taskfile
+runner: taskfile                  # or make, just, mise (from v0.3; see 5.7)
 taskfile: ""                      # empty = auto-discover: Taskfile.yml, taskfile.yml,
                                   # Taskfile.yaml, taskfile.yaml, then the .dist variants
 workflows:
@@ -304,6 +304,47 @@ exits 2). Collect:
   at most 3 and less than the length of the unknown name. Internal tasks are never
   suggested.
 
+### 5.7 Other runners (from v0.3)
+
+`runner` selects `taskfile`, `make`, `just` or `mise`. Each has a reader behind the same
+interface and its own call syntax; the rules are unchanged.
+
+- Discovery: the root file is found in the repository root, names matched exactly.
+  make: `GNUmakefile`, `makefile`, `Makefile`. just: `justfile`, `Justfile`,
+  `.justfile`. mise: `mise.toml`, `.mise.toml`, `mise/config.toml`,
+  `.mise/config.toml`, `.config/mise.toml`, `.config/mise/config.toml`, merged in
+  mise's order. The `taskfile` key is only for `runner: taskfile`; set with another
+  runner it is a config error. A missing root file exits 2.
+- Defaults by runner: `invokers.shell` is `[make, gmake]`, `[just]` or
+  `["mise run", "mise r", "mise tasks run"]`, and `invokers.actions` is empty, unless
+  the config sets them. Unless `tools.replace` is set, the configured runner's commands
+  leave the tools list and the other runners' are on it, including `task` and `go-task`.
+- make: a target is a rule line outside a recipe; special targets (`.PHONY`), pattern
+  rules (`%`), variable assignments (including target-specific ones), `define` blocks
+  and names holding `$` define none. `include`, `-include` and `sinclude` of literal
+  paths, resolved from the repository root, are followed to depth 10; a missing file is
+  skipped, as make may generate it. Recipe lines, without leading `@`, `-` or `+` and
+  with whitespace collapsed, are a target's commands. No target is internal. In a call,
+  `-f`, `--file`, `--makefile`, `-C` and `--directory` (in any form) select another
+  makefile and the call is ignored; `-I --include-dir -o --old-file --assume-old -W
+  --what-if --new-file --assume-new` take a value; `-j --jobs -l --load-average
+  --max-load` take the next argument only when it is a number; `NAME=value` is a
+  variable; a call naming no target runs the default goal and is ignored.
+- just: recipes, their parameters, `alias a := b`, `import` of literal paths and `mod`
+  (recipes named `mod::recipe`, from `name.just`, `name/mod.just`, `name/justfile` or a
+  given path). A recipe is internal when it is `[private]` or its name starts with `_`.
+  Body lines without leading `@` or `-` are its commands. In a call, the words after a
+  recipe are its arguments, as many as its parameters take (all the rest for a variadic
+  one); `just mod recipe` and `just mod::recipe` both name a module recipe. `-f`,
+  `--justfile`, `-d` and `--working-directory` select another justfile; `--set` takes
+  two values.
+- mise: `[tasks.name]` tables and `name = "cmd"` entries, with `run` (string or list)
+  as the commands, `alias` as aliases and `hide = true` as internal; file tasks under
+  `mise-tasks/`, `.mise-tasks/`, `mise/tasks/`, `.mise/tasks/` and
+  `.config/mise/tasks/` (named from the path, `db/migrate` as `db:migrate`, with no
+  commands); and `task_config.includes`. A call names one task, then its arguments;
+  `:::` starts another task. `-C` and `--cd` select another directory.
+
 ## 6. Rules
 
 | ID   | Name             | Severity                         | Trigger |
@@ -314,7 +355,9 @@ exits 2). Collect:
 | P004 | regression       | error                            | A workflow's P001 count exceeds its baseline, or a locked workflow has any P001. One finding per workflow, located at line 1 of the workflow. |
 | P005 | unsupported      | warning                          | Unsupported shell, shell parse error, dynamic command name, allow comment without reason. |
 
-Message wording (normative, because users grep for it):
+Message wording (normative, because users grep for it). With another runner (5.7), its
+command takes the place of `task` in `task <name>`: `make lint`, `just lint`,
+`mise run lint`.
 
 - P001: `step "<step>" in job "<job>" runs '<command>' directly` followed, when a
   suggestion exists, by `; already available as 'task <name>'`. For composite actions

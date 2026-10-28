@@ -14,6 +14,12 @@ type TaskSource interface {
 	// Commands returns the command strings of the task defined under name.
 	// Aliases and namespace shortcuts return none, so suggestions name the task.
 	Commands(name string) []string
+	// Command returns how CI calls a task, such as "task" or "mise run"; messages
+	// and suggestions use it.
+	Command() string
+	// Names returns the task names among a shell invoker call's arguments, and
+	// none when the call targets another file or runs no task.
+	Names(args []domain.Word) []domain.Word
 }
 
 // CommandExtractor finds tool and task-runner calls in a step's script.

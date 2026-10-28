@@ -139,7 +139,7 @@ assets and `checksums.txt` are attached to the release. `task ci` green.
 Acceptance: `task ci` green; every fixture passes in all four formats; this repo's code
 scanning lists a ci-parity analysis after a push to `main`. Release v0.2.0.
 
-## Phase 6: unwrapping for suggestions
+## Phase 6: unwrapping for suggestions (released in v0.2.0)
 
 - [x] Unwrapping per SPEC 5.6 in `internal/rules`, applied to both the inline command and
       each Taskfile command, with table tests
@@ -148,15 +148,24 @@ scanning lists a ci-parity analysis after a push to `main`. Release v0.2.0.
 - [x] README: the Rules section notes the equivalence
 
 Acceptance: `task ci` green; existing goldens change only where a suggestion was missing.
-Release v0.3.0.
+Released with Phase 5 as v0.2.0.
 
 ## Phase 7: Make, just and mise readers
 
-Spec proposed in `docs/DECISIONS.md` when the phase starts. Release v0.4.0.
+- [x] Runner selection per SPEC 5.7: `runner` values, defaults that follow the runner,
+      each runner parsing its own calls and naming its command in messages
+- [x] Make reader with table tests and a `runner-make` fixture
+- [ ] just reader with table tests and a `runner-just` fixture
+- [ ] mise reader (`github.com/BurntSushi/toml`) with table tests and a `runner-mise`
+      fixture
+- [ ] README: configuration and FAQ for each runner
+
+Acceptance: `task ci` green; Taskfile goldens unchanged; each runner's fixture passes in
+all four formats. Release v0.3.0.
 
 ## Phase 8: fix mode
 
-Spec proposed in `docs/DECISIONS.md` when the phase starts. Release v0.5.0.
+Spec proposed in `docs/DECISIONS.md` when the phase starts. Release v0.4.0.
 
 ## Backlog (do not start)
 

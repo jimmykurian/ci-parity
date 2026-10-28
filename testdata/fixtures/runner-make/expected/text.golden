@@ -1,0 +1,6 @@
+.github/workflows/ci.yml
+  14:14   P001 inline-tool   step "Unit tests" in job "build" runs 'go test ./...' directly; already available as 'make test'
+  16:19   P002 unknown-task  'make tset' is not defined in Makefile (closest: test)
+  22:14   P001 inline-tool   step "Through Task" in job "build" runs 'task build' directly
+
+3 errors, 0 warnings, 0 tolerated, 0 allowed

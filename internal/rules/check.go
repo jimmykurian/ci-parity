@@ -76,7 +76,7 @@ func (c *checker) step(f *domain.File, s *domain.Step) {
 			c.inlineTool(f, s, cmd)
 			continue
 		}
-		for _, w := range taskNames(cmd.Args) {
+		for _, w := range c.runner.Names(cmd.Args) {
 			line, col := s.Run.Position(w.Line, w.Col)
 			c.task(f, s, w.Text, line, col)
 		}

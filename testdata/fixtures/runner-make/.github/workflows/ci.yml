@@ -1,0 +1,24 @@
+name: ci
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: make build
+      - name: Release
+        run: make VERSION=1.0.0 release
+      - name: Test and lint
+        run: make -j 4 test lint
+      - name: Unit tests
+        run: go test ./...
+      - name: Typo
+        run: make tset
+      - name: Another directory
+        run: make -C web build
+      - name: Default goal
+        run: make
+      - name: Through Task
+        run: task build
+      - name: GNU make
+        run: gmake lint

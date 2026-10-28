@@ -36,7 +36,7 @@ func (a *App) analyze(ctx context.Context, configPath, baselinePath string) (*an
 		}
 		files = append(files, f)
 	}
-	tasks, err := a.Tasks.Load(cfg.Taskfile)
+	tasks, err := a.Tasks.Load(cfg.Runner, cfg.Taskfile)
 	if err != nil {
 		return nil, err
 	}

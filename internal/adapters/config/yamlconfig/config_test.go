@@ -67,7 +67,8 @@ func TestParseErrors(t *testing.T) {
 		{"allow without reason", "allow:\n  - match: \"gh *\"\n", "allow[0].reason is required"},
 		{"allow without match", "allow:\n  - reason: r\n", "allow[0].match is required"},
 		{"replace with extend", "tools:\n  replace: [pnpm]\n  extend: [k6]\n", "tools.replace cannot be combined"},
-		{"other runner", "runner: make\n", `runner: unsupported runner "make"`},
+		{"other runner", "runner: nix\n", `runner: unsupported runner "nix"`},
+		{"taskfile with another runner", "runner: make\ntaskfile: Taskfile.yml\n", "taskfile: applies only to runner taskfile"},
 		{"action invoker without input", "invokers:\n  actions:\n    - uses: ./x\n", "invokers.actions[0] needs both uses and input"},
 		{"bad yaml", "tools: [\n", "did not find expected node content"},
 	}

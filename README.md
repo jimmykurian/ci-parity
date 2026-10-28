@@ -183,7 +183,7 @@ ci-parity baseline     # records today's counts in .ci-parity-baseline.json; com
 the defaults:
 
 ```yaml
-runner: taskfile
+runner: taskfile                  # or make; see Other runners
 taskfile: ""                      # empty: Taskfile.yml, taskfile.yml, Taskfile.yaml,
                                   # taskfile.yaml, then the .dist variants
 workflows:
@@ -211,13 +211,23 @@ baseline: .ci-parity-baseline.json
   nox`), `dotnet`, go (`go golangci-lint`), `cargo`, jvm (`mvn mvnw gradle gradlew`),
   infrastructure (`terraform tofu docker docker-compose kubectl helm az aws gcloud
   pulumi`), quality tools (`eslint prettier biome vitest jest playwright cypress k6
-  shellcheck actionlint`) and other task runners (`make just mise cargo-make`). Anything
-  else is ignored.
+  shellcheck actionlint`) and other task runners (`make just mise cargo-make`, plus `task`
+  and `go-task` when the runner isn't Taskfile). The configured runner is never on the
+  list. Anything else is ignored.
 - **Transparent** wrappers are looked through: `sudo -E env CI=1 pnpm test` is `pnpm test`.
 - **Invokers** are how CI calls the task runner: shell commands, or a local action whose
   input names the task.
 - **Workflow globs** match repository-relative paths: `*` and `?` stay within one path
   segment, and a whole `**` segment matches any number of them.
+
+### Other runners
+
+With `runner: make`, ci-parity reads the `GNUmakefile`, `makefile` or `Makefile` in the
+repository root instead of a Taskfile, with its `include`s. CI calls targets with `make`
+or `gmake`, messages and suggestions say `make <target>`, and `task` counts as an inline
+tool. A call with `-f` or `-C` points at another makefile and isn't checked, and plain
+`make` (the default goal) isn't either. `.PHONY`, pattern rules and variables aren't
+targets. just and mise are coming next.
 
 An unknown key, a wrong type, an `allow` entry without a `reason`, or `replace` combined
 with `extend` or `remove` is an error that names the key (exit 2).
@@ -386,9 +396,9 @@ repository runs all three.
 archived. ci-parity keeps hand-written workflows and checks them instead, with a baseline
 so an existing repository can adopt it gradually.
 
-**What about Make or just?** v0.1 reads Taskfiles only. In a Taskfile repository, `make`
-and `just` count as inline tools, because they bypass the configured runner. Readers for
-other runners are planned.
+**What about Make, just or mise?** Make is supported with `runner: make`; see
+[Other runners](#other-runners). just and mise readers are in progress. In a repository
+using one runner, the others count as inline tools, because they bypass it.
 
 **How do I allow a step?** With a `# ci-parity: allow <reason>` comment, or an `allow`
 entry in `.ci-parity.yml`; see [Allowing a step](#allowing-a-step). To stop flagging a tool

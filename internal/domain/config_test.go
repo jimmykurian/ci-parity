@@ -20,3 +20,29 @@ func TestToolSet(t *testing.T) {
 		t.Errorf("replace (-want +got):\n%s", diff)
 	}
 }
+
+func TestToolSetFollowsRunner(t *testing.T) {
+	tests := []struct {
+		runner  string
+		tools   ToolList
+		in, out []string
+	}{
+		{RunnerTaskfile, ToolList{}, []string{"make", "just", "mise"}, []string{"task", "go-task"}},
+		{RunnerMake, ToolList{}, []string{"task", "go-task", "just", "mise"}, []string{"make"}},
+		{RunnerMake, ToolList{Extend: []string{"make"}}, []string{"make"}, nil},
+		{RunnerMake, ToolList{Replace: []string{"pnpm"}}, []string{"pnpm"}, []string{"task", "make"}},
+	}
+	for _, tt := range tests {
+		set := (&Config{Runner: tt.runner, Tools: tt.tools}).ToolSet()
+		for _, tool := range tt.in {
+			if !set[tool] {
+				t.Errorf("runner %s, %+v: %s is not a tool", tt.runner, tt.tools, tool)
+			}
+		}
+		for _, tool := range tt.out {
+			if set[tool] {
+				t.Errorf("runner %s, %+v: %s is a tool", tt.runner, tt.tools, tool)
+			}
+		}
+	}
+}

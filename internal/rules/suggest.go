@@ -7,12 +7,13 @@ import (
 // suggester proposes tasks for inline commands and unknown task names. Internal
 // tasks are never proposed: task refuses to run them from the command line.
 type suggester struct {
+	invoke    string            // how CI calls a task, such as "task"
 	byCommand map[string]string // canonical command -> task name
 	names     []string          // invocable, non-internal names
 }
 
 func newSuggester(r TaskSource) *suggester {
-	s := &suggester{byCommand: map[string]string{}}
+	s := &suggester{byCommand: map[string]string{}, invoke: r.Command()}
 	for _, name := range r.Tasks() {
 		if r.IsInternal(name) {
 			continue
@@ -29,7 +30,7 @@ func newSuggester(r TaskSource) *suggester {
 	return s
 }
 
-// command returns "task <name>" for a task whose command equals the inline
+// command returns "<invoke> <name>" for a task whose command equals the inline
 // command, as written or with a package runner unwrapped on either side, or "".
 // Among several matching tasks the better name wins.
 func (s *suggester) command(normalized string) string {
@@ -42,7 +43,7 @@ func (s *suggester) command(normalized string) string {
 	if best == "" {
 		return ""
 	}
-	return "task " + best
+	return s.invoke + " " + best
 }
 
 // closest returns the task name nearest to an unknown one. Names that start

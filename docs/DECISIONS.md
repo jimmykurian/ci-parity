@@ -6,6 +6,57 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-28: Make, just and mise readers (accepted)
+
+Problem: only Taskfiles are read, and `make`, `just` and `mise` are always flagged as
+bypass tools, so a repository built around one of them cannot use ci-parity.
+
+Change. `runner` accepts `taskfile`, `make`, `just` or `mise`. Each runner has a reader
+behind the existing `TaskSource` port and its own call syntax; the rules stay the same.
+
+- Discovery, no new config key: the reader finds its root file in the repository root,
+  matching names exactly. `taskfile` keeps its key; setting it with another runner is a
+  config error. make: `GNUmakefile`, `makefile`, `Makefile`. just: `justfile`,
+  `Justfile`, `.justfile`. mise: `mise.toml`, `.mise.toml`, `mise/config.toml`,
+  `.mise/config.toml`, `.config/mise.toml`, `.config/mise/config.toml`, merged in mise's
+  order.
+- Defaults that follow the runner: `invokers.shell` defaults to `[make, gmake]`,
+  `[just]` or `["mise run", "mise r", "mise tasks run"]` (taskfile keeps its three), and
+  `invokers.actions` defaults to none outside taskfile. The configured runner leaves the
+  tools list; `task` and `go-task` join it as bypasses when the runner is not taskfile.
+- Wording: every place that says `task <name>` says the runner's command instead
+  (`make lint`, `just lint`, `mise run lint`): the P001 suggestion, the P002 message and
+  its suggestion, and the JSON and SARIF `suggestion`. Taskfile output is unchanged.
+- make: targets are lines `name...:` outside recipes, skipping special targets
+  (`.PHONY`), pattern rules (`%`), variable assignments and names holding `$(...)`;
+  `include`/`-include` of literal paths are followed (depth 10, cycles ignored). Recipe
+  lines, without leading `@`, `-` or `+`, are the commands for suggestions. No target
+  is internal. A call's value flags are `-f --file --makefile -C --directory -I
+  --include-dir -j --jobs -l --load-average -o --old-file -W --what-if`; `-f`, `-C` and
+  their long forms select another makefile, so the call is ignored; `NAME=value` is a
+  variable; `make` alone runs the default goal and is ignored.
+- just: recipes, their parameters, `alias a := b`, `import` of literal paths and `mod`
+  (recipes named `mod::recipe`, from `name.just`, `name/mod.just`, `name/justfile` or a
+  given path). A recipe is internal when it is `[private]` or starts with `_`. Body
+  lines without leading `@` or `-` are its commands. In a call, the words after a
+  recipe are its arguments, as many as its parameters take (all the rest for a
+  variadic one); `just mod recipe` and `just mod::recipe` both name a module recipe.
+  `-f`, `--justfile`, `-d` and `--working-directory` select another justfile; `--set`
+  takes two values.
+- mise: `[tasks.name]` tables and `name = "cmd"` entries, with `run` (string or list) as
+  the commands, `alias` as aliases and `hide = true` as internal; file tasks under
+  `mise-tasks/`, `.mise-tasks/`, `mise/tasks/`, `.mise/tasks/` and `.config/mise/tasks/`
+  (names from the path, `db/migrate` as `db:migrate`, no commands); and
+  `task_config.includes`. A call names one task, then its arguments; `:::` starts
+  another task. `-C` and `--cd` select another directory.
+- Dependency: `github.com/BurntSushi/toml` (MIT, no dependencies of its own) reads mise's
+  TOML; Makefiles and justfiles are read by small parsers here. This is the fourth
+  module in `go.mod`.
+- Tests: table tests for each reader and call parser, and fixtures per runner (P001 to
+  P003, suggestions, includes or modules, another-file flags, the bypass list).
+- Plan: one phase, built as three pull requests (make, then just, then mise), released
+  together as v0.3.0; fix mode becomes v0.4.0.
+
 ### 2026-10-28: Phase 6, unwrapping package runners for suggestions (accepted)
 
 Problem: a P001 suggestion needs the inline command to equal a Taskfile command after

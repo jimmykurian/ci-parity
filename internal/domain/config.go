@@ -73,7 +73,44 @@ func Default() *Config {
 	}
 }
 
-// ToolSet returns the effective tools list as a set.
+// Runner names, the values of the config's runner key.
+const (
+	RunnerTaskfile = "taskfile"
+	RunnerMake     = "make"
+	RunnerJust     = "just"
+	RunnerMise     = "mise"
+)
+
+// Runners lists the runners with a reader.
+var Runners = []string{RunnerTaskfile, RunnerMake}
+
+// runnerTools are each runner's own commands. The configured runner's leave
+// the built-in tools list; every other runner's are bypasses.
+var runnerTools = map[string][]string{
+	RunnerTaskfile: {"task", "go-task"},
+	RunnerMake:     {"make"},
+	RunnerJust:     {"just"},
+	RunnerMise:     {"mise"},
+}
+
+// DefaultShellInvokers returns the shell invokers a runner uses when the
+// config sets none.
+func DefaultShellInvokers(runner string) []string {
+	switch runner {
+	case RunnerMake:
+		return []string{"make", "gmake"}
+	case RunnerJust:
+		return []string{"just"}
+	case RunnerMise:
+		return []string{"mise run", "mise r", "mise tasks run"}
+	default:
+		return []string{"task", "go-task", "go tool task"}
+	}
+}
+
+// ToolSet returns the effective tools list as a set. Unless the list is
+// replaced, the configured runner's own commands leave it and the other
+// runners' join it as bypasses.
 func (c *Config) ToolSet() map[string]bool {
 	base := BuiltinTools
 	if len(c.Tools.Replace) > 0 {
@@ -82,6 +119,18 @@ func (c *Config) ToolSet() map[string]bool {
 	set := make(map[string]bool, len(base)+len(c.Tools.Extend))
 	for _, t := range base {
 		set[t] = true
+	}
+	if len(c.Tools.Replace) == 0 {
+		for runner, tools := range runnerTools {
+			for _, t := range tools {
+				set[t] = runner != c.Runner
+			}
+		}
+		for t, on := range set {
+			if !on {
+				delete(set, t)
+			}
+		}
 	}
 	for _, t := range c.Tools.Extend {
 		set[t] = true
