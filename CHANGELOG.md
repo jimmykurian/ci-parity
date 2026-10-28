@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/jimmykurian/ci-parity/compare/v0.6.0...v0.7.0) (2026-10-28)
+
+
+### Features
+
+* add a docs site with guides and rule pages, and link SARIF rules to them ([#32](https://github.com/jimmykurian/ci-parity/issues/32)) ([c64e68b](https://github.com/jimmykurian/ci-parity/commit/c64e68bb10a474346fdb723d7ddd5470590b6508))
+
 ## [0.6.0](https://github.com/jimmykurian/ci-parity/compare/v0.5.1...v0.6.0) (2026-10-28)
 
 
