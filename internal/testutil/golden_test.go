@@ -11,6 +11,16 @@ import (
 	"testing"
 )
 
+func TestFixtureDirsReportsUnreadableRoot(t *testing.T) {
+	file := filepath.Join(t.TempDir(), "not-a-dir")
+	if err := os.WriteFile(file, nil, 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := FixtureDirs(file); err == nil {
+		t.Error("FixtureDirs on a file: want an error")
+	}
+}
+
 func TestFixturesMissingRoot(t *testing.T) {
 	if got := Fixtures(t, filepath.Join(t.TempDir(), "absent")); got != nil {
 		t.Errorf("Fixtures = %v, want nil", got)

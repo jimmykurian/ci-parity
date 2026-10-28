@@ -30,8 +30,8 @@ workflows, composite actions, runner files, `.ci-parity.yml` and the baseline.
 
 ## Supply chain
 
-- Four Go dependencies, each recorded with its reason; `govulncheck` checks them and the
-  standard library in CI.
+- Three Go dependencies in the binary and three more for tests only, each recorded with
+  its reason; `govulncheck` checks them and the standard library in CI.
 - Every third-party action is pinned to a full commit SHA; zizmor and actionlint check the
   workflows.
 - Dev tools are pinned in `mise.toml`; mise's npm provenance check is not bypassed.

@@ -96,12 +96,16 @@ says what each proves.
 - **Unit tests** sit next to the code they test, in the same package, so they can
   reach unexported functions.
 - **Integration tests** in `test/integration/` run the CLI in-process on the
-  fixtures. Golden tests drive the project: each case under
+  fixtures, written as Ginkgo specs with Gomega matchers. Golden tests drive the project: each case under
   `testdata/fixtures/<case>/` is a complete miniature repo (config, runner file,
   workflows, optional baseline) with `expected/{text,github,json,sarif}.golden`
   and `expected/exitcode`. The harness runs every fixture in every format, so
   adding a fixture needs no test code.
-- **End-to-end tests** in `test/e2e/` build the binary and run it as a process.
+- **End-to-end tests** in `test/e2e/` build the binary and run it as a process,
+  as Ginkgo specs using `gexec`.
+
+Write unit tests as `testing` table tests and integration and end-to-end tests as
+`Describe` / `Context` / `It` specs; see the testing strategy for labels and focus.
 
 - Prefer a new fixture over a mock. Use invented names like `acme-app`,
   `example-api` or `widget-service`; never copy a real repository's workflows.

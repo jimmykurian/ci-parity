@@ -24,8 +24,8 @@ tasks:
   test:
     desc: Run every test; `task test -- -update` regenerates golden files
     cmds:
-      # Extra args such as -update go to the golden test alone; only its harness defines -update.
-      - '{{if .CLI_ARGS}}go test ./test/integration -run TestGolden {{.CLI_ARGS}}{{else}}go test ./...{{end}}'
+      # Extra args such as -update go to the golden specs alone; only their harness defines -update.
+      - '{{if .CLI_ARGS}}go test ./test/integration -count=1 {{.CLI_ARGS}} -ginkgo.label-filter=golden{{else}}go test ./...{{end}}'
 
   test:unit:
     desc: Run the unit tests, which sit next to the code they test

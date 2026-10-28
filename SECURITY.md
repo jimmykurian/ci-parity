@@ -66,8 +66,9 @@ fixed, unless you'd rather stay anonymous.
 
 - **No execution or network at check time:** the code has no `os/exec` or
   network imports outside tests, and runner files are read statically.
-- **Few dependencies:** `gopkg.in/yaml.v3`, `mvdan.cc/sh/v3`,
-  `github.com/BurntSushi/toml`, and `github.com/google/go-cmp` for tests only.
+- **Few dependencies:** `gopkg.in/yaml.v3`, `mvdan.cc/sh/v3` and
+  `github.com/BurntSushi/toml` in the binary; `github.com/google/go-cmp`,
+  `github.com/onsi/ginkgo/v2` and `github.com/onsi/gomega` for tests only.
   Adding one needs agreement in an issue first.
 - **Pinned CI:** third-party actions are pinned to full commit SHAs, dev tools
   are pinned in `mise.toml`, and workflows run with `contents: read`.
