@@ -50,6 +50,8 @@ jobs:
       integration: ${{ steps.integration.outcome }}
       e2e: ${{ steps.e2e.outcome }}
       build: ${{ steps.build.outcome }}
+      site_test: ${{ steps.site_test.outcome }}
+      site_build: ${{ steps.site_build.outcome }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -114,6 +116,17 @@ jobs:
       - id: build
         if: ${{ !cancelled() }}
         run: task build
+      # The docs site: install its pinned packages, test the docs sync, then build it,
+      # which fails on a broken link or anchor in docs/.
+      - id: site_install
+        if: ${{ !cancelled() }}
+        run: task site:install
+      - id: site_test
+        if: ${{ !cancelled() && steps.site_install.outcome == 'success' }}
+        run: task site:test
+      - id: site_build
+        if: ${{ !cancelled() && steps.site_install.outcome == 'success' }}
+        run: task site:build
 
   self-check:
     name: Self-check
@@ -218,6 +231,8 @@ jobs:
                   ['Unit tests', 'test:unit', 'unit'],
                   ['Integration tests (golden fixtures)', 'test:integration', 'integration'],
                   ['End-to-end tests (built binary)', 'test:e2e', 'e2e'],
+                  ['Docs site sync tests', 'site:test', 'site_test'],
+                  ['Docs site build and link check', 'site:build', 'site_build'],
                   ['Build', 'build', 'build'],
                 ],
               },
@@ -312,6 +327,7 @@ jobs:
               'build/unit-tests.json': status(c.unit),
               'build/integration-tests.json': status(c.integration),
               'build/e2e-tests.json': status(c.e2e),
+              'build/docs-site.json': status(c.site_build),
               'build/build.json': status(c.build),
               'build/self-check.json': status(s.self_check),
               'security/gitleaks.json': status(c.secrets),
