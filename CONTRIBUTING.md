@@ -37,6 +37,13 @@ Or open the repository in the devcontainer (`.devcontainer/`, for VS Code or
 GitHub Codespaces), which installs Go at the `go.mod` toolchain and every tool
 in `mise.toml`, then runs `task build`.
 
+In VS Code, `.vscode/` recommends the extensions (the same list the devcontainer
+installs), formats and lints Go on save with gofumpt and golangci-lint, points the
+markdownlint and typos extensions at `.config/linters/`, makes `task build` and
+`task test` the default build and test tasks, and adds launch configurations to
+debug `ci-parity check` on this repository or a fixture, `fix --dry-run`, and the
+tests in the current package.
+
 **Setup:**
 
 ```sh

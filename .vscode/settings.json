@@ -1,0 +1,44 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+{
+  // Go: format and lint on save with the settings `task fmt` and `task lint:go` use.
+  "[go]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": { "source.organizeImports": "explicit" }
+  },
+  "gopls": {
+    "formatting.gofumpt": true,
+    "formatting.local": "github.com/jimmykurian/ci-parity"
+  },
+  "go.lintTool": "golangci-lint-v2",
+  "go.lintOnSave": "package",
+  // Run every test fresh, as CI does, rather than reporting cached results.
+  "go.testFlags": ["-count=1"],
+
+  // The other linters read the same configs as `task lint`.
+  "markdownlint.configFile": ".config/linters/.markdownlint-cli2.jsonc",
+  "typos.config": ".config/linters/typos.toml",
+  "shellcheck.customArgs": ["--external-sources"],
+  "yaml.schemas": {
+    "https://taskfile.dev/schema.json": "Taskfile.yml",
+    "https://golangci-lint.run/jsonschema/golangci.jsonschema.json": ".golangci.yml",
+    "https://goreleaser.com/static/schema.json": ".goreleaser.yaml"
+  },
+  "[markdown]": { "editor.wordWrap": "on" },
+
+  // Workflows and fixtures are formatted by hand and checked by yamllint; some fixtures are
+  // invalid on purpose, so the YAML extension doesn't reformat on save.
+  "[yaml]": { "editor.formatOnSave": false },
+
+  "files.associations": {
+    "**/.githooks/*": "shellscript",
+    ".gitmessage": "git-commit",
+    "**/expected/*.golden": "plaintext"
+  },
+  // Build output, not source.
+  "files.watcherExclude": { "**/bin/**": true, "**/dist/**": true, "**/.task/**": true },
+  "search.exclude": { "**/bin": true, "**/dist": true, "**/.task": true },
+
+  "task.autoDetect": "on",
+  "github-actions.workflows.pinned.refresh.enabled": false
+}

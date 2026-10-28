@@ -1,0 +1,57 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug: ci-parity check (this repository)",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/cmd/ci-parity",
+      "args": ["check", "--verbose"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Debug: ci-parity check (a fixture)",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/cmd/ci-parity",
+      "args": ["check", "-C", "testdata/fixtures/${input:fixture}", "--format", "${input:format}"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Debug: ci-parity fix --dry-run (fix fixture)",
+      "type": "go",
+      "request": "launch",
+      "mode": "debug",
+      "program": "${workspaceFolder}/cmd/ci-parity",
+      "args": ["fix", "--dry-run", "-C", "testdata/fix/basic/repo"],
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "Debug: tests in the current package",
+      "type": "go",
+      "request": "launch",
+      "mode": "test",
+      "program": "${fileDirname}",
+      "args": ["-test.count=1"]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "fixture",
+      "type": "promptString",
+      "description": "Fixture under testdata/fixtures",
+      "default": "inline-tools"
+    },
+    {
+      "id": "format",
+      "type": "pickString",
+      "description": "Output format",
+      "options": ["text", "github", "json", "sarif"],
+      "default": "text"
+    }
+  ]
+}
