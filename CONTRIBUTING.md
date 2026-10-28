@@ -104,8 +104,9 @@ says what each proves.
 - **End-to-end tests** in `test/e2e/` build the binary and run it as a process,
   as Ginkgo specs using `gexec`.
 
-Write unit tests as `testing` table tests and integration and end-to-end tests as
-`Describe` / `Context` / `It` specs; see the testing strategy for labels and focus.
+Write unit tests as `testing` table tests in Arrange, Act and Assert sections, and
+integration and end-to-end tests as `Describe` / `Context` / `It` specs; see the testing
+strategy for the conventions, labels and focus.
 
 - Prefer a new fixture over a mock. Use invented names like `acme-app`,
   `example-api` or `widget-service`; never copy a real repository's workflows.

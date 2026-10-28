@@ -57,6 +57,34 @@ Table tests sit next to the code they cover: the shell extractor, the workflow p
 each runner's reader and call parser, the config globs, suggestions and unwrapping, the
 ratchet, `fix`'s edits and the file editor, and the SARIF fields.
 
+Each test, and each `t.Run` body, follows Arrange, Act, Assert, marked with comments and
+separated by blank lines:
+
+```go
+func TestApply(t *testing.T) {
+    // Arrange
+    b := &Baseline{Workflows: map[string]int{"a.yml": 2}}
+    want := []Row{{"a.yml", 2, 0}}
+
+    // Act
+    _, rows := Apply(b, []string{"a.yml"}, nil)
+
+    // Assert
+    if diff := cmp.Diff(want, rows); diff != "" {
+        t.Errorf("rows (-want +got):\n%s", diff)
+    }
+}
+```
+
+- **Arrange** holds the setup and the expected values; in a table test, the table is the
+  Arrange section.
+- **Act** is one call to the code under test. A fail-fast `if err != nil { t.Fatal(err) }`
+  right after it belongs to Act (gofumpt keeps it against the call); when the error is
+  what's being tested, the check is in Assert.
+- **Assert** holds the checks. A test that would act twice on unrelated behavior is two
+  tests.
+- An empty section is left out.
+
 ## End-to-end tests
 
 `test/e2e` builds `cmd/ci-parity` once, with a known version stamped in through `-ldflags`,

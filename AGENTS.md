@@ -30,8 +30,10 @@ Dependencies point inward: `cmd` → `cli` → `adapters` → `app` → `rules` 
   `task test -- -update` regenerates goldens; read the diff, every change must be meant.
 - Run `task hooks:install` once. The hooks run gitleaks, the linters and the commit-message
   check, and refuse commits and pushes on `main`: work on a branch and open a pull request.
-- Unit tests are `testing` table tests next to the code; the specs in `test/integration/`
-  and `test/e2e/` use Ginkgo and Gomega (`Describe`, `It`, `Expect`, `gexec`).
+- Unit tests are `testing` table tests next to the code, in `// Arrange`, `// Act` and
+  `// Assert` sections (see `docs/testing/testing-strategy.md`); the specs in
+  `test/integration/` and `test/e2e/` use Ginkgo and Gomega (`Describe`, `It`, `Expect`,
+  `gexec`).
 - Prefer a new fixture to a mock. Fixtures are synthetic (`acme-app`, `widget-service`).
 - Commit messages and PR titles describe the change.
 - Keep `README.md` and `docs/` accurate whenever behavior changes; follow
