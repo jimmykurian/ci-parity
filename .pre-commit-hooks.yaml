@@ -1,0 +1,14 @@
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+
+# The hook pre-commit (https://pre-commit.com) runs for `id: ci-parity`. It builds
+# cmd/ci-parity from the tagged commit, installing Go if needed, and checks the whole
+# repository when a file that can change the result is staged: workflows and actions,
+# the config and baseline, or the runner's files and their includes.
+- id: ci-parity
+  name: ci-parity
+  description: Check that GitHub Actions workflows run commands through the task runner.
+  entry: ci-parity check
+  language: golang
+  pass_filenames: false
+  files: (^\.github/|\.ya?ml$|\.toml$|\.just$|\.mk$|(^|/)(GNUmakefile|[Mm]akefile|[Jj]ustfile|\.justfile)$|(^|/)\.?mise(-tasks)?/|^\.config/mise/|\.ci-parity-baseline\.json$)
