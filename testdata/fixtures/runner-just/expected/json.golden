@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 4,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 18,
+      "col": 14,
+      "job": "ci",
+      "action": null,
+      "step": "Inline build",
+      "command": "go build ./...",
+      "message": "step \"Inline build\" in job \"ci\" runs 'go build ./...' directly; already available as 'just build'",
+      "suggestion": "just build",
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 20,
+      "col": 19,
+      "job": "ci",
+      "action": null,
+      "step": "Typo",
+      "command": null,
+      "message": "'just biuld' is not defined in justfile (closest: build)",
+      "suggestion": "just build",
+      "reason": null
+    },
+    {
+      "rule": "P003",
+      "name": "internal-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 22,
+      "col": 19,
+      "job": "ci",
+      "action": null,
+      "step": "Private recipe",
+      "command": null,
+      "message": "'release' is private and should not be invoked from CI",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 26,
+      "col": 14,
+      "job": "ci",
+      "action": null,
+      "step": "Through make",
+      "command": "make build",
+      "message": "step \"Through make\" in job \"ci\" runs 'make build' directly",
+      "suggestion": null,
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

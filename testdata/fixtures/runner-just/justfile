@@ -1,0 +1,16 @@
+build:
+    go build ./...
+
+test *args:
+    go test {{args}} ./...
+
+deploy env:
+    ./scripts/deploy.sh {{env}}
+
+[private]
+release:
+    goreleaser release --clean
+
+alias t := test
+
+mod db
