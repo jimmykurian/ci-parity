@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1](https://github.com/jimmykurian/ci-parity/compare/v0.5.0...v0.5.1) (2026-10-28)
+
+
+### Documentation
+
+* replace SPEC, PLAN and DECISIONS with topic docs ([#20](https://github.com/jimmykurian/ci-parity/issues/20)) ([2952e7a](https://github.com/jimmykurian/ci-parity/commit/2952e7ab8d52e617af78f093366f2eb02cd843a4))
+
 ## [0.5.0](https://github.com/jimmykurian/ci-parity/compare/v0.4.0...v0.5.0) (2026-10-28)
 
 
