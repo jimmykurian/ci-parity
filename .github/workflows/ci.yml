@@ -46,7 +46,9 @@ jobs:
       editorconfig: ${{ steps.editorconfig.outcome }}
       headers: ${{ steps.headers.outcome }}
       release: ${{ steps.release.outcome }}
-      test: ${{ steps.test.outcome }}
+      unit: ${{ steps.unit.outcome }}
+      integration: ${{ steps.integration.outcome }}
+      e2e: ${{ steps.e2e.outcome }}
       build: ${{ steps.build.outcome }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -100,9 +102,15 @@ jobs:
       - id: release
         if: ${{ !cancelled() }}
         run: task lint:release
-      - id: test
+      - id: unit
         if: ${{ !cancelled() }}
-        run: task test
+        run: task test:unit
+      - id: integration
+        if: ${{ !cancelled() }}
+        run: task test:integration
+      - id: e2e
+        if: ${{ !cancelled() }}
+        run: task test:e2e
       - id: build
         if: ${{ !cancelled() }}
         run: task build
@@ -207,7 +215,9 @@ jobs:
                   ['EditorConfig', 'lint:editorconfig', 'editorconfig'],
                   ['License headers', 'lint:headers', 'headers'],
                   ['Release config (goreleaser check)', 'lint:release', 'release'],
-                  ['Tests and golden fixtures', 'test', 'test'],
+                  ['Unit tests', 'test:unit', 'unit'],
+                  ['Integration tests (golden fixtures)', 'test:integration', 'integration'],
+                  ['End-to-end tests (built binary)', 'test:e2e', 'e2e'],
                   ['Build', 'build', 'build'],
                 ],
               },
@@ -299,7 +309,9 @@ jobs:
               'checks/editorconfig.json': status(c.editorconfig),
               'checks/headers.json': status(c.headers),
               'checks/release.json': status(c.release),
-              'build/tests.json': status(c.test),
+              'build/unit-tests.json': status(c.unit),
+              'build/integration-tests.json': status(c.integration),
+              'build/e2e-tests.json': status(c.e2e),
               'build/build.json': status(c.build),
               'build/self-check.json': status(s.self_check),
               'security/gitleaks.json': status(c.secrets),

@@ -8,13 +8,14 @@ YAML, shells, runners and output formats.
 ## Layers
 
 Dependencies point inward. `domain` imports only the standard library; `rules` imports
-only `domain`; `app` imports `rules` and `domain`; adapters import inward layers; `cmd`
-wires them together.
+only `domain`; `app` imports `rules` and `domain`; adapters import inward layers; `cli`
+wires them together, and `cmd` only calls `cli`.
 
 ```mermaid
 flowchart LR
-    cmd["cmd/ci-parity<br/>flags, wire.go"] --> adapters
-    cmd --> app
+    cmd["cmd/ci-parity<br/>main"] --> cli
+    cli["internal/cli<br/>flags, exit codes, wire.go"] --> adapters
+    cli --> app
     adapters["internal/adapters<br/>YAML, shell, runners,<br/>baseline file, reports"] --> app
     adapters --> rules
     adapters --> domain
@@ -29,7 +30,11 @@ flowchart LR
 | `internal/rules` | The rules, suggestions (with package-runner unwrapping) and the edits `fix` can make |
 | `internal/app` | The `check`, `baseline` and `fix` use cases |
 | `internal/adapters` | Everything that touches a file format or the file system |
-| `cmd/ci-parity` | Flag parsing, exit codes, and `wire.go`, which builds the adapters |
+| `internal/cli` | Flag parsing, exit codes, and `wire.go`, which builds the adapters |
+| `cmd/ci-parity` | `main`, which calls `cli.Run` with the process's arguments |
+
+The CLI lives in `internal/cli` rather than `package main` so the integration tests can
+call `cli.Run` in-process; Go can't import a main package.
 
 ## Ports and adapters
 

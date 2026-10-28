@@ -12,7 +12,7 @@ case (`internal/app/check.go`).
 
 ```mermaid
 sequenceDiagram
-    participant CLI as cmd/ci-parity
+    participant CLI as internal/cli
     participant App as app.Check
     participant Cfg as ConfigSource
     participant WF as WorkflowSource
@@ -41,7 +41,7 @@ to change (`internal/app/fix.go`).
 
 ```mermaid
 sequenceDiagram
-    participant CLI as cmd/ci-parity
+    participant CLI as internal/cli
     participant App as app.Fix
     participant Rules as rules.Check
     participant Ed as WorkflowEditor

@@ -17,13 +17,30 @@ tasks:
   build:
     desc: Build ./bin/ci-parity
     cmds:
-      - go build -ldflags "-s -w -X main.version={{.VERSION}} -X main.commit={{.COMMIT}} -X main.date={{.DATE}}" -o {{.BIN}} ./cmd/ci-parity
+      - go build -ldflags "-s -w -X {{.CLI}}.version={{.VERSION}} -X {{.CLI}}.commit={{.COMMIT}} -X {{.CLI}}.date={{.DATE}}" -o {{.BIN}} ./cmd/ci-parity
+    vars:
+      CLI: github.com/jimmykurian/ci-parity/internal/cli
 
   test:
-    desc: Run tests; `task test -- -update` regenerates golden files
+    desc: Run every test; `task test -- -update` regenerates golden files
     cmds:
       # Extra args such as -update go to the golden test alone; only its harness defines -update.
-      - '{{if .CLI_ARGS}}go test ./cmd/ci-parity -run TestGolden {{.CLI_ARGS}}{{else}}go test ./...{{end}}'
+      - '{{if .CLI_ARGS}}go test ./test/integration -run TestGolden {{.CLI_ARGS}}{{else}}go test ./...{{end}}'
+
+  test:unit:
+    desc: Run the unit tests, which sit next to the code they test
+    cmds:
+      - go test $(go list ./... | grep -v /test/)
+
+  test:integration:
+    desc: Run the CLI in-process against every fixture (golden, baseline and fix tests)
+    cmds:
+      - go test ./test/integration/...
+
+  test:e2e:
+    desc: Build the binary and run it as a separate process
+    cmds:
+      - go test ./test/e2e/...
 
   lint:
     desc: Run every linter

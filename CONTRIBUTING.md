@@ -55,7 +55,10 @@ tasks:
 | Task | What it does |
 | --- | --- |
 | `task build` | builds `./bin/ci-parity` |
-| `task test` | runs `go test ./...` |
+| `task test` | runs every test, `go test ./...` |
+| `task test:unit` | the unit tests, which sit next to the code |
+| `task test:integration` | the CLI in-process on every fixture (`test/integration/`) |
+| `task test:e2e` | builds the binary and runs it as a process (`test/e2e/`) |
 | `task test -- -update` | regenerates the golden files |
 | `task lint` | every linter below |
 | `task lint:go` | golangci-lint |
@@ -79,24 +82,32 @@ The layout is clean architecture, with dependencies pointing inward:
 
 - `internal/domain`: types and pure logic, standard library only
 - `internal/rules`: the rules, P001 to P005
-- `internal/app`: the `check` and `baseline` use cases and the ports they need
-- `internal/adapters/...`: YAML, shell and Taskfile parsing, the baseline file
+- `internal/app`: the `check`, `baseline` and `fix` use cases and the ports they need
+- `internal/adapters/...`: YAML, shell and runner-file parsing, the baseline file
   and the output formats
-- `cmd/ci-parity`: flags, wiring and exit codes
+- `internal/cli`: flags, wiring and exit codes
+- `cmd/ci-parity`: `main`, which calls `cli.Run`
 
 ## Tests
 
-Golden tests drive the project. Each case under `testdata/fixtures/<case>/` is
-a complete miniature repo (config, Taskfile, workflows, optional baseline) with
-`expected/{text,github,json}.golden` and `expected/exitcode`. The harness runs
-the CLI in-process on every fixture in every format, so adding a fixture needs
-no test code.
+Tests come in three layers; [the testing strategy](docs/testing/testing-strategy.md)
+says what each proves.
+
+- **Unit tests** sit next to the code they test, in the same package, so they can
+  reach unexported functions.
+- **Integration tests** in `test/integration/` run the CLI in-process on the
+  fixtures. Golden tests drive the project: each case under
+  `testdata/fixtures/<case>/` is a complete miniature repo (config, runner file,
+  workflows, optional baseline) with `expected/{text,github,json,sarif}.golden`
+  and `expected/exitcode`. The harness runs every fixture in every format, so
+  adding a fixture needs no test code.
+- **End-to-end tests** in `test/e2e/` build the binary and run it as a process.
 
 - Prefer a new fixture over a mock. Use invented names like `acme-app`,
   `example-api` or `widget-service`; never copy a real repository's workflows.
 - After `task test -- -update`, read the golden diff. Every change in it should
   be one you meant.
-- Parsers and readers also have table tests next to the code.
+- Parsers, readers and helpers get table tests next to the code.
 
 ## Commits
 
