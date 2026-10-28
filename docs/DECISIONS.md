@@ -6,7 +6,7 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
-### 2026-10-28: Make, just and mise readers (proposed)
+### 2026-10-28: Make, just and mise readers (accepted)
 
 Problem: only Taskfiles are read, and `make`, `just` and `mise` are always flagged as
 bypass tools, so a repository built around one of them cannot use ci-parity.
