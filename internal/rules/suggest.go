@@ -19,9 +19,10 @@ func newSuggester(r TaskSource) *suggester {
 		}
 		s.names = append(s.names, name)
 		for _, cmd := range r.Commands(name) {
-			key := canonical(cmd)
-			if prev, ok := s.byCommand[key]; !ok || better(name, prev) {
-				s.byCommand[key] = name
+			for _, key := range keys(cmd) {
+				if prev, ok := s.byCommand[key]; !ok || better(name, prev) {
+					s.byCommand[key] = name
+				}
 			}
 		}
 	}
@@ -29,12 +30,19 @@ func newSuggester(r TaskSource) *suggester {
 }
 
 // command returns "task <name>" for a task whose command equals the inline
-// command, or "".
+// command, as written or with a package runner unwrapped on either side, or "".
+// Among several matching tasks the better name wins.
 func (s *suggester) command(normalized string) string {
-	if name, ok := s.byCommand[canonical(normalized)]; ok {
-		return "task " + name
+	best := ""
+	for _, key := range keys(normalized) {
+		if name, ok := s.byCommand[key]; ok && (best == "" || better(name, best)) {
+			best = name
+		}
 	}
-	return ""
+	if best == "" {
+		return ""
+	}
+	return "task " + best
 }
 
 // closest returns the task name nearest to an unknown one. Names that start
