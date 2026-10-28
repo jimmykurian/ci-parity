@@ -296,6 +296,24 @@ Exit codes: `0` when there are no errors, `1` when there are (or `baseline` refu
 raise a count), `2` for a usage or config error, YAML that doesn't parse, or a missing
 Taskfile.
 
+## Fixing findings
+
+`ci-parity fix` rewrites inline steps to the task that already runs the same command:
+
+```text
+$ ci-parity fix
+.github/workflows/ci.yml:9:14 'pnpm install --frozen-lockfile' -> 'task install'
+.github/workflows/ci.yml:11:14 'pnpm test' -> 'task test'
+fixed 2 steps in 1 file; 6 inline-tool findings need a manual change
+```
+
+It only changes a step when that can't change what the step does: the `run:` value is a
+single unquoted line that is exactly the flagged command, with no wrapper (`sudo`),
+variables, `&&`, quotes or `${{ }}`. Only that value is replaced, so comments and the rest
+of the file stay as they were. Everything else is counted as needing a manual change.
+`--dry-run` shows the changes without writing them. With a baseline, run
+`ci-parity baseline` afterwards to lock in the lower counts.
+
 ## Baseline
 
 The baseline lets an existing repo adopt ci-parity one workflow at a time. It records,

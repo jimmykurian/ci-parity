@@ -6,6 +6,24 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-28: fix mode (accepted)
+
+Problem: P001 often knows the task that replaces an inline step, but every change was
+by hand.
+
+Change: `ci-parity fix [--config PATH] [--dry-run] [-C DIR]` rewrites a P001 finding to
+its suggestion only when that cannot change what the step does: the step's `run:` is an
+unquoted single-line value, the whole value is exactly the flagged command (no wrapper,
+variable assignment, operator, quoting or `${{ }}`), a suggestion exists, and the
+finding is not allowed. The value is replaced in place, so a trailing YAML comment and
+every other byte of the file stay as they were; each edit is checked against the file
+before it is written and skipped if the text no longer matches. Every other inline-tool
+finding that is not allowed is counted as needing a manual change. Output is one line
+per edit, `file:line:col 'old' -> 'new'`, then a summary; with a baseline file, a hint to
+run `ci-parity baseline`. `--dry-run` prints the same without writing. Exit codes: 0, or 2
+for a usage or input error. The action does not run fix. Accepted on the owner's
+instruction to complete the planned phases.
+
 ### 2026-10-28: P003 wording per runner (accepted)
 
 Problem: P003 said "is marked internal: true" for every runner, but that is Taskfile
