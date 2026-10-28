@@ -218,9 +218,11 @@ jobs:
 
   action-download:
     name: Action download (${{ matrix.os }})
-    # Self-check passes a prebuilt binary; this runs the action as users do, with no binary
-    # input: it resolves the latest release, downloads the archive for the runner,
-    # verifies it against checksums.txt and runs it.
+    # Self-check runs this checkout's action with a prebuilt binary. This runs the published
+    # action as users do: from a commit SHA, with no binary or version input, it resolves
+    # the latest release, downloads the runner's archive, verifies it against
+    # checksums.txt and runs it. (Run from a local path, the action has no repository to
+    # download from.)
     strategy:
       fail-fast: false
       matrix:
@@ -238,7 +240,7 @@ jobs:
           version: 2026.10.21
           install_args: task
       - id: findings
-        uses: ./ # zizmor: ignore[self-repository]
+        uses: jimmykurian/ci-parity@6cd6042d59e50d62e0e2fd781c2a0b453f244ced # v0.7.0
         with:
           working-directory: testdata/fixtures/inline-tools
           format: text
@@ -249,7 +251,7 @@ jobs:
           TOLERATED: ${{ steps.findings.outputs.tolerated }}
         run: task action:expect -- 8 0 0
       # This repository has no findings, so the downloaded release must pass it.
-      - uses: ./ # zizmor: ignore[self-repository]
+      - uses: jimmykurian/ci-parity@6cd6042d59e50d62e0e2fd781c2a0b453f244ced # v0.7.0
 
   report:
     name: Check table
