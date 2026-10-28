@@ -8,6 +8,7 @@ package mise
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"sort"
@@ -166,8 +167,9 @@ func stringsOf(v any) []string {
 	return out
 }
 
-// readTaskDir records the executable files under dir as file tasks. A
-// `#MISE hide=true` line in a file hides it.
+// readTaskDir records the file tasks under dir: files that are executable or
+// start with a `#!` or `#MISE` line. The header test makes the result the same
+// on Windows, which has no executable bit. A `#MISE hide=true` line hides a task.
 func (m *Mise) readTaskDir(dir string) error {
 	if info, err := os.Stat(dir); err != nil || !info.IsDir() {
 		return nil
@@ -177,8 +179,11 @@ func (m *Mise) readTaskDir(dir string) error {
 			return err
 		}
 		info, err := d.Info()
-		if err != nil || info.Mode()&0o111 == 0 {
+		if err != nil {
 			return err
+		}
+		if info.Mode()&0o111 == 0 && !scriptHeader(path) {
+			return nil
 		}
 		rel, err := filepath.Rel(dir, path)
 		if err != nil {
@@ -188,6 +193,20 @@ func (m *Mise) readTaskDir(dir string) error {
 		m.tasks[name] = &task{hidden: hiddenFile(path)}
 		return nil
 	})
+}
+
+// scriptHeader reports whether the file at path starts with a `#!` shebang or a
+// `#MISE` comment, the first lines of a mise file task.
+func scriptHeader(path string) bool {
+	f, err := os.Open(path)
+	if err != nil {
+		return false
+	}
+	defer func() { _ = f.Close() }() // read-only: a close error changes nothing
+	head := make([]byte, 8)
+	n, _ := io.ReadFull(f, head)
+	line := string(head[:n])
+	return strings.HasPrefix(line, "#!") || strings.HasPrefix(line, "#MISE") || strings.HasPrefix(line, "# [MISE]")
 }
 
 // hiddenFile reports whether a file task's header sets hide=true, in a #MISE or

@@ -153,6 +153,33 @@ func TestLoadReadsFileTasksWithoutConfig(t *testing.T) {
 	}
 }
 
+func TestFileTasksAreFoundByHeaderWithoutTheExecutableBit(t *testing.T) {
+	// Arrange
+	// Written without the executable bit, as a Windows checkout has them.
+	root := write(t, map[string]string{
+		"mise.toml":              "[tasks.lint]\nrun = \"ruff check .\"\n",
+		"mise-tasks/db/migrate":  "#!/bin/sh\nmigrate up\n",
+		"mise-tasks/deploy":      "#MISE description=\"Deploy\"\n./deploy.sh\n",
+		"mise-tasks/notes.txt":   "not a task: no header, not executable\n",
+		"mise-tasks/hidden-task": "#!/bin/sh\n#MISE hide=true\n",
+	})
+	want := []string{"db:migrate", "deploy", "hidden-task", "lint"}
+
+	// Act
+	m, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
+	if diff := cmp.Diff(want, m.Tasks()); diff != "" {
+		t.Errorf("tasks (-want +got):\n%s", diff)
+	}
+	if !m.IsInternal("hidden-task") {
+		t.Error("IsInternal(hidden-task) = false, want true")
+	}
+}
+
 func TestNames(t *testing.T) {
 	// Arrange
 	words := func(s string) []domain.Word {
