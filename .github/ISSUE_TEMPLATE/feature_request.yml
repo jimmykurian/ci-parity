@@ -6,9 +6,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Some features are already planned: SARIF output, unwrapping for
-        suggestions, readers for Make, just and mise, and a `fix` mode are Phases
-        5 to 8 in docs/PLAN.md. Add your use case to an existing issue if there is one.
+        Check docs/architecture/decisions.md for ideas already on the list, and add
+        your use case to an existing issue if there is one.
 
   - type: dropdown
     id: area

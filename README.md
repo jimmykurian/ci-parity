@@ -456,7 +456,8 @@ versions CI uses; with [mise](https://mise.jdx.dev/), `mise install` sets them u
 `task hooks:install` turns on the pre-commit, commit-msg and pre-push hooks in
 `.githooks/`. The devcontainer (`.devcontainer/`) sets all of this up in VS Code or
 Codespaces.
-See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose and test a change.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to propose and test a change, and
+[docs/](docs/README.md) for the full reference, the architecture and how releases work.
 
 ## License
 

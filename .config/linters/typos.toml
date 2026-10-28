@@ -7,5 +7,5 @@ extend-exclude = [".git/", "LICENSE", "go.sum", "CHANGELOG.md"]
 # A deliberate misspelling: fixtures and tests use it to check P002's
 # closest-task suggestion.
 biuld = "biuld"
-# Spelled this way in docs/SPEC.md; both spellings are standard.
+# Spelled this way in docs/reference/cli.md; both spellings are standard.
 unparseable = "unparseable"

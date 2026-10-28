@@ -63,10 +63,10 @@ fixed, unless you'd rather stay anonymous.
 ## How the project is secured
 
 - **No execution or network at check time:** the code has no `os/exec` or
-  network imports outside tests, and the Taskfile is read statically.
-- **Few dependencies:** `gopkg.in/yaml.v3`, `mvdan.cc/sh/v3`, and
-  `github.com/google/go-cmp` for tests only. Adding one needs a recorded
-  decision in `docs/DECISIONS.md`.
+  network imports outside tests, and runner files are read statically.
+- **Few dependencies:** `gopkg.in/yaml.v3`, `mvdan.cc/sh/v3`,
+  `github.com/BurntSushi/toml`, and `github.com/google/go-cmp` for tests only.
+  Adding one needs agreement in an issue first.
 - **Pinned CI:** third-party actions are pinned to full commit SHAs, dev tools
   are pinned in `mise.toml`, and workflows run with `contents: read`.
 - **Secret scanning:** gitleaks runs on every push and pull request; a hit

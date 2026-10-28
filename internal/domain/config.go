@@ -1,6 +1,6 @@
 package domain
 
-// Config is the resolved ci-parity configuration. See docs/SPEC.md section 4.2.
+// Config is the resolved ci-parity configuration. See docs/reference/configuration.md.
 type Config struct {
 	Runner      string
 	Taskfile    string

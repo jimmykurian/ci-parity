@@ -2,7 +2,7 @@ package rules
 
 import "strings"
 
-// runner is a package runner that suggestions look through (SPEC 5.6).
+// runner is a package runner that suggestions look through (docs/reference/rules.md, Suggestions).
 type runner struct {
 	words      []string        // the runner's leading words
 	valueFlags map[string]bool // options that take the next argument as their value

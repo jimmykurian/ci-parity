@@ -7,14 +7,14 @@ body:
     attributes:
       value: |
         Use this template for one piece of work that belongs to a parent
-        issue or a phase in docs/PLAN.md.
+        issue.
 
   - type: input
     id: parent
     attributes:
       label: Parent
-      description: The parent issue, or the docs/PLAN.md phase.
-      placeholder: "#123 or Phase 4"
+      description: The parent issue.
+      placeholder: "#123"
     validations:
       required: true
 

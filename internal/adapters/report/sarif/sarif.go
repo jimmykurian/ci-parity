@@ -1,5 +1,5 @@
-// Package sarif renders findings as a SARIF 2.1.0 log, described in docs/SPEC.md
-// section 8, for GitHub code scanning and other SARIF readers.
+// Package sarif renders findings as a SARIF 2.1.0 log, described in
+// docs/reference/output-formats.md, for GitHub code scanning and other SARIF readers.
 package sarif
 
 import (
