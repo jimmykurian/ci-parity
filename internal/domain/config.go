@@ -82,7 +82,7 @@ const (
 )
 
 // Runners lists the runners with a reader.
-var Runners = []string{RunnerTaskfile, RunnerMake}
+var Runners = []string{RunnerTaskfile, RunnerMake, RunnerJust}
 
 // runnerTools are each runner's own commands. The configured runner's leave
 // the built-in tools list; every other runner's are bypasses.
