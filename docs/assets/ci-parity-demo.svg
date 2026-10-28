@@ -1,0 +1,146 @@
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1071 430" role="img" aria-labelledby="title desc" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">
+  <title id="title">ci-parity check, fix, and check again</title>
+  <desc id="desc">A terminal session. ci-parity check reports three P001 inline-tool errors, each already available as a task. ci-parity fix rewrites the three steps to task install, task lint and task test. ci-parity check then reports 0 errors.</desc>
+  <style>
+    .w{fill:#e2e6ee} .p{fill:#9aa8ff} .u{fill:#e2e6ee;text-decoration:underline} .d{fill:#8b93a4}
+    .r{fill:#ff7b7b} .g{fill:#5fdc8f} .a{fill:#9aa8ff}
+    @keyframes c0{0%,5.284%{opacity:0}5.294%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c0{opacity:0;animation:c0 17.0s linear infinite}
+    @keyframes c1{0%,5.696%{opacity:0}5.706%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c1{opacity:0;animation:c1 17.0s linear infinite}
+    @keyframes c2{0%,6.108%{opacity:0}6.118%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c2{opacity:0;animation:c2 17.0s linear infinite}
+    @keyframes c3{0%,6.519%{opacity:0}6.529%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c3{opacity:0;animation:c3 17.0s linear infinite}
+    @keyframes c4{0%,6.931%{opacity:0}6.941%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c4{opacity:0;animation:c4 17.0s linear infinite}
+    @keyframes c5{0%,7.343%{opacity:0}7.353%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c5{opacity:0;animation:c5 17.0s linear infinite}
+    @keyframes c6{0%,7.755%{opacity:0}7.765%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c6{opacity:0;animation:c6 17.0s linear infinite}
+    @keyframes c7{0%,8.166%{opacity:0}8.176%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c7{opacity:0;animation:c7 17.0s linear infinite}
+    @keyframes c8{0%,8.578%{opacity:0}8.588%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c8{opacity:0;animation:c8 17.0s linear infinite}
+    @keyframes c9{0%,8.990%{opacity:0}9.000%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c9{opacity:0;animation:c9 17.0s linear infinite}
+    @keyframes c10{0%,9.402%{opacity:0}9.412%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c10{opacity:0;animation:c10 17.0s linear infinite}
+    @keyframes c11{0%,9.814%{opacity:0}9.824%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c11{opacity:0;animation:c11 17.0s linear infinite}
+    @keyframes c12{0%,10.225%{opacity:0}10.235%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c12{opacity:0;animation:c12 17.0s linear infinite}
+    @keyframes c13{0%,10.637%{opacity:0}10.647%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c13{opacity:0;animation:c13 17.0s linear infinite}
+    @keyframes c14{0%,11.049%{opacity:0}11.059%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c14{opacity:0;animation:c14 17.0s linear infinite}
+    @keyframes c15{0%,11.461%{opacity:0}11.471%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c15{opacity:0;animation:c15 17.0s linear infinite}
+    @keyframes c16{0%,11.872%{opacity:0}11.882%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c16{opacity:0;animation:c16 17.0s linear infinite}
+    @keyframes l17{0%,14.931%{opacity:0}14.941%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .l17{opacity:0;animation:l17 17.0s linear infinite}
+    @keyframes l18{0%,15.990%{opacity:0}16.000%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .l18{opacity:0;animation:l18 17.0s linear infinite}
+    @keyframes l19{0%,17.049%{opacity:0}17.059%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .l19{opacity:0;animation:l19 17.0s linear infinite}
+    @keyframes l20{0%,18.108%{opacity:0}18.118%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .l20{opacity:0;animation:l20 17.0s linear infinite}
+    @keyframes l21{0%,20.049%{opacity:0}20.059%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .l21{opacity:0;animation:l21 17.0s linear infinite}
+    @keyframes c22{0%,31.108%{opacity:0}31.118%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c22{opacity:0;animation:c22 17.0s linear infinite}
+    @keyframes c23{0%,31.519%{opacity:0}31.529%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c23{opacity:0;animation:c23 17.0s linear infinite}
+    @keyframes c24{0%,31.931%{opacity:0}31.941%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c24{opacity:0;animation:c24 17.0s linear infinite}
+    @keyframes c25{0%,32.343%{opacity:0}32.353%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c25{opacity:0;animation:c25 17.0s linear infinite}
+    @keyframes c26{0%,32.755%{opacity:0}32.765%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c26{opacity:0;animation:c26 17.0s linear infinite}
+    @keyframes c27{0%,33.166%{opacity:0}33.176%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c27{opacity:0;animation:c27 17.0s linear infinite}
+    @keyframes c28{0%,33.578%{opacity:0}33.588%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c28{opacity:0;animation:c28 17.0s linear infinite}
+    @keyframes c29{0%,33.990%{opacity:0}34.000%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c29{opacity:0;animation:c29 17.0s linear infinite}
+    @keyframes c30{0%,34.402%{opacity:0}34.412%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c30{opacity:0;animation:c30 17.0s linear infinite}
+    @keyframes c31{0%,34.814%{opacity:0}34.824%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c31{opacity:0;animation:c31 17.0s linear infinite}
+    @keyframes c32{0%,35.225%{opacity:0}35.235%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c32{opacity:0;animation:c32 17.0s linear infinite}
+    @keyframes c33{0%,35.637%{opacity:0}35.647%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c33{opacity:0;animation:c33 17.0s linear infinite}
+    @keyframes c34{0%,36.049%{opacity:0}36.059%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c34{opacity:0;animation:c34 17.0s linear infinite}
+    @keyframes c35{0%,36.461%{opacity:0}36.471%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c35{opacity:0;animation:c35 17.0s linear infinite}
+    @keyframes c36{0%,36.872%{opacity:0}36.882%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c36{opacity:0;animation:c36 17.0s linear infinite}
+    @keyframes l37{0%,39.931%{opacity:0}39.941%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .l37{opacity:0;animation:l37 17.0s linear infinite}
+    @keyframes l38{0%,40.990%{opacity:0}41.000%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .l38{opacity:0;animation:l38 17.0s linear infinite}
+    @keyframes l39{0%,42.049%{opacity:0}42.059%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .l39{opacity:0;animation:l39 17.0s linear infinite}
+    @keyframes l40{0%,43.108%{opacity:0}43.118%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .l40{opacity:0;animation:l40 17.0s linear infinite}
+    @keyframes c41{0%,54.166%{opacity:0}54.176%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c41{opacity:0;animation:c41 17.0s linear infinite}
+    @keyframes c42{0%,54.578%{opacity:0}54.588%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c42{opacity:0;animation:c42 17.0s linear infinite}
+    @keyframes c43{0%,54.990%{opacity:0}55.000%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c43{opacity:0;animation:c43 17.0s linear infinite}
+    @keyframes c44{0%,55.402%{opacity:0}55.412%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c44{opacity:0;animation:c44 17.0s linear infinite}
+    @keyframes c45{0%,55.814%{opacity:0}55.824%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c45{opacity:0;animation:c45 17.0s linear infinite}
+    @keyframes c46{0%,56.225%{opacity:0}56.235%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c46{opacity:0;animation:c46 17.0s linear infinite}
+    @keyframes c47{0%,56.637%{opacity:0}56.647%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c47{opacity:0;animation:c47 17.0s linear infinite}
+    @keyframes c48{0%,57.049%{opacity:0}57.059%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c48{opacity:0;animation:c48 17.0s linear infinite}
+    @keyframes c49{0%,57.461%{opacity:0}57.471%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c49{opacity:0;animation:c49 17.0s linear infinite}
+    @keyframes c50{0%,57.872%{opacity:0}57.882%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c50{opacity:0;animation:c50 17.0s linear infinite}
+    @keyframes c51{0%,58.284%{opacity:0}58.294%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c51{opacity:0;animation:c51 17.0s linear infinite}
+    @keyframes c52{0%,58.696%{opacity:0}58.706%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c52{opacity:0;animation:c52 17.0s linear infinite}
+    @keyframes c53{0%,59.108%{opacity:0}59.118%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c53{opacity:0;animation:c53 17.0s linear infinite}
+    @keyframes c54{0%,59.519%{opacity:0}59.529%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c54{opacity:0;animation:c54 17.0s linear infinite}
+    @keyframes c55{0%,59.931%{opacity:0}59.941%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c55{opacity:0;animation:c55 17.0s linear infinite}
+    @keyframes c56{0%,60.343%{opacity:0}60.353%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c56{opacity:0;animation:c56 17.0s linear infinite}
+    @keyframes c57{0%,60.755%{opacity:0}60.765%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .c57{opacity:0;animation:c57 17.0s linear infinite}
+    @keyframes l58{0%,63.814%{opacity:0}63.824%,96.471%{opacity:1}96.481%,100%{opacity:0}}
+    .l58{opacity:0;animation:l58 17.0s linear infinite}
+    @media (prefers-reduced-motion: reduce) { [class] { animation: none !important; opacity: 1 !important; } }
+  </style>
+  <rect width="1071" height="430" rx="12" fill="#161a23"/>
+  <rect width="1071" height="34" rx="12" fill="#232937"/>
+  <rect y="22" width="1071" height="12" fill="#232937"/>
+  <circle cx="20" cy="17" r="6" fill="#ff5f57"/><circle cx="40" cy="17" r="6" fill="#febc2e"/><circle cx="60" cy="17" r="6" fill="#28c840"/>
+  <text x="535.5" y="22" text-anchor="middle" font-size="13" fill="#8b93a4">acme-app</text>
+  <text x="22" y="58" xml:space="preserve"><tspan class="c0 p">$</tspan><tspan class="c1 w">&#160;</tspan><tspan class="c2 w">c</tspan><tspan class="c3 w">i</tspan><tspan class="c4 w">-</tspan><tspan class="c5 w">p</tspan><tspan class="c6 w">a</tspan><tspan class="c7 w">r</tspan><tspan class="c8 w">i</tspan><tspan class="c9 w">t</tspan><tspan class="c10 w">y</tspan><tspan class="c11 w">&#160;</tspan><tspan class="c12 w">c</tspan><tspan class="c13 w">h</tspan><tspan class="c14 w">e</tspan><tspan class="c15 w">c</tspan><tspan class="c16 w">k</tspan></text>
+  <text class="l17 u" x="22" y="80" xml:space="preserve">.github/workflows/ci.yml</text>
+  <text class="l18 w" x="22" y="102" xml:space="preserve">  <tspan class="d">6:14</tspan>   <tspan class="r">P001 inline-tool</tspan>   step 2 in job "web" runs 'pnpm install' directly; <tspan class="a">already available as 'task install'</tspan></text>
+  <text class="l19 w" x="22" y="124" xml:space="preserve">  <tspan class="d">7:14</tspan>   <tspan class="r">P001 inline-tool</tspan>   step 3 in job "web" runs 'pnpm lint' directly; <tspan class="a">already available as 'task lint'</tspan></text>
+  <text class="l20 w" x="22" y="146" xml:space="preserve">  <tspan class="d">8:14</tspan>   <tspan class="r">P001 inline-tool</tspan>   step 4 in job "web" runs 'pnpm test' directly; <tspan class="a">already available as 'task test'</tspan></text>
+  <text class="l21 r" x="22" y="190" xml:space="preserve">3 errors, 0 warnings, 0 tolerated, 0 allowed</text>
+  <text x="22" y="234" xml:space="preserve"><tspan class="c22 p">$</tspan><tspan class="c23 w">&#160;</tspan><tspan class="c24 w">c</tspan><tspan class="c25 w">i</tspan><tspan class="c26 w">-</tspan><tspan class="c27 w">p</tspan><tspan class="c28 w">a</tspan><tspan class="c29 w">r</tspan><tspan class="c30 w">i</tspan><tspan class="c31 w">t</tspan><tspan class="c32 w">y</tspan><tspan class="c33 w">&#160;</tspan><tspan class="c34 w">f</tspan><tspan class="c35 w">i</tspan><tspan class="c36 w">x</tspan></text>
+  <text class="l37 w" x="22" y="256" xml:space="preserve">.github/workflows/ci.yml:6:14 'pnpm install' <tspan class="g">-&gt; 'task install'</tspan></text>
+  <text class="l38 w" x="22" y="278" xml:space="preserve">.github/workflows/ci.yml:7:14 'pnpm lint' <tspan class="g">-&gt; 'task lint'</tspan></text>
+  <text class="l39 w" x="22" y="300" xml:space="preserve">.github/workflows/ci.yml:8:14 'pnpm test' <tspan class="g">-&gt; 'task test'</tspan></text>
+  <text class="l40 g" x="22" y="322" xml:space="preserve">fixed 3 steps in 1 file; 0 inline-tool findings need a manual change</text>
+  <text x="22" y="366" xml:space="preserve"><tspan class="c41 p">$</tspan><tspan class="c42 w">&#160;</tspan><tspan class="c43 w">c</tspan><tspan class="c44 w">i</tspan><tspan class="c45 w">-</tspan><tspan class="c46 w">p</tspan><tspan class="c47 w">a</tspan><tspan class="c48 w">r</tspan><tspan class="c49 w">i</tspan><tspan class="c50 w">t</tspan><tspan class="c51 w">y</tspan><tspan class="c52 w">&#160;</tspan><tspan class="c53 w">c</tspan><tspan class="c54 w">h</tspan><tspan class="c55 w">e</tspan><tspan class="c56 w">c</tspan><tspan class="c57 w">k</tspan></text>
+  <text class="l58 g" x="22" y="388" xml:space="preserve">0 errors, 0 warnings, 0 tolerated, 0 allowed</text>
+</svg>

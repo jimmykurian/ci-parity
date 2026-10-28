@@ -92,12 +92,12 @@ tasks:
       - git ls-files -z '*.sh' '.githooks/*' | xargs -0 shellcheck
 
   lint:yaml:
-    desc: Lint the repo's YAML, not the fixtures (yamllint)
+    desc: Lint the repo's YAML, not the fixtures or the generated pnpm lockfile (yamllint)
     preconditions:
       - sh: command -v yamllint
         msg: "yamllint not found on PATH; run `mise install` or see https://yamllint.readthedocs.io/en/stable/quickstart.html"
     cmds:
-      - git ls-files -z '*.yml' '*.yaml' ':!:testdata/' | xargs -0 yamllint --strict -c .config/linters/yamllint.yml
+      - git ls-files -z '*.yml' '*.yaml' ':!:testdata/' ':!:site/pnpm-lock.yaml' | xargs -0 yamllint --strict -c .config/linters/yamllint.yml
 
   lint:markdown:
     desc: Lint the Markdown files (markdownlint-cli2, run with pnx)
@@ -233,6 +233,51 @@ tasks:
     cmds:
       - git config core.hooksPath .githooks
 
+  site:install:
+    desc: Install the docs site's packages (site/, pinned in its lockfile)
+    dir: site
+    preconditions:
+      - sh: command -v pnpm
+        msg: "pnpm not found on PATH; run `mise install`"
+      # A registry mirror in ~/.npmrc makes pnpm record its own download URLs. They don't
+      # resolve elsewhere and name the mirror, so the lockfile keeps integrity hashes only.
+      - sh: "! grep -q 'tarball:' pnpm-lock.yaml"
+        msg: "site/pnpm-lock.yaml records tarball URLs from a registry mirror; remove them (keep the integrity hashes) before committing"
+    cmds:
+      - pnpm install --frozen-lockfile
+
+  site:sync:
+    desc: Copy docs/ into the docs site's pages
+    dir: site
+    cmds:
+      - node scripts/sync-docs.mjs
+
+  site:test:
+    desc: Run the docs sync script's unit tests
+    dir: site
+    cmds:
+      - pnpm test
+
+  site:build:
+    desc: Build the docs site into site/dist, failing on a broken link or anchor
+    dir: site
+    cmds:
+      - task: site:sync
+      - pnpm build
+
+  site:dev:
+    desc: Serve the docs site with live reload (run `task site:sync` after editing docs/)
+    dir: site
+    cmds:
+      - task: site:sync
+      - pnpm dev
+
+  site:preview:
+    desc: Serve the built docs site from site/dist
+    dir: site
+    cmds:
+      - pnpm preview
+
   self-check:
     desc: Run ci-parity against this repo
     cmds:
@@ -246,3 +291,6 @@ tasks:
       - task: test
       - task: build
       - task: self-check
+      - task: site:install
+      - task: site:test
+      - task: site:build

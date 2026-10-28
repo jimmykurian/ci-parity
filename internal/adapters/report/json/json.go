@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 // Package json renders findings as the versioned JSON document described in
-// docs/reference/output-formats.md and the README.
+// docs/reference/output-formats.md.
 package json
 
 import (

@@ -68,6 +68,12 @@ or pull request and the maintainer's agreement before any code.
   SHA.
 - **`v0` floats** to the newest release, so `uses: jimmykurian/ci-parity@v0` picks up
   fixes; pin a version or SHA to avoid that.
+- **A Starlight site built from `docs/`, on GitHub Pages.** `docs/` stays the single
+  source and keeps rendering on GitHub; a sync step turns each H1 into a page title and
+  rewrites links, so no page is written twice. Starlight (Astro) brings search, light and
+  dark themes and accessible navigation with fewer dependencies than Docusaurus. The
+  site's npm packages are for the site alone: nothing from them reaches the binary or
+  `go.mod`.
 - **Install routes that need nothing new per release:** the Action, the release
   binaries, `go install`, mise's GitHub backend, and a pre-commit hook
   (`.pre-commit-hooks.yaml`) that builds from the tag. A Homebrew tap waits for demand:

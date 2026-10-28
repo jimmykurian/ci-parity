@@ -17,8 +17,12 @@ import (
 	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
-// InformationURI is the project's home page, linked from the tool and its rules.
+// InformationURI is the project's home page, linked from the tool.
 const InformationURI = "https://github.com/jimmykurian/ci-parity"
+
+// RulesURI is the docs site's rules section; each rule's help page is
+// RulesURI + its lowercase ID + "/", such as rules/p001/.
+const RulesURI = "https://jimmykurian.github.io/ci-parity/rules/"
 
 const (
 	schemaURI = "https://json.schemastore.org/sarif-2.1.0.json"
@@ -137,7 +141,7 @@ func Write(w io.Writer, findings []domain.Finding, version string) error {
 	for _, r := range rules {
 		d.Rules = append(d.Rules, rule{
 			ID: r.id, Name: domain.Names[r.id], ShortDescription: text{r.description},
-			HelpURI: InformationURI + "#rules", DefaultConfiguration: configuration{r.level},
+			HelpURI: helpURI(r.id), DefaultConfiguration: configuration{r.level},
 		})
 	}
 	results := make([]result, 0, len(findings))
@@ -167,6 +171,11 @@ func convert(f domain.Finding) result {
 		r.Suppressions = []suppression{{Kind: "inSource", Justification: f.Reason}}
 	}
 	return r
+}
+
+// helpURI returns the docs page for rule id, which code scanning links from each alert.
+func helpURI(id string) string {
+	return RulesURI + strings.ToLower(id) + "/"
 }
 
 // level maps a severity to a SARIF level. An allowed finding keeps its rule's

@@ -1,0 +1,10 @@
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+
+# pnpm settings for the docs site (`task site:install`).
+
+# Install scripts are off unless listed here. esbuild and sharp get their binaries from
+# platform packages, so their postinstall checks aren't needed.
+allowBuilds:
+  esbuild: false
+  sharp: false

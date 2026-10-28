@@ -80,6 +80,10 @@ tasks:
 | `task lint:release` | goreleaser check on `.goreleaser.yaml` |
 | `task fmt` | formats Go code with gofumpt and goimports; `task fmt:check` prints the diff and fails |
 | `task self-check` | runs ci-parity against this repo's own workflows |
+| `task site:install` | installs the docs site's packages (`site/`) |
+| `task site:dev` | serves the docs site with live reload; rerun `task site:sync` after editing `docs/` |
+| `task site:test` | unit tests for the docs sync script |
+| `task site:build` | builds the docs site into `site/dist`, failing on a broken link or anchor |
 | `task ci` | all of the above, in order |
 | `task hooks:install` | turns on the git hooks in `.githooks/` |
 

@@ -34,14 +34,30 @@ The linters and formatters are pinned in `mise.toml`, never in `go.mod`. CI inst
 with a SHA-pinned `jdx/mise-action`; locally, `mise install` does. Each `task lint:<group>`
 checks its tools are on `PATH` and names the one missing.
 
+## Docs site
+
+`.github/workflows/site.yml` publishes `docs/` to GitHub Pages at
+<https://jimmykurian.github.io/ci-parity/> on every push to `main` that changes `docs/`,
+`site/` or the workflow, and on demand.
+
+- **Build:** `task site:install` installs the site's packages from `site/pnpm-lock.yaml`;
+  `task site:build` copies `docs/` into the Starlight site with `site/scripts/sync-docs.mjs`
+  and builds it, failing on a broken link or anchor. The build uses no caches.
+- **Deploy:** `actions/deploy-pages` publishes the built site to the `github-pages`
+  environment; only that job can write to Pages.
+- **Pull requests:** the **Checks** job runs `task site:test` and `task site:build`, so a
+  broken link fails before it reaches `main`.
+
+Preview locally with `task site:dev`, or `task site:build` then `task site:preview`.
+
 ## Cutting a release
 
 `.github/workflows/release.yml` runs on pushes to `main`:
 
 1. Release Please opens or updates one release pull request, `chore: release X.Y.Z`,
-   bumping `.github/.release-please-manifest.json`, `CHANGELOG.md` and every README line
-   marked `x-release-please-version` from the Conventional Commits since the last
-   release. Before 1.0, a `feat` is a minor release and anything else listed (`fix`,
+   bumping `.github/.release-please-manifest.json`, `CHANGELOG.md` and every line of
+   `docs/guides/getting-started.md` marked `x-release-please-version` from the
+   Conventional Commits since the last release. Before 1.0, a `feat` is a minor release and anything else listed (`fix`,
    `perf`, `docs`, `refactor`) a patch; `chore`, `ci`, `build`, `test` and `style` are
    hidden and cut no release.
 2. It runs with `GITHUB_TOKEN`, so the release pull request starts no checks on its own:
