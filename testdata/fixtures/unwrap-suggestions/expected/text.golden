@@ -1,0 +1,12 @@
+.github/workflows/ci.yml
+  8:14    P001 inline-tool   step "Lint with npx" in job "web" runs 'npx eslint .' directly; already available as 'task lint'
+  10:14   P001 inline-tool   step "Lint with pnpx" in job "web" runs 'pnpx eslint .' directly; already available as 'task lint'
+  12:14   P001 inline-tool   step "Lint with value flags" in job "web" runs 'npx --yes -p eslint@9 eslint .' directly; already available as 'task lint'
+  14:14   P001 inline-tool   step "Format" in job "web" runs 'prettier --check .' directly; already available as 'task fmt'
+  16:14   P001 inline-tool   step "Typecheck" in job "web" runs 'npx tsc --noEmit' directly; already available as 'task typecheck'
+  18:14   P001 inline-tool   step "Lint through a shell string" in job "web" runs 'npx -c eslint .' directly
+  23:14   P001 inline-tool   step "Test" in job "api" runs 'pytest' directly; already available as 'task test'
+  25:14   P001 inline-tool   step "Test with uvx" in job "api" runs 'uvx --with pytest-cov pytest' directly; already available as 'task test'
+  27:14   P001 inline-tool   step "Format C#" in job "api" runs 'dotnet tool run dotnet-format' directly; already available as 'task format-cs'
+
+9 errors, 0 warnings, 0 tolerated, 0 allowed

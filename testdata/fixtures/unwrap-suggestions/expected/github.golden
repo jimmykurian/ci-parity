@@ -1,0 +1,9 @@
+::error file=.github/workflows/ci.yml,line=8,col=14,title=P001 inline-tool::step "Lint with npx" in job "web" runs 'npx eslint .' directly; already available as 'task lint'
+::error file=.github/workflows/ci.yml,line=10,col=14,title=P001 inline-tool::step "Lint with pnpx" in job "web" runs 'pnpx eslint .' directly; already available as 'task lint'
+::error file=.github/workflows/ci.yml,line=12,col=14,title=P001 inline-tool::step "Lint with value flags" in job "web" runs 'npx --yes -p eslint@9 eslint .' directly; already available as 'task lint'
+::error file=.github/workflows/ci.yml,line=14,col=14,title=P001 inline-tool::step "Format" in job "web" runs 'prettier --check .' directly; already available as 'task fmt'
+::error file=.github/workflows/ci.yml,line=16,col=14,title=P001 inline-tool::step "Typecheck" in job "web" runs 'npx tsc --noEmit' directly; already available as 'task typecheck'
+::error file=.github/workflows/ci.yml,line=18,col=14,title=P001 inline-tool::step "Lint through a shell string" in job "web" runs 'npx -c eslint .' directly
+::error file=.github/workflows/ci.yml,line=23,col=14,title=P001 inline-tool::step "Test" in job "api" runs 'pytest' directly; already available as 'task test'
+::error file=.github/workflows/ci.yml,line=25,col=14,title=P001 inline-tool::step "Test with uvx" in job "api" runs 'uvx --with pytest-cov pytest' directly; already available as 'task test'
+::error file=.github/workflows/ci.yml,line=27,col=14,title=P001 inline-tool::step "Format C#" in job "api" runs 'dotnet tool run dotnet-format' directly; already available as 'task format-cs'

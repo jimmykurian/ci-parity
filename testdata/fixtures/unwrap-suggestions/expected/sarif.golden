@@ -1,0 +1,290 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ci-parity",
+          "version": "dev",
+          "informationUri": "https://github.com/jimmykurian/ci-parity",
+          "rules": [
+            {
+              "id": "P001",
+              "name": "inline-tool",
+              "shortDescription": {
+                "text": "A run: step calls a listed tool directly instead of through the task runner."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P002",
+              "name": "unknown-task",
+              "shortDescription": {
+                "text": "CI calls a task that the Taskfile does not define."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P003",
+              "name": "internal-task",
+              "shortDescription": {
+                "text": "CI calls a task marked internal: true."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P004",
+              "name": "regression",
+              "shortDescription": {
+                "text": "A workflow has more inline-tool findings than its baseline allows."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P005",
+              "name": "unsupported",
+              "shortDescription": {
+                "text": "A step that ci-parity cannot analyze."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Lint with npx\" in job \"web\" runs 'npx eslint .' directly; already available as 'task lint'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 8,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "0571e8d150f0ce85282444f0fe37419a"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Lint with pnpx\" in job \"web\" runs 'pnpx eslint .' directly; already available as 'task lint'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "b554af8e0724f2bba05d193cc8283c3c"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Lint with value flags\" in job \"web\" runs 'npx --yes -p eslint@9 eslint .' directly; already available as 'task lint'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "9d881a8816f3f6ce960723e0003b2fd6"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Format\" in job \"web\" runs 'prettier --check .' directly; already available as 'task fmt'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "ad4dd2f86245d9780d3aa10b3843ed97"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Typecheck\" in job \"web\" runs 'npx tsc --noEmit' directly; already available as 'task typecheck'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "a1f830ebf62482c67ab368ed231ded8f"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Lint through a shell string\" in job \"web\" runs 'npx -c eslint .' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 18,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "36416f3fdc2262a04c2f7dda3e842716"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Test\" in job \"api\" runs 'pytest' directly; already available as 'task test'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 23,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "7869f844a65470e51b7d78e2b9511ba5"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Test with uvx\" in job \"api\" runs 'uvx --with pytest-cov pytest' directly; already available as 'task test'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 25,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "8c8cb235cd696a2d47e6b63b0f5cf5d4"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Format C#\" in job \"api\" runs 'dotnet tool run dotnet-format' directly; already available as 'task format-cs'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 27,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "aeb9aefa21132c1ac574d204e4856876"
+          }
+        }
+      ]
+    }
+  ]
+}
