@@ -97,10 +97,11 @@ Each [release](https://github.com/jimmykurian/ci-parity/releases) has archives f
 linux, darwin and windows on amd64 and arm64, and a `checksums.txt`:
 
 ```sh
-gh release download v0.1.0 --repo jimmykurian/ci-parity \
-  --pattern 'ci-parity_0.1.0_linux_amd64.tar.gz' --pattern checksums.txt
+VERSION=0.5.1 # x-release-please-version
+gh release download "v$VERSION" --repo jimmykurian/ci-parity \
+  --pattern "ci-parity_${VERSION}_linux_amd64.tar.gz" --pattern checksums.txt
 sha256sum --ignore-missing -c checksums.txt
-tar -xzf ci-parity_0.1.0_linux_amd64.tar.gz
+tar -xzf "ci-parity_${VERSION}_linux_amd64.tar.gz"
 ./ci-parity version
 ```
 
@@ -112,6 +113,49 @@ go install github.com/jimmykurian/ci-parity/cmd/ci-parity@latest
 
 A `go install` build reports its version as `dev`; the release binaries carry the
 version, commit and date.
+
+### mise
+
+[mise](https://mise.jdx.dev/) installs the release archive for your OS and architecture
+from GitHub Releases:
+
+```sh
+mise use github:jimmykurian/ci-parity@0.5.1 # x-release-please-version
+```
+
+Or pin it in `mise.toml` with the repository's other tools:
+
+```toml
+[tools]
+"github:jimmykurian/ci-parity" = "0.5.1" # x-release-please-version
+```
+
+### pre-commit
+
+With [pre-commit](https://pre-commit.com), add the hook to `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: https://github.com/jimmykurian/ci-parity
+    rev: v0.5.1 # x-release-please-version
+    hooks:
+      - id: ci-parity
+```
+
+pre-commit builds ci-parity from that tag, installing Go if needed, and runs
+`ci-parity check` on the whole repository when a commit changes a workflow, an action,
+the config, the baseline or the runner's files. If your config reads files from other
+paths, add `always_run: true` under `id: ci-parity`.
+
+With [lefthook](https://lefthook.dev) and ci-parity installed (through mise, say), add a
+command to `lefthook.yml`:
+
+```yaml
+pre-commit:
+  commands:
+    ci-parity:
+      run: ci-parity check
+```
 
 ## Quick start
 

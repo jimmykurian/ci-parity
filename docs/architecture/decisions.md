@@ -62,6 +62,10 @@ or pull request and the maintainer's agreement before any code.
   SHA.
 - **`v0` floats** to the newest release, so `uses: jimmykurian/ci-parity@v0` picks up
   fixes; pin a version or SHA to avoid that.
+- **Install routes that need nothing new per release:** the Action, the release
+  binaries, `go install`, mise's GitHub backend, and a pre-commit hook
+  (`.pre-commit-hooks.yaml`) that builds from the tag. A Homebrew tap waits for demand:
+  it needs a second repository and a token on the release job.
 
 ## Qualities
 

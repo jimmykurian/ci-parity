@@ -21,6 +21,6 @@
     { "type": "ci", "section": "Continuous Integration", "hidden": true }
   ],
   "packages": {
-    ".": { "package-name": "ci-parity" }
+    ".": { "package-name": "ci-parity", "extra-files": ["README.md"] }
   }
 }

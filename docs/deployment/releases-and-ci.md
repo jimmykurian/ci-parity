@@ -39,10 +39,11 @@ checks its tools are on `PATH` and names the one missing.
 `.github/workflows/release.yml` runs on pushes to `main`:
 
 1. Release Please opens or updates one release pull request, `chore: release X.Y.Z`,
-   bumping `.github/.release-please-manifest.json` and `CHANGELOG.md` from the
-   Conventional Commits since the last release. Before 1.0, a `feat` is a minor release
-   and a `fix` a patch; `docs` and `refactor` are listed, `chore`, `ci`, `build`, `test` and
-   `style` are not.
+   bumping `.github/.release-please-manifest.json`, `CHANGELOG.md` and every README line
+   marked `x-release-please-version` from the Conventional Commits since the last
+   release. Before 1.0, a `feat` is a minor release and anything else listed (`fix`,
+   `perf`, `docs`, `refactor`) a patch; `chore`, `ci`, `build`, `test` and `style` are
+   hidden and cut no release.
 2. It runs with `GITHUB_TOKEN`, so the release pull request starts no checks on its own:
    close and reopen it, wait for the checks, then merge it.
 3. Merging tags `vX.Y.Z` and publishes the GitHub Release. In the same workflow, goreleaser
