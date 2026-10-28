@@ -159,12 +159,12 @@ jobs:
         run: task action:expect -- 8 0 0
       # This repo's own results in code scanning, through the action's SARIF output.
       - id: sarif
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ !cancelled() }}
         uses: ./ # zizmor: ignore[self-repository]
         with:
           binary: ./bin/ci-parity
           format: sarif
-      - if: ${{ github.event_name == 'push' }}
+      - if: ${{ !cancelled() }}
         uses: github/codeql-action/upload-sarif@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
         with:
           sarif_file: ${{ steps.sarif.outputs.sarif-file }}

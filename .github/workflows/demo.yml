@@ -1,0 +1,25 @@
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+
+# Throwaway: deliberate ci-parity findings for documentation screenshots. Never merged,
+# and it only runs on manual dispatch.
+name: Demo
+on: workflow_dispatch
+
+permissions: {}
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Lint Go
+        run: golangci-lint run ./...
+      - name: Integration tests
+        run: go test ./test/integration/...
+      - name: Lint everything
+        run: task lint:all
