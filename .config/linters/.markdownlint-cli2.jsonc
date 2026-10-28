@@ -11,8 +11,9 @@
     "MD024": { "siblings_only": true },
     // The spec quotes exact output, such as ` [tolerated]` with its leading space.
     "MD038": false,
-    // The README's logo heading switches with the reader's color scheme.
-    "MD033": { "allowed_elements": ["h1", "picture", "source", "img"] },
+    // The README's logo heading switches with the reader's color scheme, and its code
+    // metrics fold the list of complex functions into <details>.
+    "MD033": { "allowed_elements": ["h1", "picture", "source", "img", "details", "summary"] },
     "MD046": { "style": "fenced" },
     // Makefile recipes must be indented with tabs, so the examples keep them.
     "MD010": { "ignore_code_languages": ["makefile"] },
