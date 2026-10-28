@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // A container with Go at the toolchain go.mod pins and every tool in mise.toml.
 // Works in VS Code and GitHub Codespaces.
 {

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package github renders findings as GitHub Actions workflow commands, which
 // the runner turns into annotations on the offending lines.
 package github

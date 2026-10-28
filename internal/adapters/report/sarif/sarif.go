@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package sarif renders findings as a SARIF 2.1.0 log, described in
 // docs/reference/output-formats.md, for GitHub code scanning and other SARIF readers.
 package sarif

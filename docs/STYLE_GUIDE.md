@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+
 # Documentation style guide
 
 How to write and maintain the docs in `docs/`, the READMEs and CONTRIBUTING.md.

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package json renders findings as the versioned JSON document described in
 // docs/reference/output-formats.md and the README.
 package json

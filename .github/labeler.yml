@@ -1,3 +1,6 @@
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+
 # Labels for pull requests by the paths they change (actions/labeler, run by
 # .github/workflows/labeler.yml). A pull request can get several.
 

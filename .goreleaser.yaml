@@ -1,3 +1,6 @@
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+
 # Release builds, described in docs/deployment/releases-and-ci.md. Release Please creates the tag and the GitHub
 # Release with its notes; the release workflow then runs this to attach the archives.
 # `task lint:release` validates this file and `task release:snapshot` builds locally.

@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package mise reads mise task definitions statically, without running mise:
 // tasks from the config files and their includes, and file tasks from the task
 // directories.

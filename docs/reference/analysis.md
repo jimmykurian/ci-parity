@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+
 # Analysis
 
 How ci-parity reads a workflow: its steps, their shells, the commands in each script, and calls to the task runner.

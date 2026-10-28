@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package ghactions loads GitHub Actions workflows and local composite actions
 // and enumerates their steps with source positions.
 package ghactions

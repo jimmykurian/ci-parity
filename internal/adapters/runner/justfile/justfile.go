@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package justfile reads justfiles statically, without running just: recipes
 // with their parameters, aliases, imports and modules, and the body lines used
 // to suggest a recipe for an inline command.

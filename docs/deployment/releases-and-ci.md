@@ -1,3 +1,5 @@
+<!-- Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE. SPDX-License-Identifier: Apache-2.0 -->
+
 # Releases and CI
 
 What runs on pull requests and on `main`, how a release is cut, and how the GitHub Action

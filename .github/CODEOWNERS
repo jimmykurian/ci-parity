@@ -1,2 +1,5 @@
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+
 # GitHub requests the owner's review on every pull request someone else opens.
 * @jimmykurian

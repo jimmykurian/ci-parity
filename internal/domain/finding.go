@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
 // Package domain holds ci-parity's types and pure logic: findings, the
 // workflow model, extracted commands, the config value and the baseline
 // ratchet. It imports only the standard library.
