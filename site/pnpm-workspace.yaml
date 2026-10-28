@@ -8,3 +8,8 @@
 allowBuilds:
   esbuild: false
   sharp: false
+
+overrides:
+  # GHSA-238p-pmpm-9mq7 (Dependabot alert 1), via astro-mermaid > mermaid, whose 11.x
+  # line pins katex ^0.16. The docs' diagrams use no math, so katex isn't exercised.
+  'katex@<0.18.2': '^0.18.2'
