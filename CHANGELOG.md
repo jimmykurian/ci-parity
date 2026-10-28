@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.0](https://github.com/jimmykurian/ci-parity/compare/v0.4.0...v0.5.0) (2026-10-28)
+
+
+### Features
+
+* **cli:** fix quoted values, one-line blocks and wrapped commands ([#17](https://github.com/jimmykurian/ci-parity/issues/17)) ([a3bf0c3](https://github.com/jimmykurian/ci-parity/commit/a3bf0c324e40d0a4f9a7ea93b33454236f47f4b2))
+
 ## [0.4.0](https://github.com/jimmykurian/ci-parity/compare/v0.3.0...v0.4.0) (2026-10-28)
 
 
