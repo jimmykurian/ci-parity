@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 3,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 14,
+      "col": 14,
+      "job": "build",
+      "action": null,
+      "step": "Unit tests",
+      "command": "go test ./...",
+      "message": "step \"Unit tests\" in job \"build\" runs 'go test ./...' directly; already available as 'make test'",
+      "suggestion": "make test",
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 16,
+      "col": 19,
+      "job": "build",
+      "action": null,
+      "step": "Typo",
+      "command": null,
+      "message": "'make tset' is not defined in Makefile (closest: test)",
+      "suggestion": "make test",
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 22,
+      "col": 14,
+      "job": "build",
+      "action": null,
+      "step": "Through Task",
+      "command": "task build",
+      "message": "step \"Through Task\" in job \"build\" runs 'task build' directly",
+      "suggestion": null,
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}
