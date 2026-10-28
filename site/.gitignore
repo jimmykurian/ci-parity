@@ -1,0 +1,15 @@
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+
+# Installed packages, and the built site (`task site:build`).
+node_modules/
+dist/
+# Astro's generated types and caches.
+.astro/
+
+# Written by scripts/sync-docs.mjs from docs/ on every sync; docs/ is the source. Only the
+# home page is written by hand.
+src/content/docs/*
+!src/content/docs/index.mdx
+src/assets/
+public/

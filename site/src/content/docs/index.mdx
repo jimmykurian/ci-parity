@@ -1,0 +1,35 @@
+---
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+title: ci-parity
+description: Lint GitHub Actions workflows so CI runs project commands through the task runner, with a baseline that only shrinks.
+template: splash
+hero:
+  tagline: Check that GitHub Actions workflows run project commands through the task runner, instead of calling tools inline. A per-workflow baseline lets you adopt it today and only ever shrinks.
+  actions:
+    - text: Get started
+      link: https://github.com/jimmykurian/ci-parity#install
+      icon: right-arrow
+    - text: Read the reference
+      link: /ci-parity/reference/
+      variant: minimal
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+Add it to a workflow, after checkout:
+
+```yaml
+- uses: jimmykurian/ci-parity@v0
+```
+
+It reads Taskfile, make, just and mise tasks without running them, flags steps that call
+`pnpm test`, `go build` and other tools directly, and suggests the task that already does
+the same thing.
+
+<CardGrid>
+  <LinkCard title="Rules" description="P001 to P005: what each one flags, and its exact message." href="/ci-parity/reference/rules/" />
+  <LinkCard title="Configuration" description="Every .ci-parity.yml key, with its default." href="/ci-parity/reference/configuration/" />
+  <LinkCard title="GitHub Action" description="The action's inputs, outputs and steps." href="/ci-parity/reference/action/" />
+  <LinkCard title="Architecture" description="How it fits together, and why it works the way it does." href="/ci-parity/architecture/" />
+</CardGrid>

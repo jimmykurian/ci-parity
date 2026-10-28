@@ -56,10 +56,10 @@ if stage '\.md$'; then
   check "markdown" pnx task --silent lint:markdown
 fi
 if stage '\.ya?ml$'; then
-  # Fixtures are test inputs, some invalid on purpose.
+  # Fixtures are test inputs, some invalid on purpose; pnpm writes the lockfile.
   YAML=()
   for file in "${FILES[@]}"; do
-    if [[ "$file" != testdata/* ]]; then YAML+=("$file"); fi
+    if [[ "$file" != testdata/* && "$file" != site/pnpm-lock.yaml ]]; then YAML+=("$file"); fi
   done
   if [[ ${#YAML[@]} -gt 0 ]]; then
     check "yaml" yamllint yamllint --strict -c .config/linters/yamllint.yml "${YAML[@]}"
