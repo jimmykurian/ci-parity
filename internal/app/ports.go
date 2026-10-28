@@ -29,10 +29,11 @@ type WorkflowSource interface {
 	Load(path string) (*domain.File, error)
 }
 
-// TaskLoader opens the task runner's file, which the config names.
+// TaskLoader opens the configured runner's file.
 type TaskLoader interface {
-	// Load reads the runner file at path; an empty path means discovery.
-	Load(path string) (TaskSource, error)
+	// Load reads the file of the runner named runner (a domain.Runner* value) at
+	// path; an empty path means discovery.
+	Load(runner, path string) (TaskSource, error)
 }
 
 // BaselineStore reads and writes the baseline file.

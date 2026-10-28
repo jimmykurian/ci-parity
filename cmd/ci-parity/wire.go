@@ -11,7 +11,7 @@ import (
 	jsonreport "github.com/jimmykurian/ci-parity/internal/adapters/report/json"
 	"github.com/jimmykurian/ci-parity/internal/adapters/report/sarif"
 	"github.com/jimmykurian/ci-parity/internal/adapters/report/text"
-	"github.com/jimmykurian/ci-parity/internal/adapters/runner/taskfile"
+	"github.com/jimmykurian/ci-parity/internal/adapters/runner"
 	"github.com/jimmykurian/ci-parity/internal/adapters/shell/posix"
 	"github.com/jimmykurian/ci-parity/internal/adapters/workflow/ghactions"
 	"github.com/jimmykurian/ci-parity/internal/app"
@@ -27,7 +27,7 @@ func newApp(dir string) (*app.App, error) {
 	return &app.App{
 		Config:    yamlconfig.Source{Root: dir},
 		Workflows: ghactions.Source{Root: dir},
-		Tasks:     taskfile.Loader{Root: dir},
+		Tasks:     runner.Loader{Root: dir},
 		Extractor: posix.Extractor{},
 		Baselines: jsonfile.Store{Root: dir},
 	}, nil

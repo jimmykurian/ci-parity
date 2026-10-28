@@ -9,6 +9,8 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 
@@ -61,6 +63,15 @@ func Parse(data []byte) (*domain.Config, error) {
 		return nil, err
 	}
 	cfg = f.config()
+	// Invokers default by runner; keys the file sets are kept as written.
+	if cfg.Runner != domain.RunnerTaskfile {
+		if !has(root, "invokers", "shell") {
+			cfg.Invokers.Shell = domain.DefaultShellInvokers(cfg.Runner)
+		}
+		if !has(root, "invokers", "actions") {
+			cfg.Invokers.Actions = nil
+		}
+	}
 	if err := validate(cfg); err != nil {
 		return nil, err
 	}
@@ -68,8 +79,11 @@ func Parse(data []byte) (*domain.Config, error) {
 }
 
 func validate(c *domain.Config) error {
-	if c.Runner != "taskfile" {
-		return fmt.Errorf("runner: unsupported runner %q; v0.1 supports taskfile", c.Runner)
+	if !slices.Contains(domain.Runners, c.Runner) {
+		return fmt.Errorf("runner: unsupported runner %q; use %s", c.Runner, strings.Join(domain.Runners, ", "))
+	}
+	if c.Taskfile != "" && c.Runner != domain.RunnerTaskfile {
+		return fmt.Errorf("taskfile: applies only to runner taskfile, not %s", c.Runner)
 	}
 	if len(c.Tools.Replace) > 0 && (len(c.Tools.Extend) > 0 || len(c.Tools.Remove) > 0) {
 		return errors.New("tools.replace cannot be combined with tools.extend or tools.remove")
@@ -93,4 +107,24 @@ func validate(c *domain.Config) error {
 		}
 	}
 	return nil
+}
+
+// has reports whether the mapping n holds the nested keys, even with a null value.
+func has(n *yaml.Node, keys ...string) bool {
+	for _, k := range keys {
+		if n == nil || n.Kind != yaml.MappingNode {
+			return false
+		}
+		var next *yaml.Node
+		for i := 0; i+1 < len(n.Content); i += 2 {
+			if n.Content[i].Value == k {
+				next = n.Content[i+1]
+			}
+		}
+		if next == nil {
+			return false
+		}
+		n = next
+	}
+	return true
 }
