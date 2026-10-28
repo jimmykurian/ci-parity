@@ -4,6 +4,8 @@
 
 Install ci-parity, run it on a repository, and read what it reports.
 
+![A terminal session: ci-parity check reports three inline tools, each already available as a task; ci-parity fix rewrites the three steps; ci-parity check then reports 0 errors.](../assets/ci-parity-demo.svg)
+
 ## Install
 
 ### GitHub Action

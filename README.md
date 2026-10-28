@@ -50,6 +50,8 @@ Each badge is a check from the last CI run on `main` (`.github/workflows/ci.yml`
 How it compares with actionlint, zizmor and other workflow linters, and why it lints
 rather than generates workflows: [Why ci-parity](https://jimmykurian.github.io/ci-parity/guides/why/).
 
+![A terminal session: ci-parity check reports three inline tools, each already available as a task; ci-parity fix rewrites the three steps; ci-parity check then reports 0 errors.](docs/assets/ci-parity-demo.svg)
+
 ## Install
 
 ```yaml

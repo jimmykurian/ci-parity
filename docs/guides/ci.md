@@ -32,6 +32,10 @@ jobs:
       - uses: jimmykurian/ci-parity@v0
 ```
 
+On the pull request, each finding appears on its line in **Files changed**:
+
+![A pull request's Files changed tab. Under line 21, run: golangci-lint run ./..., a Self-check annotation reads P001 inline-tool: step "Lint Go" in job "checks" runs 'golangci-lint run ./...' directly; already available as 'task lint:go'. Below it, a code scanning alert from github-advanced-security repeats the finding.](../assets/pr-annotations.png)
+
 Each annotation is one line of workflow commands in the job log:
 
 ```text
@@ -66,6 +70,10 @@ jobs:
           sarif_file: ${{ steps.parity.outputs.sarif-file }}
           category: ci-parity
 ```
+
+On a pull request, the code scanning check lists the new alerts, each on its line:
+
+![The code scanning check for ci-parity on a pull request: 4 new alerts including 4 errors. Annotations show a P004 on line 1 of .github/workflows/demo.yml, and P001 findings on lines 21 and 23, each with the task already available.](../assets/code-scanning.png)
 
 - Errors are `error` alerts, warnings `warning`, and tolerated findings `note`.
 - An allowed finding is uploaded as suppressed in source, with its reason, so code

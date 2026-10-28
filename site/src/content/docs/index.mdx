@@ -24,7 +24,10 @@ import Ratchet from '../../components/Ratchet.astro';
 
 ## See it in action
 
-A workflow that calls pnpm directly, next to a Taskfile that already wraps those commands:
+<img class="demo" src="/ci-parity/ci-parity-demo.svg" alt="A terminal session: ci-parity check reports three inline tools, each already available as a task; ci-parity fix rewrites the three steps; ci-parity check then reports 0 errors." />
+
+The same check on a workflow that calls pnpm directly, next to a Taskfile that already
+wraps those commands:
 
 ```text frame="terminal" title="ci-parity check"
 .github/workflows/ci.yml
@@ -52,6 +55,25 @@ flowchart LR
 
 It reads the files as text: it never runs your task runner, your scripts or the network.
 Every finding is on the exact line and column, in [four formats](/ci-parity/reference/output-formats/).
+
+## In your pull requests
+
+With the GitHub Action, each finding lands on its line in the pull request, and with
+SARIF it shows up in code scanning too. These are from a real pull request on this
+repository.
+
+<div class="shots">
+  <figure>
+    <a href="/ci-parity/pr-annotations.png"><img src="/ci-parity/pr-annotations.png" alt="A pull request's Files changed tab: under line 21, run: golangci-lint run ./..., an annotation reads P001 inline-tool, already available as 'task lint:go', with the matching code scanning alert below it." /></a>
+    <figcaption>An annotation and a code scanning alert on the line that caused them</figcaption>
+  </figure>
+  <figure>
+    <a href="/ci-parity/code-scanning.png"><img src="/ci-parity/code-scanning.png" alt="The ci-parity code scanning check on a pull request: 4 new alerts including 4 errors, each listed with its line and message." /></a>
+    <figcaption>The code scanning check: every new alert, with its rule</figcaption>
+  </figure>
+</div>
+
+[CI setup](/ci-parity/guides/ci/) has both workflows.
 
 ## Works with your task runner
 
