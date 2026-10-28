@@ -155,7 +155,7 @@ Released with Phase 5 as v0.2.0.
 - [x] Runner selection per SPEC 5.7: `runner` values, defaults that follow the runner,
       each runner parsing its own calls and naming its command in messages
 - [x] Make reader with table tests and a `runner-make` fixture
-- [ ] just reader with table tests and a `runner-just` fixture
+- [x] just reader with table tests and a `runner-just` fixture
 - [ ] mise reader (`github.com/BurntSushi/toml`) with table tests and a `runner-mise`
       fixture
 - [ ] README: configuration and FAQ for each runner
