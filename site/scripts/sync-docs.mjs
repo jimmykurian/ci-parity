@@ -99,6 +99,25 @@ export function convert(source, rel, isDir) {
   return frontmatter.join('\n') + body.join('\n');
 }
 
+/**
+ * Converts CHANGELOG.md, which Release Please writes, into the changelog page: its H1
+ * becomes the title, and the page has no "Edit page" link, since edits would be
+ * overwritten. Its links are already absolute.
+ * @param {string} source - CHANGELOG.md as Release Please writes it
+ */
+export function changelog(source) {
+  const body = source.replace(/\r\n/g, '\n').replace(/^# [^\n]*\n+/, '');
+  return [
+    '---',
+    'title: "Changelog"',
+    'description: "Every ci-parity release, written by Release Please from the commits."',
+    'editUrl: false',
+    '---',
+    '',
+    body,
+  ].join('\n');
+}
+
 /** Lists every Markdown file under dir, as forward-slash paths relative to it. */
 function markdownFiles(dir, prefix = '') {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -131,7 +150,8 @@ function main() {
     rmSync(dir, { recursive: true, force: true });
     cpSync(join(docs, 'assets'), dir, { recursive: true });
   }
-  console.log(`synced ${files.length} pages from ${relative(site, docs)}/`);
+  writeFileSync(join(content, 'changelog.md'), changelog(readFileSync(join(repo, 'CHANGELOG.md'), 'utf8')));
+  console.log(`synced ${files.length} pages from ${relative(site, docs)}/, and the changelog`);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

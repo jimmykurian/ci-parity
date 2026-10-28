@@ -8,10 +8,10 @@ hero:
   tagline: Check that GitHub Actions workflows run project commands through the task runner, instead of calling tools inline. A per-workflow baseline lets you adopt it today and only ever shrinks.
   actions:
     - text: Get started
-      link: https://github.com/jimmykurian/ci-parity#install
+      link: /ci-parity/guides/getting-started/
       icon: right-arrow
-    - text: Read the reference
-      link: /ci-parity/reference/
+    - text: Why ci-parity
+      link: /ci-parity/guides/why/
       variant: minimal
 ---
 
@@ -28,8 +28,8 @@ It reads Taskfile, make, just and mise tasks without running them, flags steps t
 the same thing.
 
 <CardGrid>
-  <LinkCard title="Rules" description="P001 to P005: what each one flags, and its exact message." href="/ci-parity/reference/rules/" />
-  <LinkCard title="Configuration" description="Every .ci-parity.yml key, with its default." href="/ci-parity/reference/configuration/" />
-  <LinkCard title="GitHub Action" description="The action's inputs, outputs and steps." href="/ci-parity/reference/action/" />
-  <LinkCard title="Architecture" description="How it fits together, and why it works the way it does." href="/ci-parity/architecture/" />
+  <LinkCard title="Adopt with a baseline" description="Turn it on today and let the count of inline steps only go down." href="/ci-parity/guides/baseline/" />
+  <LinkCard title="Rules" description="P001 to P005: what each catches, an example, and how to fix it." href="/ci-parity/rules/" />
+  <LinkCard title="CI setup" description="Annotations on pull requests, or alerts in code scanning." href="/ci-parity/guides/ci/" />
+  <LinkCard title="Recipes" description="A passing setup for Taskfile, make, just and mise." href="/ci-parity/guides/recipes/" />
 </CardGrid>

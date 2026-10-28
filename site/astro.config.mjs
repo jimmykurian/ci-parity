@@ -27,12 +27,28 @@ export default defineConfig({
       lastUpdated: false,
       sidebar: [
         { label: 'Overview', link: '/overview/' },
+        {
+          label: 'Guides',
+          items: [
+            'guides',
+            'guides/getting-started',
+            'guides/configuring',
+            'guides/baseline',
+            'guides/fixing',
+            'guides/ci',
+            'guides/recipes',
+            'guides/why',
+            'guides/faq',
+          ],
+        },
+        { label: 'Rules', items: [{ autogenerate: { directory: 'rules' } }] },
         { label: 'Reference', items: [{ autogenerate: { directory: 'reference' } }] },
         { label: 'Architecture', items: [{ autogenerate: { directory: 'architecture' } }] },
         { label: 'Releases and CI', items: [{ autogenerate: { directory: 'deployment' } }] },
         { label: 'Testing', items: [{ autogenerate: { directory: 'testing' } }] },
         { label: 'Security', items: [{ autogenerate: { directory: 'security' } }] },
         { label: 'Style guide', link: '/style_guide/' },
+        { label: 'Changelog', link: '/changelog/' },
       ],
       // Fails the build on a broken link or anchor between pages.
       plugins: [starlightLinksValidator()],

@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { convert, outputPath, rewriteLink, route } from './sync-docs.mjs';
+import { changelog, convert, outputPath, rewriteLink, route } from './sync-docs.mjs';
 
 const noDirs = () => false;
 
@@ -145,4 +145,18 @@ test('convert leaves fenced code untouched', () => {
 test('convert rejects a page with no H1', () => {
   // Act and Assert
   assert.throws(() => convert('Intro only.\n', 'README.md', noDirs), /no H1/);
+});
+
+test('changelog drops the H1 and turns off the edit link', () => {
+  // Arrange
+  const source = '# Changelog\n\n## [0.6.0](https://example.com) (2026-10-28)\n\n* a change\n';
+
+  // Act
+  const got = changelog(source);
+
+  // Assert
+  assert.ok(got.startsWith('---\ntitle: "Changelog"\n'), got);
+  assert.match(got, /\neditUrl: false\n---\n/);
+  assert.ok(got.endsWith('## [0.6.0](https://example.com) (2026-10-28)\n\n* a change\n'), got);
+  assert.ok(!got.includes('# Changelog'), got);
 });
