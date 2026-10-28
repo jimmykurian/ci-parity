@@ -6,6 +6,7 @@ package ghactions
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -44,7 +45,8 @@ func TestApply(t *testing.T) {
 	if diff := cmp.Diff(want, string(got)); diff != "" {
 		t.Errorf("file (-want +got):\n%s", diff)
 	}
-	if info, _ := os.Stat(path); info.Mode().Perm() != 0o600 {
+	// Windows has no Unix permission bits to keep, so the mode is checked elsewhere.
+	if info, _ := os.Stat(path); runtime.GOOS != "windows" && info.Mode().Perm() != 0o600 {
 		t.Errorf("mode = %v, want 0600", info.Mode().Perm())
 	}
 }

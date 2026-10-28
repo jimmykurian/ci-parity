@@ -13,6 +13,8 @@ and its binaries are published.
 | --- | --- |
 | **Checks** | checkout, setup-go (from `go.mod`), mise-action (tools from `mise.toml`), gitleaks-action, then one `task` step per check in `task ci` except the self-check. Every step runs even after one fails. |
 | **Self-check** | `task build`, then the action from this checkout (`uses: ./` with `binary: ./bin/ci-parity`) on this repository, and on the `inline-tools` fixture to check its outputs (`task action:expect`). On `main`, also a SARIF run uploaded to code scanning. |
+| **Tests (macOS, Windows)** | The unit, integration, end-to-end and performance tests on `macos-latest` and `windows-latest`. |
+| **Action download** | On Linux, macOS and Windows, the published action, pinned by SHA with no `binary` or `version` input: it downloads the latest release, verifies it against `checksums.txt` and runs it on the `inline-tools` fixture and on this repository. Move the pin to each new release. |
 | **Check table** | On pull requests, one comment listing every check's result, updated on each push. |
 | **Badges** | On `main`, one shields.io endpoint file per check, committed to the `badges` branch for the README's status table. |
 

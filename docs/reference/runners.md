@@ -62,9 +62,11 @@ interface and its own call syntax; the rules are unchanged.
   two values.
 - mise: `[tasks.name]` tables and `name = "cmd"` (or list) entries, with `run` (string
   or list) as the commands, `alias` (string or list) as aliases and `hide = true` as
-  internal; executable file tasks under `.config/mise/tasks/`, `mise/tasks/`,
+  internal; file tasks under `.config/mise/tasks/`, `mise/tasks/`,
   `.mise/tasks/`, `mise-tasks/` and `.mise-tasks/` (named from the path, `db/migrate`
-  as `db:migrate`, hidden by a `#MISE hide=true` line, with no commands); and
+  as `db:migrate`, hidden by a `#MISE hide=true` line, with no commands), where a file
+  is a task when it is executable or starts with a `#!` or `#MISE` line, so Windows
+  checkouts, which have no executable bit, find the same tasks; and
   `task_config.includes`, each a task TOML file whose top-level tables are tasks or a
   directory of file tasks, a missing one skipped. A call names one task, then its
   arguments; `:::` starts another task. `-C` and `--cd` select another directory; a

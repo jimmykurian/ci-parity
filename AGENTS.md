@@ -23,6 +23,9 @@ baseline that only shrinks. A Go CLI plus a composite GitHub Action (`action.yml
   install routes and their release-version markers live in `guides/getting-started.md`);
   `docs/architecture/` shows how it fits together and why; `docs/README.md` indexes the
   rest
+- `schemas/`: JSON Schemas for the config, baseline and JSON output; they change with
+  `docs/reference/`, and `task lint:schemas` checks them against the fixtures
+- `test/perf/`: the timed check on 50 workflows (`task test:perf`, `task bench`)
 - `site/`: the Starlight docs site, built from `docs/` by `scripts/sync-docs.mjs` and
   deployed to GitHub Pages; edit `docs/`, never the generated pages
 

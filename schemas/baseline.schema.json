@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jimmykurian.github.io/ci-parity/schemas/baseline.schema.json",
+  "title": "ci-parity baseline (.ci-parity-baseline.json)",
+  "description": "Per workflow, how many inline-tool (P001) findings are tolerated. See https://jimmykurian.github.io/ci-parity/reference/baseline/",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "workflows"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "workflows": {
+      "type": "object",
+      "description": "Repository-relative workflow path to its tolerated count.",
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 0
+      }
+    }
+  }
+}

@@ -20,7 +20,13 @@ allowed, so `internal/domain` implements this matcher itself, with table tests.
 
 ## The config file
 
-Every key is optional. Defaults are shown.
+Every key is optional. Defaults are shown. The [config schema](https://jimmykurian.github.io/ci-parity/schemas/config.schema.json)
+describes every key, so an editor with a YAML language server can validate the file and
+complete keys; add this first line:
+
+```yaml
+# yaml-language-server: $schema=https://jimmykurian.github.io/ci-parity/schemas/config.schema.json
+```
 
 ```yaml
 runner: taskfile                  # or make, just, mise (from v0.3; see runners.md)

@@ -40,10 +40,15 @@ type T interface {
 // name. A missing root yields no fixtures. It needs no test, so Ginkgo tables
 // can be built from it before any spec runs.
 func FixtureDirs(root string) ([]string, error) {
-	entries, err := os.ReadDir(root)
+	// Stat first: on Windows, reading a file as a directory looks like a missing one.
+	info, err := os.Stat(root)
 	if errors.Is(err, fs.ErrNotExist) {
 		return nil, nil
 	}
+	if err == nil && !info.IsDir() {
+		return nil, fmt.Errorf("read fixtures %s: not a directory", root)
+	}
+	entries, err := os.ReadDir(root)
 	if err != nil {
 		return nil, fmt.Errorf("read fixtures %s: %w", root, err)
 	}

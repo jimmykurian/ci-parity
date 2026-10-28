@@ -66,6 +66,9 @@ tasks:
 | `task test:unit` | the unit tests, which sit next to the code |
 | `task test:integration` | the CLI in-process on every fixture (`test/integration/`) |
 | `task test:e2e` | builds the binary and runs it as a process (`test/e2e/`) |
+| `task test:perf` | times `check` on 50 generated workflows; fails above one second |
+| `task bench` | benchmarks `check` on 50 workflows |
+| `task lint:schemas` | checks the JSON Schemas in `schemas/` against every fixture, golden and this repo's files |
 | `task test -- -update` | regenerates the golden files |
 | `task lint` | every linter below |
 | `task lint:go` | golangci-lint |

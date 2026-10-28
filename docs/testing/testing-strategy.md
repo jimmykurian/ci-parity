@@ -15,7 +15,12 @@ The test suites, what each one proves, and how to add to them. `task test` runs 
 | Integration: golden fixtures | `test/integration/golden_test.go`, `testdata/fixtures/<case>/` | The CLI's exact output and exit code for a whole repository, in every format |
 | Integration: baseline and fix | `test/integration/`, `testdata/fix/<case>/` | `baseline` writes and refuses as it should; `fix` changes exactly the expected bytes, writes nothing on a dry run, and is idempotent |
 | End-to-end | `test/e2e/` | The built binary, run as a process: the stamped version, exit codes, stdout and stderr, the working directory in place of `-C`, and `fix` writing to disk |
-| Action tests | the **Self-check** CI job | The action itself, on this repository and on a fixture with findings |
+| Performance | `test/perf/` | `check` on a generated repository of 50 workflows (1,200 steps) takes under a second; `task bench` reports time and allocations |
+| Schemas | `schemas/`, `task lint:schemas` | Every JSON golden, fixture config and baseline matches its JSON Schema, and the deliberately broken ones don't; a unit test keeps the config schema's keys in step with the parser |
+| Action tests | the **Self-check** and **Action download** CI jobs | The action from this checkout on this repository and on a fixture with findings; and the published action downloading, verifying and running the latest release on Linux, macOS and Windows |
+
+Every test layer runs on Linux in the **Checks** job and on macOS and Windows in the
+**Tests** jobs, so path, line-ending and file-mode differences show up in CI.
 
 Unit tests stay in their package so they can test unexported functions, and are plain
 `testing` table tests. The integration and end-to-end tests use the program only from

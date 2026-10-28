@@ -118,6 +118,19 @@ export function changelog(source) {
   ].join('\n');
 }
 
+/**
+ * Copies the JSON Schemas in schemasDir into publicDir/schemas, where the site serves
+ * them at their $id URLs, and returns their file names.
+ * @param {string} schemasDir - the repository's schemas/ directory
+ * @param {string} publicDir - the site's public/ directory
+ */
+export function publishSchemas(schemasDir, publicDir) {
+  const names = readdirSync(schemasDir).filter((name) => name.endsWith('.schema.json')).sort();
+  mkdirSync(join(publicDir, 'schemas'), { recursive: true });
+  for (const name of names) cpSync(join(schemasDir, name), join(publicDir, 'schemas', name));
+  return names;
+}
+
 /** Lists every Markdown file under dir, as forward-slash paths relative to it. */
 function markdownFiles(dir, prefix = '') {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -151,7 +164,8 @@ function main() {
     cpSync(join(docs, 'assets'), dir, { recursive: true });
   }
   writeFileSync(join(content, 'changelog.md'), changelog(readFileSync(join(repo, 'CHANGELOG.md'), 'utf8')));
-  console.log(`synced ${files.length} pages from ${relative(site, docs)}/, and the changelog`);
+  const schemas = publishSchemas(join(repo, 'schemas'), join(site, 'public'));
+  console.log(`synced ${files.length} pages from ${relative(site, docs)}/, the changelog and ${schemas.length} schemas`);
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

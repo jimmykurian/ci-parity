@@ -1,0 +1,177 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://jimmykurian.github.io/ci-parity/schemas/output.schema.json",
+  "title": "ci-parity check --format json, version 1",
+  "description": "See https://jimmykurian.github.io/ci-parity/reference/output-formats/",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "summary",
+    "findings",
+    "ratchet"
+  ],
+  "properties": {
+    "version": {
+      "const": 1
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "errors",
+        "warnings",
+        "tolerated",
+        "allowed"
+      ],
+      "properties": {
+        "errors": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "warnings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "tolerated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "allowed": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "rule",
+          "name",
+          "severity",
+          "file",
+          "line",
+          "col",
+          "job",
+          "action",
+          "step",
+          "command",
+          "message",
+          "suggestion",
+          "reason"
+        ],
+        "properties": {
+          "rule": {
+            "enum": [
+              "P001",
+              "P002",
+              "P003",
+              "P004",
+              "P005"
+            ]
+          },
+          "name": {
+            "enum": [
+              "inline-tool",
+              "unknown-task",
+              "internal-task",
+              "regression",
+              "unsupported"
+            ]
+          },
+          "severity": {
+            "enum": [
+              "error",
+              "warning",
+              "tolerated",
+              "allowed"
+            ]
+          },
+          "file": {
+            "type": "string",
+            "minLength": 1
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "col": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "job": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "action": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "step": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "command": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "suggestion": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "ratchet": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "baseline",
+          "current",
+          "locked"
+        ],
+        "properties": {
+          "baseline": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "current": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "locked": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

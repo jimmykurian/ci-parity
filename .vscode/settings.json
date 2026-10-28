@@ -20,6 +20,7 @@
   "typos.config": ".config/linters/typos.toml",
   "shellcheck.customArgs": ["--external-sources"],
   "yaml.schemas": {
+    "./schemas/config.schema.json": ".ci-parity.yml",
     "https://taskfile.dev/schema.json": "Taskfile.yml",
     "https://golangci-lint.run/jsonschema/golangci.jsonschema.json": ".golangci.yml",
     "https://goreleaser.com/static/schema.json": ".goreleaser.yaml"
