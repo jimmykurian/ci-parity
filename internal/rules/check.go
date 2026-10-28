@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/jimmykurian/ci-parity/internal/domain"
 )
@@ -109,17 +110,37 @@ func (c *checker) inlineTool(f *domain.File, s *domain.Step, cmd domain.Command)
 	}
 	fd := c.add(f, s, domain.InlineTool, sev, line, col, msg)
 	fd.Command, fd.Reason, fd.Suggestion = cmd.Normalized, reason, suggestion
-	if suggestion != "" && sev != domain.SeverityAllowed && fixable(s.Run, cmd) {
-		fd.Fix = &domain.Edit{File: f.Path, Line: s.Run.Line, Col: s.Run.Col, Old: s.Run.Value, New: suggestion}
+	if suggestion != "" && sev != domain.SeverityAllowed {
+		fd.Fix = fixEdit(f.Path, s.Run, cmd, suggestion)
 	}
 }
 
-// fixable reports whether replacing the whole run: value with the suggestion
-// keeps its meaning: an unquoted single-line value that is exactly the
-// command, with no wrapper, assignment, operator, quoting or expression.
-func fixable(run *domain.Script, cmd domain.Command) bool {
-	return run.Plain && !strings.Contains(run.Value, "${{") &&
-		strings.Join(strings.Fields(run.Value), " ") == cmd.Normalized
+// unsafePrefix are characters that, before the command, mean more than
+// wrappers and variable assignments: operators, redirects, quoting,
+// expansions and comments.
+const unsafePrefix = ";&|<>()`$'\"\\{}#"
+
+// fixEdit returns the edit that makes a step call the suggested task, or nil
+// when that could change what the step does. The step's value must sit on one
+// line; whatever precedes the command may only be transparent wrappers with
+// their options and NAME=value assignments, which stay, so `sudo pnpm lint`
+// becomes `sudo task lint`; and from the command to the end of the value must
+// be exactly the command, with no operator, quoting or expansion.
+func fixEdit(file string, run *domain.Script, cmd domain.Command, suggestion string) *domain.Edit {
+	value := strings.TrimSuffix(run.Value, "\n")
+	if !run.SingleLine || cmd.Line != 1 || cmd.Col < 1 || cmd.Col-1 > len(value) || strings.Contains(value, "${{") {
+		return nil
+	}
+	prefix, rest := value[:cmd.Col-1], value[cmd.Col-1:] // shell columns count bytes
+	if strings.ContainsAny(prefix, unsafePrefix) || strings.Join(strings.Fields(rest), " ") != cmd.Normalized {
+		return nil
+	}
+	col := run.Col
+	if run.Block {
+		col = run.Indent + 1
+	}
+	// File columns count characters.
+	return &domain.Edit{File: file, Line: run.Line, Col: col + utf8.RuneCountInString(prefix), Old: rest, New: suggestion}
 }
 
 // allowRule returns the reason of the first config allow entry matching the

@@ -174,6 +174,17 @@ all four formats. Release v0.3.0.
 Acceptance: `task ci` green; a fixed workflow differs from its input only in the
 rewritten values. Release v0.4.0.
 
+## Phase 9: fix more cases
+
+- [x] `fix` per SPEC 7 also rewrites quoted values, one-line literal blocks, and commands
+      after transparent wrappers or `NAME=value` assignments, keeping them
+- [x] `testdata/fix/basic` covers each new case and its unsafe neighbors; a unit test for
+      the edit, including a non-ASCII prefix
+- [x] README: fixing findings
+
+Acceptance: `task ci` green; the fixed workflow differs from its input only in the
+rewritten commands. Release v0.5.0.
+
 ## Backlog (do not start)
 
 - `task --list-all --json` as an optional source when the binary is present

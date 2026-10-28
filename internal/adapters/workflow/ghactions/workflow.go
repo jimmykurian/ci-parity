@@ -96,6 +96,8 @@ func script(n *yaml.Node, lines []string) *domain.Script {
 		s.Block = true
 		s.Line = n.Line + 1
 		s.Indent = blockIndent(lines, n.Line)
+		one := strings.TrimSuffix(n.Value, "\n")
+		s.SingleLine = one != "" && !strings.Contains(one, "\n")
 	case yaml.FoldedStyle:
 		s.Block = true
 		s.Line = n.Line + 1
@@ -103,9 +105,10 @@ func script(n *yaml.Node, lines []string) *domain.Script {
 		s.Segments = foldedBlock(lines, n.Line, s.Indent, n.Value)
 	case yaml.DoubleQuotedStyle, yaml.SingleQuotedStyle:
 		s.Col = n.Column + 1
+		s.SingleLine = !strings.Contains(n.Value, "\n")
 	default:
 		s.Segments = foldedPlain(lines, n.Line, n.Column, n.Value)
-		s.Plain = s.Segments == nil && !strings.Contains(n.Value, "\n")
+		s.SingleLine = s.Segments == nil && !strings.Contains(n.Value, "\n")
 	}
 	// On a single-line value, `run: cmd # ci-parity: allow ...` ends in a YAML
 	// comment, not a shell one; put it back so allow comments work there too.

@@ -6,6 +6,21 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-28: fix handles quoted values, wrappers and one-line blocks (accepted)
+
+Problem: fix only rewrote an unquoted value that was exactly the command, so common
+steps such as `run: "pnpm test"` or `run: sudo pnpm lint` always needed a hand edit.
+
+Change, at the owner's request: fix also rewrites a step whose value is quoted (single
+or double) or a literal block with one line, and whose command follows transparent
+wrappers with their options or `NAME=value` assignments. Only the command and its
+arguments are replaced; the wrappers, assignments and quotes stay, so `sudo -E env CI=1
+pnpm build` becomes `sudo -E env CI=1 task build`. Nothing before the command may hold
+an operator, redirect, quote, expansion, `${{ }}` or comment, and from the command to
+the end of the value must be exactly the command. An edit the editor refuses because
+the file text differs (an escaped quoted value) counts as needing a manual change.
+Chains, multi-line scripts, folded blocks and expressions are still left alone.
+
 ### 2026-10-28: fix mode (accepted)
 
 Problem: P001 often knows the task that replaces an inline step, but every change was

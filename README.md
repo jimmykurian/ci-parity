@@ -298,19 +298,25 @@ Taskfile.
 
 ## Fixing findings
 
-`ci-parity fix` rewrites inline steps to the task that already runs the same command:
+`ci-parity fix` rewrites inline steps to the task that already runs the same command.
+On a workflow with `run: pnpm install --frozen-lockfile`, `run: sudo pnpm lint`,
+`run: "pnpm test"` and `run: pnpm build && pnpm test`:
 
 ```text
 $ ci-parity fix
 .github/workflows/ci.yml:9:14 'pnpm install --frozen-lockfile' -> 'task install'
-.github/workflows/ci.yml:11:14 'pnpm test' -> 'task test'
-fixed 2 steps in 1 file; 6 inline-tool findings need a manual change
+.github/workflows/ci.yml:11:19 'pnpm lint' -> 'task lint'
+.github/workflows/ci.yml:13:15 'pnpm test' -> 'task test'
+fixed 3 steps in 1 file; 2 inline-tool findings need a manual change
 ```
 
-It only changes a step when that can't change what the step does: the `run:` value is a
-single unquoted line that is exactly the flagged command, with no wrapper (`sudo`),
-variables, `&&`, quotes or `${{ }}`. Only that value is replaced, so comments and the rest
-of the file stay as they were. Everything else is counted as needing a manual change.
+It only changes a step when that can't change what the step does. The `run:` value must
+be on one line: plain, quoted (`"pnpm test"`), or a `run: |` block with one line. Before
+the command there may only be wrappers such as `sudo`, `env`, `timeout` and their
+options, or variables like `CI=1`; those stay, so `sudo pnpm lint` becomes
+`sudo task lint` and `"pnpm test"` becomes `"task test"`. Only the command is replaced, so
+comments and the rest of the file stay as they were. Steps with `&&`, pipes, redirects,
+several lines, or `${{ }}` are left alone and counted as needing a manual change.
 `--dry-run` shows the changes without writing them. With a baseline, run
 `ci-parity baseline` afterwards to lock in the lower counts.
 

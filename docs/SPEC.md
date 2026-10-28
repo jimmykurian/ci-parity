@@ -397,11 +397,15 @@ ci-parity version
 - `version` prints `ci-parity <version> (<commit>, <date>)`, with values injected by
   the build via `-ldflags`.
 - `fix` (from v0.4) rewrites a P001 finding to its suggestion when that cannot change
-  what the step does: its `run:` is an unquoted single-line value that is exactly the
-  flagged command (no wrapper, assignment, operator, quoting or `${{ }}`), a suggestion
-  exists, and the finding is not allowed. Only the value is replaced, so comments and
-  the rest of the file are unchanged; an edit whose text no longer matches the file is
-  skipped. It prints `<file>:<line>:<col> '<old>' -> '<new>'` per edit, then
+  what the step does: its `run:` value sits on one line (plain, single- or
+  double-quoted, or a literal block with one line); anything before the command is
+  transparent wrappers with their options or `NAME=value` assignments (from v0.5), with
+  no operator, redirect, quote, expansion, `${{ }}` or comment; from the command to the
+  end of the value is exactly the command; a suggestion exists; and the finding is not
+  allowed. Only the command and its arguments are replaced, so wrappers, assignments,
+  quotes, comments and the rest of the file are unchanged (`sudo pnpm lint` becomes
+  `sudo task lint`); an edit whose text no longer matches the file, such as an escaped
+  quoted value, is skipped and counted as needing a manual change. It prints `<file>:<line>:<col> '<old>' -> '<new>'` per edit, then
   `fixed <n> steps in <m> files; <k> inline-tool findings need a manual change`, and,
   when a baseline file exists, a hint to run `ci-parity baseline`. `--dry-run` prints
   `would fix` and writes nothing. It exits 0, or 2 on a usage or input error.

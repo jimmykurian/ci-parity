@@ -10,14 +10,30 @@ jobs:
       - name: Test
         run: task test # keep this comment
       - name: Lint with a wrapper
-        run: sudo pnpm lint
+        run: sudo task lint
+      - name: Wrappers with options
+        run: sudo -E env CI=1 timeout 300 task build
+      - name: Variable prefix
+        run: NODE_ENV=test task test
+      - name: Double quotes
+        run: "task test"
+      - name: Single quotes
+        run: 'task lint'
+      - name: One-line block
+        run: |
+          task test
       - name: Chain
         run: pnpm build && pnpm test
-      - name: Block
+      - name: Escaped quotes
+        run: "pnpm\ttest"
+      - name: Expression
+        run: pnpm test --shard=${{ matrix.shard }}
+      - name: Multi-line block
         run: |
+          pnpm install
           pnpm test
-      - name: Quoted
-        run: "pnpm test"
+      - name: Redirect
+        run: pnpm test > out.txt
       - name: No task
         run: pnpm audit
       - name: Allowed

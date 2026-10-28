@@ -41,14 +41,16 @@ type Input struct {
 
 // Script is a step's run: value and where it sits in the file.
 type Script struct {
-	Text     string
-	Value    string    // the YAML value as written, without a trailing YAML comment
-	Plain    bool      // an unquoted, single-line value: the only kind fix rewrites
-	Line     int       // source line of the script's first line
-	Col      int       // source column of the script's first character
-	Indent   int       // indentation of block scalar content
-	Block    bool      // literal or folded block scalar
-	Segments []Segment // source positions of folded text; nil when not folded
+	Text  string
+	Value string // the YAML value as written, without a trailing YAML comment
+	// SingleLine marks a value on one source line: plain, quoted, or a literal
+	// block with one line. fix rewrites only these.
+	SingleLine bool
+	Line       int       // source line of the script's first line
+	Col        int       // source column of the script's first character
+	Indent     int       // indentation of block scalar content
+	Block      bool      // literal or folded block scalar
+	Segments   []Segment // source positions of folded text; nil when not folded
 }
 
 // Segment ties a byte offset in a folded script to the source position its
