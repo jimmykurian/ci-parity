@@ -1,0 +1,10 @@
+[tasks.build]
+run = "go build ./..."
+
+[tasks.test]
+run = "go test ./..."
+alias = "t"
+
+[tasks.release]
+run = "goreleaser release --clean"
+hide = true

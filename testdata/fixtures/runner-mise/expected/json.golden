@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 4,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 14,
+      "col": 14,
+      "job": "ci",
+      "action": null,
+      "step": "Inline test",
+      "command": "go test ./...",
+      "message": "step \"Inline test\" in job \"ci\" runs 'go test ./...' directly; already available as 'mise run test'",
+      "suggestion": "mise run test",
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 16,
+      "col": 23,
+      "job": "ci",
+      "action": null,
+      "step": "Typo",
+      "command": null,
+      "message": "'mise run tset' is not defined in mise.toml (closest: test)",
+      "suggestion": "mise run test",
+      "reason": null
+    },
+    {
+      "rule": "P003",
+      "name": "internal-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 18,
+      "col": 23,
+      "job": "ci",
+      "action": null,
+      "step": "Hidden task",
+      "command": null,
+      "message": "'release' is hidden and should not be invoked from CI",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 22,
+      "col": 14,
+      "job": "ci",
+      "action": null,
+      "step": "Through just",
+      "command": "just build",
+      "message": "step \"Through just\" in job \"ci\" runs 'just build' directly",
+      "suggestion": null,
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

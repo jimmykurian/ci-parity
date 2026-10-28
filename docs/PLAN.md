@@ -156,9 +156,9 @@ Released with Phase 5 as v0.2.0.
       each runner parsing its own calls and naming its command in messages
 - [x] Make reader with table tests and a `runner-make` fixture
 - [x] just reader with table tests and a `runner-just` fixture
-- [ ] mise reader (`github.com/BurntSushi/toml`) with table tests and a `runner-mise`
+- [x] mise reader (`github.com/BurntSushi/toml`) with table tests and a `runner-mise`
       fixture
-- [ ] README: configuration and FAQ for each runner
+- [x] README: configuration and FAQ for each runner
 
 Acceptance: `task ci` green; Taskfile goldens unchanged; each runner's fixture passes in
 all four formats. Release v0.3.0.

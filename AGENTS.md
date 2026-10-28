@@ -28,8 +28,9 @@ repo's own workflows, so the repo is its own first customer.
 - Go, latest stable, `go` directive at least 1.24. Module path `github.com/OWNER/ci-parity`
   where OWNER comes from `git remote get-url origin`. If there is no remote, ask.
 - License Apache-2.0. One LICENSE file at the root; no per-file copyright headers.
-- Dependencies: `gopkg.in/yaml.v3`, `mvdan.cc/sh/v3`, and `github.com/google/go-cmp` for
-  tests. Nothing else without writing the reason in `docs/DECISIONS.md` first.
+- Dependencies: `gopkg.in/yaml.v3`, `mvdan.cc/sh/v3`, `github.com/BurntSushi/toml` (mise
+  config), and `github.com/google/go-cmp` for tests. Nothing else without writing the
+  reason in `docs/DECISIONS.md` first.
 - CLI uses the standard library `flag` package with subcommand dispatch. No cobra, no viper.
 - Taskfile is read statically. Do not shell out to `task` at check time or in tests.
 - Baseline format and rule IDs are fixed by `docs/SPEC.md`. Changing them is a spec change.
