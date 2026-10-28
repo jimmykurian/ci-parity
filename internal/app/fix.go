@@ -51,9 +51,13 @@ func (a *App) Fix(ctx context.Context, opts FixOptions) (FixResult, error) {
 	for _, file := range files {
 		edits := byFile[file]
 		if !opts.DryRun {
+			planned := len(edits)
 			if edits, err = a.Editor.Apply(file, edits); err != nil {
 				return FixResult{}, err
 			}
+			// An edit whose text didn't match the file, such as an escaped quoted
+			// value, still needs a hand.
+			res.Manual += planned - len(edits)
 		}
 		if len(edits) > 0 {
 			res.Files++
