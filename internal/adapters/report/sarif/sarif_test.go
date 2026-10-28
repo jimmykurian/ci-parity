@@ -158,3 +158,21 @@ func TestFingerprintDependsOnUnnamedStep(t *testing.T) {
 		t.Error("a different unnamed step kept the same fingerprint")
 	}
 }
+
+func TestHelpURIPointsAtEachRulePage(t *testing.T) {
+	// Arrange
+	tests := []struct{ id, want string }{
+		{"P001", "https://jimmykurian.github.io/ci-parity/rules/p001/"},
+		{"P005", "https://jimmykurian.github.io/ci-parity/rules/p005/"},
+	}
+
+	for _, tt := range tests {
+		// Act
+		got := helpURI(tt.id)
+
+		// Assert
+		if got != tt.want {
+			t.Errorf("helpURI(%q) = %q, want %q", tt.id, got, tt.want)
+		}
+	}
+}
