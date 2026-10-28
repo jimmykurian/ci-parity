@@ -77,7 +77,7 @@ for the runner, verifies it against `checksums.txt`, and runs `ci-parity check`.
 | `binary` | | Path to a prebuilt `ci-parity`; nothing is downloaded. |
 | `config` | `.ci-parity.yml` | Passed to `--config`. |
 | `baseline` | from the config | Passed to `--baseline`. |
-| `format` | `github` | `github` (annotations on the changed lines), `text` or `json`, for the log. |
+| `format` | `github` | `github` (annotations on the changed lines), `text` or `json` for the log, or `sarif` for a file; see [SARIF output](#sarif-output). |
 | `strict` | `false` | Ignore the baseline. |
 | `working-directory` | `.` | Repository root to check (`-C`). Annotation paths are relative to it, so they line up only when it's the root of the checked-out repository. |
 | `fail-on-error` | `true` | When `false`, the step succeeds and the outputs report the counts. |
@@ -87,6 +87,7 @@ for the runner, verifies it against `checksums.txt`, and runs `ci-parity check`.
 | `errors` | Number of error findings. |
 | `warnings` | Number of warning findings. |
 | `tolerated` | Number of findings the baseline tolerates. |
+| `sarif-file` | Path of the SARIF log when `format` is `sarif`; empty otherwise. |
 
 ### Release binaries
 
@@ -332,6 +333,41 @@ P004 count is what's new.
 | `ratchet` | object or null | Per scanned file: baseline count, current count, and whether it is locked at 0. Null when no baseline applies (no file, or `--strict`). |
 
 Findings are sorted by file, line, column and rule ID.
+
+## SARIF output
+
+`ci-parity check --format sarif` prints a [SARIF 2.1.0](https://docs.oasis-open.org/sarif/sarif/v2.1.0/)
+log, so the findings can appear in GitHub code scanning (the Security tab) alongside the
+annotations. Errors are `error`, warnings `warning` and tolerated findings `note`; an
+allowed finding is included with its reason as an in-source suppression, so code scanning
+shows it as dismissed. Each result carries a fingerprint built from the rule, file, job,
+step and command, so moving lines doesn't open a new alert.
+
+With the action:
+
+```yaml
+jobs:
+  ci-parity:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+      - uses: jimmykurian/ci-parity@v0
+        id: parity
+        with:
+          format: sarif
+          fail-on-error: false
+      - uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ steps.parity.outputs.sarif-file }}
+          category: ci-parity
+```
+
+Code scanning is free for public repositories; private ones need GitHub Advanced
+Security. With `fail-on-error: false` the job succeeds and code scanning reports the
+findings; leave it `true` to also fail the job.
 
 ## FAQ
 

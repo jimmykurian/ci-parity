@@ -9,6 +9,7 @@ import (
 	"github.com/jimmykurian/ci-parity/internal/adapters/config/yamlconfig"
 	"github.com/jimmykurian/ci-parity/internal/adapters/report/github"
 	jsonreport "github.com/jimmykurian/ci-parity/internal/adapters/report/json"
+	"github.com/jimmykurian/ci-parity/internal/adapters/report/sarif"
 	"github.com/jimmykurian/ci-parity/internal/adapters/report/text"
 	"github.com/jimmykurian/ci-parity/internal/adapters/runner/taskfile"
 	"github.com/jimmykurian/ci-parity/internal/adapters/shell/posix"
@@ -39,6 +40,8 @@ func reporter(w io.Writer, format string, verbose bool) app.Reporter {
 		return github.Reporter{W: w}
 	case "json":
 		return jsonreport.Reporter{W: w}
+	case "sarif":
+		return sarif.Reporter{W: w, Version: version}
 	default:
 		return text.Reporter{W: w, Verbose: verbose}
 	}

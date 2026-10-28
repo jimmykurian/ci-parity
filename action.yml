@@ -24,7 +24,7 @@ inputs:
     required: false
     default: ""
   format:
-    description: "Output format for the log: github (annotations), text or json."
+    description: "Output format: github (annotations), text or json for the log, or sarif for a file (see the sarif-file output)."
     required: false
     default: github
   strict:
@@ -50,6 +50,9 @@ outputs:
   tolerated:
     description: Number of findings the baseline tolerates.
     value: ${{ steps.check.outputs.tolerated }}
+  sarif-file:
+    description: Path of the SARIF log when format is sarif, for github/codeql-action/upload-sarif; empty otherwise.
+    value: ${{ steps.check.outputs.sarif-file }}
 
 runs:
   using: composite
@@ -143,6 +146,11 @@ runs:
         done
         if [[ "$INPUT_FORMAT" == json ]]; then
           cat "$report"
+        elif [[ "$INPUT_FORMAT" == sarif ]]; then
+          sarif="$RUNNER_TEMP/ci-parity.sarif"
+          "$BIN" "${args[@]}" --format sarif > "$sarif" || true
+          echo "sarif-file=$sarif" >> "$GITHUB_OUTPUT"
+          echo "ci-parity: wrote $sarif"
         else
           "$BIN" "${args[@]}" --format "$INPUT_FORMAT" || true
         fi

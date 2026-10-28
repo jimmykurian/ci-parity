@@ -6,6 +6,50 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-27: promote four backlog items into Phases 5 to 8 (accepted)
+
+Problem: `AGENTS.md` forbids the Phase 5 backlog and `docs/PLAN.md` marks it "do not
+start", but the owner asked to build SARIF output, unwrapping for suggestions, fix mode,
+and Make, just and mise readers.
+
+Change:
+
+- `docs/PLAN.md`: the backlog becomes a "Backlog" section holding the two items not
+  chosen (`task --list-all --json` as a source, a companion run-task action), and four
+  phases replace it, one item each, each released on its own (a `feat` makes a minor
+  release: v0.2.0, v0.3.0, ...): Phase 5 SARIF output, Phase 6 unwrapping, Phase 7 Make,
+  just and mise readers, Phase 8 fix mode.
+- `AGENTS.md` and `docs/SPEC.md` 2: the "do not implement" rule and the out-of-scope list
+  name the Backlog section instead of Phase 5; the README FAQ, CONTRIBUTING and the
+  feature-request form follow.
+- Each phase's spec text is proposed here when that phase starts, and approved before
+  its code. Phase 5's:
+
+Phase 5, SARIF output (a new SPEC 8 subsection):
+
+- `check --format sarif` prints one SARIF 2.1.0 log with one run, deterministic and
+  sorted like the other formats. Exit codes are unchanged.
+- `runs[0].tool.driver`: `name` `ci-parity`, `version` and `semanticVersion` from the
+  build, `informationUri` the repository URL, and a `rules` entry per rule P001 to P005
+  with `id`, `name`, `shortDescription`, `helpUri` (the README's Rules section) and
+  `defaultConfiguration.level`.
+- One result per finding: `ruleId`, `level` `error` for errors, `warning` for warnings
+  and `note` for tolerated findings; an allowed finding is a result with
+  `suppressions: [{"kind": "inSource", "justification": <reason>}]`, so code scanning
+  shows it as dismissed rather than dropping it. `message.text` is the same message as
+  the other formats.
+- Location: `artifactLocation.uri` is the repository-relative path with `uriBaseId`
+  `%SRCROOT%`; `region.startLine` and `startColumn` are the finding's position.
+- `partialFingerprints["ciParity/v1"]` is a hash of rule, file, job (or action), step
+  and command, so a finding keeps its identity when lines above it move.
+- The action: with `format: sarif` it writes the log to `$RUNNER_TEMP/ci-parity.sarif`
+  and sets a new `sarif-file` output; the README shows uploading it with
+  `github/codeql-action/upload-sarif`. Other formats leave the output empty.
+- Tests: every fixture gains `expected/sarif.golden`, and a unit test checks the log's
+  required SARIF fields; no schema validator dependency.
+- Acceptance: `task ci` green, every fixture passes in all four formats, and a run in a
+  public test repo shows the findings in the Security tab after `upload-sarif`.
+
 ### 2026-10-27: releases with Release Please (accepted)
 
 Problem: SPEC 11 had releases start from a pushed `v*` tag, with `CHANGELOG.md` written by
