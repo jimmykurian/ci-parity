@@ -252,6 +252,12 @@ Allowed findings don't fail the check; `--verbose` lists them with their reason.
 | P004 | regression | error | A workflow has more inline-tool findings than its baseline allows, or any while locked at 0. |
 | P005 | unsupported | warning | A step ci-parity can't analyze: a shell other than bash or sh, a script that doesn't parse, a dynamic command name, or an allow comment without a reason. |
 
+A P001 suggestion appears when a task runs the same command. Package runners are looked
+through on both sides: `npx eslint .` suggests a task that runs `eslint .`, and an inline
+`pytest` suggests a task that runs `uv run pytest`. The runners are `npx`, `pnpx`, `pnx`,
+`bunx`, `pnpm exec`, `pnpm dlx`, `uv run`, `uvx` and `dotnet tool run`; `pnpm run X` and
+`yarn run X` also match `pnpm X` and `yarn X`.
+
 The messages are stable, so you can search for them:
 
 - P001: `step "Test" in job "test" runs 'pnpm test' directly; already available as 'task test'`

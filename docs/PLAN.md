@@ -141,7 +141,14 @@ scanning lists a ci-parity analysis after a push to `main`. Release v0.2.0.
 
 ## Phase 6: unwrapping for suggestions
 
-Spec proposed in `docs/DECISIONS.md` when the phase starts. Release v0.3.0.
+- [x] Unwrapping per SPEC 5.6 in `internal/rules`, applied to both the inline command and
+      each Taskfile command, with table tests
+- [x] `unwrap-suggestions` fixture: each runner in both directions, value flags, and
+      `npx -c` keeping no suggestion
+- [x] README: the Rules section notes the equivalence
+
+Acceptance: `task ci` green; existing goldens change only where a suggestion was missing.
+Release v0.3.0.
 
 ## Phase 7: Make, just and mise readers
 
