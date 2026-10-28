@@ -33,6 +33,7 @@ func write(t *testing.T, files map[string]string) string {
 }
 
 func TestTargetsAndCommands(t *testing.T) {
+	// Arrange
 	root := write(t, map[string]string{"Makefile": strings.Join([]string{
 		"# A comment: not a target",
 		"GO ?= go",
@@ -69,13 +70,6 @@ func TestTargetsAndCommands(t *testing.T) {
 		"endif",
 		"",
 	}, "\n")})
-	m, err := Load(root)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if diff := cmp.Diff([]string{"build", "ci", "deps", "lint", "long", "test"}, m.Tasks()); diff != "" {
-		t.Errorf("targets (-want +got):\n%s", diff)
-	}
 	want := map[string][]string{
 		"build": {"$(GO) build ./...", "echo done"},
 		"test":  {"go test ./..."},
@@ -83,6 +77,17 @@ func TestTargetsAndCommands(t *testing.T) {
 		"ci":    {"go vet ./..."},
 		"long":  {"go run ./tools/gen"},
 		"deps":  {"go mod download"},
+	}
+
+	// Act
+	m, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
+	if diff := cmp.Diff([]string{"build", "ci", "deps", "lint", "long", "test"}, m.Tasks()); diff != "" {
+		t.Errorf("targets (-want +got):\n%s", diff)
 	}
 	for name, cmds := range want {
 		if diff := cmp.Diff(cmds, m.Commands(name)); diff != "" {
@@ -95,16 +100,21 @@ func TestTargetsAndCommands(t *testing.T) {
 }
 
 func TestDiscoveryOrderAndIncludes(t *testing.T) {
+	// Arrange
 	root := write(t, map[string]string{
 		"GNUmakefile": "include mk/ci.mk missing.mk $(GEN).mk\nall:\n\ttrue\n",
 		"Makefile":    "ignored:\n\ttrue\n",
 		"mk/ci.mk":    "-include mk/loop.mk\nci-lint:\n\tgolangci-lint run\n",
 		"mk/loop.mk":  "include mk/ci.mk\nloop:\n\ttrue\n",
 	})
+
+	// Act
 	m, err := Load(root)
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	// Assert
 	if m.File() != "GNUmakefile" {
 		t.Errorf("File = %q, want GNUmakefile", m.File())
 	}
@@ -114,13 +124,20 @@ func TestDiscoveryOrderAndIncludes(t *testing.T) {
 }
 
 func TestMissingMakefile(t *testing.T) {
-	_, err := Load(write(t, map[string]string{"README.md": "x"}))
+	// Arrange
+	root := write(t, map[string]string{"README.md": "x"})
+
+	// Act
+	_, err := Load(root)
+
+	// Assert
 	if err == nil || !strings.Contains(err.Error(), "no Makefile found") {
 		t.Errorf("err = %v, want no Makefile found", err)
 	}
 }
 
 func TestNames(t *testing.T) {
+	// Arrange
 	words := func(s string) []domain.Word {
 		var out []domain.Word
 		for _, f := range strings.Fields(s) {
@@ -151,8 +168,12 @@ func TestNames(t *testing.T) {
 	}
 	m := &Makefile{}
 	for _, tt := range tests {
+		// Act
+		names := m.Names(words(tt.args))
+
+		// Assert
 		var got []string
-		for _, w := range m.Names(words(tt.args)) {
+		for _, w := range names {
 			got = append(got, w.Text)
 		}
 		if diff := cmp.Diff(tt.want, got); diff != "" {

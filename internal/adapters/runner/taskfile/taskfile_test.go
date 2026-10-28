@@ -34,6 +34,7 @@ func writeTree(t *testing.T, files map[string]string) string {
 }
 
 func TestLoadThreeLevelsAndCycle(t *testing.T) {
+	// Arrange
 	root := writeTree(t, map[string]string{
 		"Taskfile.yml": `version: "3"
 includes:
@@ -62,16 +63,20 @@ tasks:
       - pnpm build
 `,
 	})
-	tf, err := Load(root, "")
-	if err != nil {
-		t.Fatal(err)
-	}
 	want := []string{
 		"build",
 		"web:lint",
 		"web:frontend", "web:frontend:b", "web:frontend:build", "web:frontend:default",
 		"web:ui", "web:ui:b", "web:ui:build", "web:ui:default",
 	}
+
+	// Act
+	tf, err := Load(root, "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
 	if diff := cmp.Diff(sorted(want), tf.Tasks()); diff != "" {
 		t.Errorf("Tasks (-want +got):\n%s", diff)
 	}
@@ -89,6 +94,7 @@ tasks:
 }
 
 func TestLoadIncludeOptions(t *testing.T) {
+	// Arrange
 	root := writeTree(t, map[string]string{
 		"Taskfile.yml": `version: '3'
 includes:
@@ -119,14 +125,18 @@ tasks:
 		"tools.yml":  "tasks:\n  fmt: gofmt -w .\n",
 		"shared.yml": "version: 3\ntasks:\n  lint: golangci-lint run\n",
 	})
+	internal := map[string]bool{"setup": true, "tools:fmt": true}
+
+	// Act
 	tf, err := Load(root, "Taskfile.yml")
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	// Assert
 	if diff := cmp.Diff([]string{"ci", "lint", "list-form", "setup", "tools:fmt"}, tf.Tasks()); diff != "" {
 		t.Errorf("Tasks (-want +got):\n%s", diff)
 	}
-	internal := map[string]bool{"setup": true, "tools:fmt": true}
 	for _, name := range tf.Tasks() {
 		if tf.IsInternal(name) != internal[name] {
 			t.Errorf("IsInternal(%q) = %v", name, tf.IsInternal(name))
@@ -141,6 +151,7 @@ tasks:
 }
 
 func TestLoadErrors(t *testing.T) {
+	// Arrange
 	tests := []struct {
 		name  string
 		files map[string]string
@@ -157,7 +168,13 @@ func TestLoadErrors(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			_, err := Load(writeTree(t, tt.files), "")
+			// Arrange
+			root := writeTree(t, tt.files)
+
+			// Act
+			_, err := Load(root, "")
+
+			// Assert
 			if err == nil || !strings.Contains(err.Error(), tt.want) {
 				t.Errorf("Load error = %v, want it to contain %q", err, tt.want)
 			}
@@ -166,14 +183,19 @@ func TestLoadErrors(t *testing.T) {
 }
 
 func TestDiscoverOrder(t *testing.T) {
+	// Arrange
 	root := writeTree(t, map[string]string{
 		"Taskfile.dist.yml": "tasks:\n  dist: x\n",
 		"taskfile.yaml":     "tasks:\n  lower: x\n",
 	})
+
+	// Act
 	tf, err := Load(root, "")
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	// Assert
 	if tf.File() != "taskfile.yaml" {
 		t.Errorf("File = %q, want taskfile.yaml before the .dist variants", tf.File())
 	}

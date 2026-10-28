@@ -50,6 +50,7 @@ func summary(r domain.Extraction) []string {
 }
 
 func TestExtract(t *testing.T) {
+	// Arrange
 	tests := []struct {
 		name, script string
 		want         []string
@@ -112,10 +113,13 @@ func TestExtract(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Act
 			res, err := Extract(tt.script, testOpts)
 			if err != nil {
 				t.Fatal(err)
 			}
+
+			// Assert
 			if diff := cmp.Diff(tt.want, summary(res)); diff != "" {
 				t.Errorf("Extract(%q) (-want +got):\n%s", tt.script, diff)
 			}
@@ -124,6 +128,7 @@ func TestExtract(t *testing.T) {
 }
 
 func TestExtractAllowComments(t *testing.T) {
+	// Arrange
 	tests := []struct {
 		name, script string
 		want         []string
@@ -147,10 +152,13 @@ func TestExtractAllowComments(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Act
 			res, err := Extract(tt.script, testOpts)
 			if err != nil {
 				t.Fatal(err)
 			}
+
+			// Assert
 			if diff := cmp.Diff(tt.want, summary(res)); diff != "" {
 				t.Errorf("Extract(%q) (-want +got):\n%s", tt.script, diff)
 			}
@@ -159,22 +167,28 @@ func TestExtractAllowComments(t *testing.T) {
 }
 
 func TestExtractInvokerArgs(t *testing.T) {
-	res, err := Extract("task --dir web build VERSION=${{ github.sha }}", testOpts)
-	if err != nil {
-		t.Fatal(err)
-	}
+	// Arrange
 	want := []domain.Word{
 		{Text: "--dir", Literal: true, Line: 1, Col: 6},
 		{Text: "web", Literal: true, Line: 1, Col: 12},
 		{Text: "build", Literal: true, Line: 1, Col: 16},
 		{Text: "VERSION=${{ github.sha }}", Line: 1, Col: 22},
 	}
+
+	// Act
+	res, err := Extract("task --dir web build VERSION=${{ github.sha }}", testOpts)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
 	if diff := cmp.Diff(want, res.Commands[0].Args); diff != "" {
 		t.Errorf("Args (-want +got):\n%s", diff)
 	}
 }
 
 func TestExtractParseError(t *testing.T) {
+	// Arrange
 	tests := []struct {
 		name, script string
 		want         domain.ParseError
@@ -184,7 +198,10 @@ func TestExtractParseError(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Act
 			_, err := Extract(tt.script, testOpts)
+
+			// Assert
 			var pe *domain.ParseError
 			if !errors.As(err, &pe) {
 				t.Fatalf("err = %v, want *domain.ParseError", err)

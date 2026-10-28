@@ -15,18 +15,26 @@ import (
 )
 
 func TestParseDefaults(t *testing.T) {
-	for _, src := range []string{"", "# only a comment\n", "runner: taskfile\n", "workflows:\n"} {
+	// Arrange
+	srcs := []string{"", "# only a comment\n", "runner: taskfile\n", "workflows:\n"}
+	want := domain.Default()
+
+	for _, src := range srcs {
+		// Act
 		cfg, err := Parse([]byte(src))
 		if err != nil {
 			t.Fatalf("Parse(%q): %v", src, err)
 		}
-		if diff := cmp.Diff(domain.Default(), cfg); diff != "" {
+
+		// Assert
+		if diff := cmp.Diff(want, cfg); diff != "" {
 			t.Errorf("Parse(%q) differs from defaults (-want +got):\n%s", src, diff)
 		}
 	}
 }
 
 func TestParseOverrides(t *testing.T) {
+	// Arrange
 	src := `
 workflows: [".github/workflows/*.yml"]
 invokers:
@@ -38,10 +46,6 @@ allow:
     reason: images publish from CI only
     workflows: [".github/workflows/release.yml"]
 `
-	cfg, err := Parse([]byte(src))
-	if err != nil {
-		t.Fatal(err)
-	}
 	want := domain.Default()
 	want.Workflows = []string{".github/workflows/*.yml"}
 	want.Invokers.Shell = []string{"task"}
@@ -51,12 +55,21 @@ allow:
 		Reason:    "images publish from CI only",
 		Workflows: []string{".github/workflows/release.yml"},
 	}}
+
+	// Act
+	cfg, err := Parse([]byte(src))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
 	if diff := cmp.Diff(want, cfg); diff != "" {
 		t.Errorf("Parse mismatch (-want +got):\n%s", diff)
 	}
 }
 
 func TestParseErrors(t *testing.T) {
+	// Arrange
 	tests := []struct {
 		name, src, want string
 	}{
@@ -77,7 +90,10 @@ func TestParseErrors(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Act
 			_, err := Parse([]byte(tt.src))
+
+			// Assert
 			if err == nil || !strings.Contains(err.Error(), tt.want) {
 				t.Errorf("Parse error = %v, want it to contain %q", err, tt.want)
 			}
@@ -85,19 +101,43 @@ func TestParseErrors(t *testing.T) {
 	}
 }
 
-func TestLoad(t *testing.T) {
+func TestLoadMissingOptionalConfigReturnsDefaults(t *testing.T) {
+	// Arrange
 	root := t.TempDir()
+
+	// Act
 	cfg, err := Load(root, DefaultPath, false)
+
+	// Assert
 	if err != nil || cfg.Runner != "taskfile" {
 		t.Fatalf("Load missing optional config = %v, %v; want defaults", cfg, err)
 	}
-	if _, err := Load(root, "custom.yml", true); err == nil {
+}
+
+func TestLoadMissingRequiredConfigFails(t *testing.T) {
+	// Arrange
+	root := t.TempDir()
+
+	// Act
+	_, err := Load(root, "custom.yml", true)
+
+	// Assert
+	if err == nil {
 		t.Error("Load missing required config: want error")
 	}
+}
+
+func TestLoadRejectsUnknownKey(t *testing.T) {
+	// Arrange
+	root := t.TempDir()
 	if err := os.WriteFile(filepath.Join(root, DefaultPath), []byte("bogus: 1\n"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	_, err = Load(root, DefaultPath, false)
+
+	// Act
+	_, err := Load(root, DefaultPath, false)
+
+	// Assert
 	if err == nil || !strings.Contains(err.Error(), `config .ci-parity.yml: line 1: unknown key "bogus"`) {
 		t.Errorf("Load error = %v", err)
 	}

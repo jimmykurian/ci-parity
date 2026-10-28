@@ -13,6 +13,7 @@ import (
 )
 
 func TestTaskNames(t *testing.T) {
+	// Arrange
 	tests := []struct {
 		args string
 		want []string
@@ -35,20 +36,35 @@ func TestTaskNames(t *testing.T) {
 		{"-g setup", nil},
 	}
 	for _, tt := range tests {
+		// Arrange
 		var args []domain.Word
 		for _, f := range strings.Fields(tt.args) {
 			args = append(args, domain.Word{Text: f, Literal: true})
 		}
+
+		// Act
+		names := (&Taskfile{}).Names(args)
+
+		// Assert
 		var got []string
-		for _, w := range (&Taskfile{}).Names(args) {
+		for _, w := range names {
 			got = append(got, w.Text)
 		}
 		if diff := cmp.Diff(tt.want, got); diff != "" {
 			t.Errorf("(&Taskfile{}).Names(%q) (-want +got):\n%s", tt.args, diff)
 		}
 	}
+}
+
+func TestTaskNamesSkipsNonLiteral(t *testing.T) {
+	// Arrange
 	dynamic := []domain.Word{{Text: "${{ inputs.target }}"}, {Text: "build", Literal: true}}
-	if got := (&Taskfile{}).Names(dynamic); len(got) != 1 || got[0].Text != "build" {
+
+	// Act
+	got := (&Taskfile{}).Names(dynamic)
+
+	// Assert
+	if len(got) != 1 || got[0].Text != "build" {
 		t.Errorf("non-literal names are skipped, got %v", got)
 	}
 }

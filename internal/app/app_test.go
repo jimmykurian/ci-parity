@@ -117,6 +117,7 @@ func severities(findings []domain.Finding) []string {
 }
 
 func TestCheck(t *testing.T) {
+	// Arrange
 	tolerant := &domain.Baseline{Workflows: map[string]int{"a.yml": 2, "b.yml": 1}}
 	tests := []struct {
 		name     string
@@ -144,12 +145,17 @@ func TestCheck(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Arrange
 			a, _ := newTestApp(tt.baseline)
 			rep := &fakeReporter{}
+
+			// Act
 			res, err := a.Check(context.Background(), CheckOptions{Strict: tt.strict, Reporter: rep})
 			if err != nil {
 				t.Fatal(err)
 			}
+
+			// Assert
 			if diff := cmp.Diff(tt.want, severities(res.Findings)); diff != "" {
 				t.Errorf("findings (-want +got):\n%s", diff)
 			}
@@ -164,6 +170,7 @@ func TestCheck(t *testing.T) {
 }
 
 func TestWriteBaseline(t *testing.T) {
+	// Arrange
 	lower := &domain.Baseline{Workflows: map[string]int{"a.yml": 1, "b.yml": 1}}
 	tests := []struct {
 		name     string
@@ -175,10 +182,16 @@ func TestWriteBaseline(t *testing.T) {
 		{"refuses a raised count", lower, false, []domain.Row{{File: "a.yml", Baseline: 1, Current: 2}}},
 		{"allow-regression writes", lower, true, nil},
 	}
+	want := BaselineResult{Path: ".ci-parity-baseline.json", Workflows: 2, Findings: 3}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Arrange
 			a, store := newTestApp(tt.baseline)
+
+			// Act
 			res, err := a.WriteBaseline(context.Background(), BaselineOptions{AllowRegression: tt.allow})
+
+			// Assert
 			var regs *RegressionError
 			if tt.wantRegs != nil {
 				if !errors.As(err, &regs) {
@@ -195,7 +208,6 @@ func TestWriteBaseline(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			want := BaselineResult{Path: ".ci-parity-baseline.json", Workflows: 2, Findings: 3}
 			if diff := cmp.Diff(want, res); diff != "" {
 				t.Errorf("result (-want +got):\n%s", diff)
 			}

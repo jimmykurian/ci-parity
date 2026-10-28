@@ -15,6 +15,7 @@ func p001(file string, line int, sev Severity) Finding {
 }
 
 func TestApply(t *testing.T) {
+	// Arrange
 	b := &Baseline{Workflows: map[string]int{"a.yml": 2, "b.yml": 0, "d.yml": 4}}
 	findings := []Finding{
 		p001("a.yml", 3, SeverityAllowed),
@@ -24,21 +25,24 @@ func TestApply(t *testing.T) {
 		p001("c.yml", 2, SeverityError),
 		{Rule: Unsupported, Severity: SeverityWarning, File: "a.yml", Line: 4},
 	}
-	got, rows := Apply(b, []string{"a.yml", "b.yml", "c.yml", "d.yml"}, findings)
-
-	var sev []string
-	for _, f := range got {
-		sev = append(sev, f.File+":"+f.Rule+":"+string(f.Severity))
-	}
 	want := []string{
 		"a.yml:P004:error", "a.yml:P001:allowed", "a.yml:P005:warning",
 		"a.yml:P001:tolerated", "a.yml:P001:tolerated", "a.yml:P001:error",
 		"c.yml:P004:error", "c.yml:P001:error",
 	}
+	wantRows := []Row{{"a.yml", 2, 3}, {"b.yml", 0, 0}, {"c.yml", 0, 1}, {"d.yml", 4, 0}}
+
+	// Act
+	got, rows := Apply(b, []string{"a.yml", "b.yml", "c.yml", "d.yml"}, findings)
+
+	// Assert
+	var sev []string
+	for _, f := range got {
+		sev = append(sev, f.File+":"+f.Rule+":"+string(f.Severity))
+	}
 	if diff := cmp.Diff(want, sev); diff != "" {
 		t.Errorf("severities (-want +got):\n%s", diff)
 	}
-	wantRows := []Row{{"a.yml", 2, 3}, {"b.yml", 0, 0}, {"c.yml", 0, 1}, {"d.yml", 4, 0}}
 	if diff := cmp.Diff(wantRows, rows); diff != "" {
 		t.Errorf("rows (-want +got):\n%s", diff)
 	}
@@ -48,9 +52,14 @@ func TestApply(t *testing.T) {
 }
 
 func TestRegressions(t *testing.T) {
+	// Arrange
 	old := &Baseline{Workflows: map[string]int{"a.yml": 2, "b.yml": 1}}
-	got := Regressions(old, map[string]int{"a.yml": 3, "b.yml": 0, "new.yml": 1})
 	want := []Row{{"a.yml", 2, 3}, {"new.yml", 0, 1}}
+
+	// Act
+	got := Regressions(old, map[string]int{"a.yml": 3, "b.yml": 0, "new.yml": 1})
+
+	// Assert
 	if diff := cmp.Diff(want, got); diff != "" {
 		t.Errorf("Regressions (-want +got):\n%s", diff)
 	}

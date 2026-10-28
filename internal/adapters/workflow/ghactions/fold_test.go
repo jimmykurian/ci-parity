@@ -23,6 +23,7 @@ func runScript(t *testing.T, src string) *domain.Script {
 }
 
 func TestScriptPosition(t *testing.T) {
+	// Arrange
 	tests := []struct {
 		name, src           string
 		line, col           int // position inside the script
@@ -40,11 +41,16 @@ func TestScriptPosition(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			// Arrange
 			s := runScript(t, tt.src)
+
+			// Act
+			line, col := s.Position(tt.line, tt.col)
+
+			// Assert
 			if got := s.Segments != nil; got != tt.wantFoldedPositions {
 				t.Errorf("folded mapping used = %v, want %v (text %q)", got, tt.wantFoldedPositions, s.Text)
 			}
-			line, col := s.Position(tt.line, tt.col)
 			if line != tt.wantLine || col != tt.wantCol {
 				t.Errorf("Position(%d, %d) = %d:%d, want %d:%d", tt.line, tt.col, line, col, tt.wantLine, tt.wantCol)
 			}
@@ -53,8 +59,14 @@ func TestScriptPosition(t *testing.T) {
 }
 
 func TestFoldedBlockMismatchFallsBack(t *testing.T) {
+	// Arrange
 	src := []string{"run: >", "  echo a", "  echo b"}
-	if segs := foldedBlock(src, 1, 2, "something else"); segs != nil {
+
+	// Act
+	segs := foldedBlock(src, 1, 2, "something else")
+
+	// Assert
+	if segs != nil {
 		t.Errorf("foldedBlock with a mismatched value = %v, want nil", segs)
 	}
 }
