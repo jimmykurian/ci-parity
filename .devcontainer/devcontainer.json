@@ -15,13 +15,19 @@
   "postCreateCommand": ".devcontainer/post-create.sh",
   "customizations": {
     "vscode": {
+      // The same list as .vscode/extensions.json.
       "extensions": [
         "golang.go",
         "task.vscode-task",
         "hverlin.mise-vscode",
         "redhat.vscode-yaml",
+        "tamasfe.even-better-toml",
         "github.vscode-github-actions",
         "github.vscode-pull-request-github",
+        "davidanson.vscode-markdownlint",
+        "bierner.markdown-mermaid",
+        "timonwong.shellcheck",
+        "tekumara.typos-vscode",
         "editorconfig.editorconfig"
       ]
     }

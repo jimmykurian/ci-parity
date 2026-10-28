@@ -1,0 +1,19 @@
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+{
+  // The devcontainer installs the same list (.devcontainer/devcontainer.json).
+  "recommendations": [
+    "golang.go",
+    "task.vscode-task",
+    "hverlin.mise-vscode",
+    "redhat.vscode-yaml",
+    "tamasfe.even-better-toml",
+    "github.vscode-github-actions",
+    "github.vscode-pull-request-github",
+    "davidanson.vscode-markdownlint",
+    "bierner.markdown-mermaid",
+    "timonwong.shellcheck",
+    "tekumara.typos-vscode",
+    "editorconfig.editorconfig"
+  ]
+}
