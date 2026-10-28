@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ci-parity",
+          "version": "dev",
+          "informationUri": "https://github.com/jimmykurian/ci-parity",
+          "rules": [
+            {
+              "id": "P001",
+              "name": "inline-tool",
+              "shortDescription": {
+                "text": "A run: step calls a listed tool directly instead of through the task runner."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P002",
+              "name": "unknown-task",
+              "shortDescription": {
+                "text": "CI calls a task that the task runner does not define."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P003",
+              "name": "internal-task",
+              "shortDescription": {
+                "text": "CI calls a task the task runner marks internal, private or hidden."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P004",
+              "name": "regression",
+              "shortDescription": {
+                "text": "A workflow has more inline-tool findings than its baseline allows."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P005",
+              "name": "unsupported",
+              "shortDescription": {
+                "text": "A step that ci-parity cannot analyze."
+              },
+              "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Inline build\" in job \"ci\" runs 'go build ./...' directly; already available as 'just build'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 18,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "8ba8f62286c8b4c211ea4e5bbafdf794"
+          }
+        },
+        {
+          "ruleId": "P002",
+          "level": "error",
+          "message": {
+            "text": "'just biuld' is not defined in justfile (closest: build)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 19
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "ad33bdcc1cdecd2d7852e9dfb28d3012"
+          }
+        },
+        {
+          "ruleId": "P003",
+          "level": "error",
+          "message": {
+            "text": "'release' is private and should not be invoked from CI"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 22,
+                  "startColumn": 19
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "29abd6b3cbc2a6e8548b680cb0d72788"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Through make\" in job \"ci\" runs 'make build' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 26,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "05d4196e054b9f05745f9e6f5803e67f"
+          }
+        }
+      ]
+    }
+  ]
+}

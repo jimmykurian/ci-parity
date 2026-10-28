@@ -9,6 +9,9 @@ import (
 // Command is how CI calls a Taskfile task.
 func (t *Taskfile) Command() string { return "task" }
 
+// Internal is how P003 describes an internal task.
+func (t *Taskfile) Internal() string { return "is marked internal: true" }
+
 // valueFlags are task flags that take the next argument as their value (SPEC 5.4).
 var valueFlags = map[string]bool{
 	"-t": true, "--taskfile": true, "-d": true, "--dir": true,

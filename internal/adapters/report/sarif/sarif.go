@@ -32,8 +32,8 @@ var rules = []struct {
 	level           string
 }{
 	{domain.InlineTool, "A run: step calls a listed tool directly instead of through the task runner.", "error"},
-	{domain.UnknownTask, "CI calls a task that the Taskfile does not define.", "error"},
-	{domain.InternalTask, "CI calls a task marked internal: true.", "error"},
+	{domain.UnknownTask, "CI calls a task that the task runner does not define.", "error"},
+	{domain.InternalTask, "CI calls a task the task runner marks internal, private or hidden.", "error"},
 	{domain.Regression, "A workflow has more inline-tool findings than its baseline allows.", "error"},
 	{domain.Unsupported, "A step that ci-parity cannot analyze.", "warning"},
 }
