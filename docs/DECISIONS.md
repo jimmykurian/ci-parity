@@ -6,7 +6,7 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
-### 2026-10-28: Phase 6, unwrapping package runners for suggestions (proposed)
+### 2026-10-28: Phase 6, unwrapping package runners for suggestions (accepted)
 
 Problem: a P001 suggestion needs the inline command to equal a Taskfile command after
 whitespace and the `pnpm run`/`yarn run` rule. So `run: npx eslint .` gets no

@@ -284,6 +284,21 @@ exits 2). Collect:
   tasks and choosing the shortest name. Ties go to the shorter name, then the
   alphabetically first. Only the canonical task name is suggested, not an alias. Treat
   `pnpm run X` as equal to `pnpm X` and `yarn run X` as equal to `yarn X`.
+- P001, from v0.3: both commands are also unwrapped once before comparing. A command
+  that starts with a package runner below drops the runner words and the options after
+  them; options are the arguments starting with `-` before the first other one, `--`
+  ends them, `--flag=value` carries its value, and a listed flag also drops the
+  argument after it. Nothing left means no unwrapping. An inline command and a task
+  command match when they are equal as written or unwrapped, on either side. Only
+  suggestions change.
+
+  | Runner words | Options that take a separate value | Not unwrapped when |
+  | --- | --- | --- |
+  | `npx`, `pnpx`, `pnx`, `bunx` | `-p --package` | `-c` or `--call` is given |
+  | `pnpm exec`, `pnpm dlx` | none | |
+  | `uv run`, `uvx` | `--with --with-editable --with-requirements --python -p --project --directory --extra --group --package --env-file --from --index --default-index` | |
+  | `dotnet tool run` | none | |
+
 - P002: a task name that has the unknown name as a prefix wins, shortest first.
   Otherwise suggest the name with the lowest Levenshtein distance, when that distance is
   at most 3 and less than the length of the unknown name. Internal tasks are never
