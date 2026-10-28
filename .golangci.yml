@@ -39,6 +39,12 @@ linters:
       - path: '(_test\.go$|^internal/testutil/)'
         linters:
           - gosec
+      # The Ginkgo specs under test/ dot-import Ginkgo and Gomega, as both are
+      # written to be read (Describe, It, Expect); unit tests don't use them.
+      - path: '^test/'
+        linters:
+          - revive
+        text: 'dot-imports'
 
 formatters:
   enable:
