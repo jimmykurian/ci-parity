@@ -248,7 +248,7 @@ jobs:
           version: 2026.10.21
           install_args: task
       - id: findings
-        uses: jimmykurian/ci-parity@6cd6042d59e50d62e0e2fd781c2a0b453f244ced # v0.7.0
+        uses: jimmykurian/ci-parity@50771ac0b05d904bc7472efbe8fef68601f7678f # v0.8.0
         with:
           working-directory: testdata/fixtures/inline-tools
           format: text
@@ -259,7 +259,7 @@ jobs:
           TOLERATED: ${{ steps.findings.outputs.tolerated }}
         run: task action:expect -- 8 0 0
       # This repository has no findings, so the downloaded release must pass it.
-      - uses: jimmykurian/ci-parity@6cd6042d59e50d62e0e2fd781c2a0b453f244ced # v0.7.0
+      - uses: jimmykurian/ci-parity@50771ac0b05d904bc7472efbe8fef68601f7678f # v0.8.0
 
   report:
     name: Check table
