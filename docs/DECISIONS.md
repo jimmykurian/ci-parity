@@ -6,6 +6,40 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-28: Phase 6, unwrapping package runners for suggestions (accepted)
+
+Problem: a P001 suggestion needs the inline command to equal a Taskfile command after
+whitespace and the `pnpm run`/`yarn run` rule. So `run: npx eslint .` gets no
+"already available as 'task lint'" when the task runs `eslint .`, and a task that runs
+`uv run pytest` is never suggested for an inline `pytest`. Package runners are how most
+repositories call their tools, so most suggestions are missed.
+
+Change (SPEC 5.6, P001): before comparing, both commands are also unwrapped once. A
+command that starts with a package runner below drops the runner words and the options
+after them, and what remains is compared, still after the `run` rule. An inline command
+and a task command match when they are equal as written or unwrapped, on either side.
+
+| Runner words | Options that take a separate value | Not unwrapped when |
+| --- | --- | --- |
+| `npx`, `pnpx`, `pnx`, `bunx` | `-p --package` | `-c` or `--call` is given |
+| `pnpm exec`, `pnpm dlx` | none | |
+| `uv run`, `uvx` | `--with --with-editable --with-requirements --python -p --project --directory --extra --group --package --env-file --from --index --default-index` | |
+| `dotnet tool run` | none | |
+
+- Options are arguments that start with `-` before the first other argument; `--` ends
+  them; `--flag=value` carries its own value. Nothing left after them means the command
+  is not unwrapped.
+- The backlog named `npx`, `pnpm exec`, `uv run` and `dotnet tool run`. `pnpx`, `pnx`,
+  `bunx`, `pnpm dlx` and `uvx` are added because they are the same runners under other
+  names.
+- Only suggestions change. Detection, the reported `command`, messages, allow matching
+  and baselines are untouched; the `suggestion` field and the message suffix appear
+  where they were missing.
+- Tests: table tests for the unwrapping, and a new `unwrap-suggestions` fixture covering
+  each runner in both directions plus `npx -c`, which keeps no suggestion.
+- Acceptance: `task ci` green, existing goldens unchanged except where a suggestion was
+  missing, and the README's Rules section notes the equivalence. Release v0.3.0.
+
 ### 2026-10-27: promote four backlog items into Phases 5 to 8 (accepted)
 
 Problem: `AGENTS.md` forbids the Phase 5 backlog and `docs/PLAN.md` marks it "do not

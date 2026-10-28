@@ -1,0 +1,18 @@
+version: "3"
+
+tasks:
+  lint:
+    cmds:
+      - eslint .
+  test:
+    cmds:
+      - uv run pytest
+  fmt:
+    cmds:
+      - npx prettier --check .
+  typecheck:
+    cmds:
+      - pnpm exec tsc --noEmit
+  format-cs:
+    cmds:
+      - dotnet tool run dotnet-format

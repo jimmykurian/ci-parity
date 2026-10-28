@@ -1,0 +1,27 @@
+name: ci
+on: [push]
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Lint with npx
+        run: npx eslint .
+      - name: Lint with pnpx
+        run: pnpx eslint .
+      - name: Lint with value flags
+        run: npx --yes -p eslint@9 eslint .
+      - name: Format
+        run: prettier --check .
+      - name: Typecheck
+        run: npx tsc --noEmit
+      - name: Lint through a shell string
+        run: npx -c 'eslint .'
+  api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        run: pytest
+      - name: Test with uvx
+        run: uvx --with pytest-cov pytest
+      - name: Format C#
+        run: dotnet tool run dotnet-format
