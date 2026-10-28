@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  katex@<0.18.2: ^0.18.2
+
 importers:
 
   .:
@@ -858,13 +861,13 @@ packages:
     resolution: {integrity: sha1-Yv3OdgBqaOXBqzMU3JLoAOuD2QY=}
     engines: {node: '>=16'}
 
+  commander@15.0.0:
+    resolution: {integrity: sha1-lvOWHxKtrBeZ7z+9i8YdQFctGxE=}
+    engines: {node: '>=22.12.0'}
+
   commander@7.2.0:
     resolution: {integrity: sha1-o2y1fQtQHOEI5NIFWaFQo5HZerc=}
     engines: {node: '>= 10'}
-
-  commander@8.3.0:
-    resolution: {integrity: sha1-SDfqGy2me5xhamevuw+v7lZ7ymY=}
-    engines: {node: '>= 12'}
 
   common-ancestor-path@2.0.0:
     resolution: {integrity: sha1-8dNhrqkjaq1bkqD/W53xQi3TYP8=}
@@ -1337,8 +1340,9 @@ packages:
   jsonc-parser@3.3.1:
     resolution: {integrity: sha1-8qUktPf9EePXkeVZl3rWC5i3mLQ=}
 
-  katex@0.16.47:
-    resolution: {integrity: sha1-ChOkLC3rT3TmHxYtRAuRZaVIAw8=}
+  katex@0.18.11:
+    resolution: {integrity: sha512-yvyz/2VMKqoho/35Hat5w37wIEdWJ5ElVMidTAlWrxr5uW4aBGsEpveTmKh18/zw08v/7lGswCPon4OhqmqrTA==}
+    deprecated: Accidentally published with breaking changes. Use 0.19.0 instead.
     hasBin: true
 
   khroma@2.1.0:
@@ -2870,9 +2874,9 @@ snapshots:
 
   commander@11.1.0: {}
 
-  commander@7.2.0: {}
+  commander@15.0.0: {}
 
-  commander@8.3.0: {}
+  commander@7.2.0: {}
 
   common-ancestor-path@2.0.0: {}
 
@@ -3405,9 +3409,9 @@ snapshots:
 
   jsonc-parser@3.3.1: {}
 
-  katex@0.16.47:
+  katex@0.18.11:
     dependencies:
-      commander: 8.3.0
+      commander: 15.0.0
 
   khroma@2.1.0: {}
 
@@ -3589,7 +3593,7 @@ snapshots:
       dompurify: 3.4.17
       es-toolkit: 1.52.0
       fastdom: 1.0.12
-      katex: 0.16.47
+      katex: 0.18.11
       khroma: 2.1.0
       marked: 16.4.2
       roughjs: 4.6.6
