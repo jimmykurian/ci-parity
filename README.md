@@ -11,8 +11,7 @@
 > may change commands, config keys and output. Rule IDs, the baseline format and the JSON
 > schema change only with a new `version` in the file.
 
-**Documentation:** <https://jimmykurian.github.io/ci-parity/>: the reference, the
-architecture, and how it's tested and released, with search.
+**Documentation:** <https://jimmykurian.github.io/ci-parity/>
 
 ci-parity checks that GitHub Actions workflows invoke project commands through the
 repository's task runner instead of calling build, test, lint and deploy tools inline.
@@ -48,149 +47,22 @@ Each badge is a check from the last CI run on `main` (`.github/workflows/ci.yml`
 | --- | --- | --- | --- | --- | --- | --- |
 | [![Go](https://img.shields.io/badge/%20-1.27-00ADD8?style=flat-square&logo=go&logoColor=white&labelColor=555)](https://go.dev/) | [![Task](https://img.shields.io/badge/%20-3-29BEB0?style=flat-square&logo=task&logoColor=white&labelColor=555)](https://taskfile.dev/) | [![mise](https://img.shields.io/badge/%20-tool%20versions-00ADD8?style=flat-square&logo=gnometerminal&logoColor=white&labelColor=555)](https://mise.jdx.dev/) | [![golangci-lint](https://img.shields.io/badge/%20-2.15-00ADD8?style=flat-square&logo=go&logoColor=white&labelColor=555)](https://golangci-lint.run/) | [![yaml.v3](https://img.shields.io/badge/%20-3.0-CB171E?style=flat-square&logo=yaml&logoColor=white&labelColor=555)](https://github.com/go-yaml/yaml) | [![mvdan/sh](https://img.shields.io/badge/%20-3.14-4EAA25?style=flat-square&logo=gnubash&logoColor=white&labelColor=555)](https://github.com/mvdan/sh) | [![GitHub Actions](https://img.shields.io/badge/%20-CI%20and%20Action-2088FF?style=flat-square&logo=githubactions&logoColor=white&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions) |
 
-How it differs from nearby tools:
-
-- **actionlint** checks workflow syntax, expression types and shellcheck over `run:`
-  scripts. It has no notion of a task runner.
-- **zizmor** reports security findings. No notion of a task runner.
-- **gha-workflow-linter** validates that `uses:` references resolve to real refs.
-- **bitwarden/workflow-linter** is an org-rule framework whose rules cannot span a
-  workflow and a Taskfile.
-- **task2ci** (archived June 2026) generated workflows from Taskfile annotations and
-  failed CI when the generated file drifted. Generation only; it never linted
-  hand-written workflows and had no baseline.
-
-ci-parity is the enforcement approach: keep hand-written workflows, lint them, ratchet
-the inline count down to zero.
+How it compares with actionlint, zizmor and other workflow linters, and why it lints
+rather than generates workflows: [Why ci-parity](https://jimmykurian.github.io/ci-parity/guides/why/).
 
 ## Install
-
-### GitHub Action
 
 ```yaml
 - uses: actions/checkout@v7
 - uses: jimmykurian/ci-parity@v0
 ```
 
-`@v0` follows the latest v0.x release. To pin, use a release tag (`@v0.1.0`) or, better,
-its full commit SHA with the tag as a comment. The action downloads that release's binary
-for the runner, verifies it against `checksums.txt`, and runs `ci-parity check`.
-
-| Input | Default | Meaning |
-| --- | --- | --- |
-| `version` | the action's ref | Release tag to run. Empty uses the action's own ref when it's an exact `vX.Y.Z` tag, otherwise the latest release. |
-| `binary` | | Path to a prebuilt `ci-parity`; nothing is downloaded. |
-| `config` | `.ci-parity.yml` | Passed to `--config`. |
-| `baseline` | from the config | Passed to `--baseline`. |
-| `format` | `github` | `github` (annotations on the changed lines), `text` or `json` for the log, or `sarif` for a file; see [SARIF output](#sarif-output). |
-| `strict` | `false` | Ignore the baseline. |
-| `working-directory` | `.` | Repository root to check (`-C`). Annotation paths are relative to it, so they line up only when it's the root of the checked-out repository. |
-| `fail-on-error` | `true` | When `false`, the step succeeds and the outputs report the counts. |
-
-| Output | Meaning |
-| --- | --- |
-| `errors` | Number of error findings. |
-| `warnings` | Number of warning findings. |
-| `tolerated` | Number of findings the baseline tolerates. |
-| `sarif-file` | Path of the SARIF log when `format` is `sarif`; empty otherwise. |
-
-### Release binaries
-
-Each [release](https://github.com/jimmykurian/ci-parity/releases) has archives for
-linux, darwin and windows on amd64 and arm64, and a `checksums.txt`:
-
-```sh
-VERSION=0.6.0 # x-release-please-version
-gh release download "v$VERSION" --repo jimmykurian/ci-parity \
-  --pattern "ci-parity_${VERSION}_linux_amd64.tar.gz" --pattern checksums.txt
-sha256sum --ignore-missing -c checksums.txt
-tar -xzf "ci-parity_${VERSION}_linux_amd64.tar.gz"
-./ci-parity version
-```
-
-### go install
-
-```sh
-go install github.com/jimmykurian/ci-parity/cmd/ci-parity@latest
-```
-
-A `go install` build reports its version as `dev`; the release binaries carry the
-version, commit and date.
-
-### mise
-
-[mise](https://mise.jdx.dev/) installs the release archive for your OS and architecture
-from GitHub Releases:
-
-```sh
-mise use github:jimmykurian/ci-parity@0.6.0 # x-release-please-version
-```
-
-Or pin it in `mise.toml` with the repository's other tools:
-
-```toml
-[tools]
-"github:jimmykurian/ci-parity" = "0.6.0" # x-release-please-version
-```
-
-### pre-commit
-
-With [pre-commit](https://pre-commit.com), add the hook to `.pre-commit-config.yaml`:
-
-```yaml
-repos:
-  - repo: https://github.com/jimmykurian/ci-parity
-    rev: v0.6.0 # x-release-please-version
-    hooks:
-      - id: ci-parity
-```
-
-pre-commit builds ci-parity from that tag, installing Go if needed, and runs
-`ci-parity check` on the whole repository when a commit changes a workflow, an action,
-the config, the baseline or the runner's files. If your config reads files from other
-paths, add `always_run: true` under `id: ci-parity`.
-
-With [lefthook](https://lefthook.dev) and ci-parity installed (through mise, say), add a
-command to `lefthook.yml`:
-
-```yaml
-pre-commit:
-  commands:
-    ci-parity:
-      run: ci-parity check
-```
+Or as a binary, with `go install`, mise, or a pre-commit hook:
+[Getting started](https://jimmykurian.github.io/ci-parity/guides/getting-started/).
 
 ## Quick start
 
-A workflow that calls pnpm directly, next to a Taskfile that already wraps those commands:
-
-```yaml
-# .github/workflows/ci.yml
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-      - name: Install
-        run: pnpm install --frozen-lockfile
-      - name: Test
-        run: pnpm test
-      - name: Lint
-        run: task lint
-```
-
-```yaml
-# Taskfile.yml
-version: "3"
-
-tasks:
-  install:
-    cmds:
-      - pnpm install --frozen-lockfile
-  test:
-    cmds:
-      - pnpm test
-```
+On a workflow that calls tools directly, next to a Taskfile that already wraps them:
 
 ```text
 $ ci-parity check
@@ -202,299 +74,21 @@ $ ci-parity check
 3 errors, 0 warnings, 0 tolerated, 0 allowed
 ```
 
-After calling the tasks instead (and installing task in a `uses:` step), it's clean:
+`ci-parity fix` rewrites the steps it safely can, and `ci-parity baseline` lets an
+existing repository adopt it one workflow at a time.
 
-```yaml
-    steps:
-      - uses: actions/checkout@v7
-      - uses: go-task/setup-task@v2
-      - name: Install
-        run: task install
-      - name: Test
-        run: task test
-```
+## Documentation
 
-```text
-$ ci-parity check
-0 errors, 0 warnings, 0 tolerated, 0 allowed
-```
+The full documentation is at **<https://jimmykurian.github.io/ci-parity/>**, with search. It's built from
+[`docs/`](docs/README.md), so every page also reads here on GitHub.
 
-For a repository with many inline steps, start from a [baseline](#baseline) instead of
-fixing everything at once:
-
-```sh
-ci-parity baseline     # records today's counts in .ci-parity-baseline.json; commit it
-```
-
-## Configuration
-
-`.ci-parity.yml` at the repository root is optional, and every key is optional. These are
-the defaults:
-
-```yaml
-runner: taskfile                  # or make, just or mise; see Other runners
-taskfile: ""                      # empty: Taskfile.yml, taskfile.yml, Taskfile.yaml,
-                                  # taskfile.yaml, then the .dist variants
-workflows:
-  - .github/workflows/*.yml
-  - .github/workflows/*.yaml
-  - .github/actions/**/action.yml
-  - .github/actions/**/action.yaml
-invokers:
-  shell: [task, go-task, "go tool task"]
-  actions:
-    - uses: ./.github/actions/run-task
-      input: task
-tools:
-  extend: []                      # added to the built-in list
-  remove: []                      # removed from the built-in list
-  replace: []                     # non-empty replaces the built-in list
-transparent: [sudo, env, time, nice, ionice, timeout, nohup, xvfb-run, chronic]
-allow: []
-baseline: .ci-parity-baseline.json
-```
-
-- **Tools** are matched on the command's basename, so `./node_modules/.bin/eslint` and
-  `./gradlew` count. The built-in list covers node (`npm npx pnpm pnpx pnx yarn bun bunx
-  node deno`), python (`python python3 pip pip3 pipx uv uvx poetry pytest ruff mypy tox
-  nox`), `dotnet`, go (`go golangci-lint`), `cargo`, jvm (`mvn mvnw gradle gradlew`),
-  infrastructure (`terraform tofu docker docker-compose kubectl helm az aws gcloud
-  pulumi`), quality tools (`eslint prettier biome vitest jest playwright cypress k6
-  shellcheck actionlint`) and other task runners (`make just mise cargo-make`, plus `task`
-  and `go-task` when the runner isn't Taskfile). The configured runner is never on the
-  list. Anything else is ignored.
-- **Transparent** wrappers are looked through: `sudo -E env CI=1 pnpm test` is `pnpm test`.
-- **Invokers** are how CI calls the task runner: shell commands, or a local action whose
-  input names the task.
-- **Workflow globs** match repository-relative paths: `*` and `?` stay within one path
-  segment, and a whole `**` segment matches any number of them.
-
-### Other runners
-
-With `runner: make`, ci-parity reads the `GNUmakefile`, `makefile` or `Makefile` in the
-repository root instead of a Taskfile, with its `include`s. CI calls targets with `make`
-or `gmake`, messages and suggestions say `make <target>`, and `task` counts as an inline
-tool. A call with `-f` or `-C` points at another makefile and isn't checked, and plain
-`make` (the default goal) isn't either. `.PHONY`, pattern rules and variables aren't
-targets.
-
-With `runner: just`, ci-parity reads the `justfile` (or `Justfile`, `.justfile`) with its
-`import`s and `mod`ules. The words after a recipe are its arguments, as many as its
-parameters take, so `just deploy staging` checks only `deploy`; module recipes are named
-`db::migrate`, called as `just db migrate` or `just db::migrate`. A `[private]` recipe, or
-one whose name starts with `_`, is reported as P003. `--list`, `--show` and other
-subcommands, and calls with `-f` or `-d`, aren't checked.
-
-With `runner: mise`, ci-parity reads the tasks in `mise.toml` (and the other mise config
-files: `.mise.toml`, `mise/config.toml`, `.mise/config.toml`, `.config/mise.toml`,
-`.config/mise/config.toml`), their `task_config.includes`, and executable file tasks in
-`mise-tasks/` and the other task directories, where `db/migrate` is `db:migrate`. CI
-calls tasks with `mise run`, `mise r` or `mise tasks run`; the words after a task are its
-arguments, and `:::` starts another task. A task with `hide = true` is reported as P003.
-Calls with `-C` and task names with globs (`lint:*`) aren't checked.
-
-An unknown key, a wrong type, an `allow` entry without a `reason`, or `replace` combined
-with `extend` or `remove` is an error that names the key (exit 2).
-
-### Allowing a step
-
-Some inline commands are deliberate. Allow one with a comment on the same line or the
-line above, with a reason:
-
-```yaml
-      - run: docker push ghcr.io/acme/widget-service:dev # ci-parity: allow images publish only from CI
-```
-
-Or allow a command pattern in the config, optionally for some workflows only:
-
-```yaml
-allow:
-  - match: "docker push *"           # matched against the whole command
-    reason: images publish only from CI
-    workflows: [.github/workflows/release.yml]
-```
-
-Allowed findings don't fail the check; `--verbose` lists them with their reason.
-
-## Rules
-
-| ID | Name | Severity | Reported when |
-| --- | --- | --- | --- |
-| P001 | inline-tool | error, tolerated or allowed | A `run:` step calls a listed tool directly. |
-| P002 | unknown-task | error | CI calls a task the Taskfile doesn't define. |
-| P003 | internal-task | error | CI calls a task marked `internal: true`. |
-| P004 | regression | error | A workflow has more inline-tool findings than its baseline allows, or any while locked at 0. |
-| P005 | unsupported | warning | A step ci-parity can't analyze: a shell other than bash or sh, a script that doesn't parse, a dynamic command name, or an allow comment without a reason. |
-
-A P001 suggestion appears when a task runs the same command. Package runners are looked
-through on both sides: `npx eslint .` suggests a task that runs `eslint .`, and an inline
-`pytest` suggests a task that runs `uv run pytest`. The runners are `npx`, `pnpx`, `pnx`,
-`bunx`, `pnpm exec`, `pnpm dlx`, `uv run`, `uvx` and `dotnet tool run`; `pnpm run X` and
-`yarn run X` also match `pnpm X` and `yarn X`.
-
-The messages are stable, so you can search for them:
-
-- P001: `step "Test" in job "test" runs 'pnpm test' directly; already available as 'task test'`
-- P002: `'task lint' is not defined in Taskfile.yml (closest: test)`
-- P003: `'deploy:prod' is marked internal: true and should not be invoked from CI` (with
-  just, `is private`; with mise, `is hidden`)
-- P004: `.github/workflows/ci.yml has 3 inline-tool findings, baseline allows 2`
-- P005: `step uses shell 'pwsh'; not analyzed`
-
-Exit codes: `0` when there are no errors, `1` when there are (or `baseline` refused to
-raise a count), `2` for a usage or config error, YAML that doesn't parse, or a missing
-Taskfile.
-
-## Fixing findings
-
-`ci-parity fix` rewrites inline steps to the task that already runs the same command.
-On a workflow with `run: pnpm install --frozen-lockfile`, `run: sudo pnpm lint`,
-`run: "pnpm test"` and `run: pnpm build && pnpm test`:
-
-```text
-$ ci-parity fix
-.github/workflows/ci.yml:9:14 'pnpm install --frozen-lockfile' -> 'task install'
-.github/workflows/ci.yml:11:19 'pnpm lint' -> 'task lint'
-.github/workflows/ci.yml:13:15 'pnpm test' -> 'task test'
-fixed 3 steps in 1 file; 2 inline-tool findings need a manual change
-```
-
-It only changes a step when that can't change what the step does. The `run:` value must
-be on one line: plain, quoted (`"pnpm test"`), or a `run: |` block with one line. Before
-the command there may only be wrappers such as `sudo`, `env`, `timeout` and their
-options, or variables like `CI=1`; those stay, so `sudo pnpm lint` becomes
-`sudo task lint` and `"pnpm test"` becomes `"task test"`. Only the command is replaced, so
-comments and the rest of the file stay as they were. Steps with `&&`, pipes, redirects,
-several lines, or `${{ }}` are left alone and counted as needing a manual change.
-`--dry-run` shows the changes without writing them. With a baseline, run
-`ci-parity baseline` afterwards to lock in the lower counts.
-
-## Baseline
-
-The baseline lets an existing repo adopt ci-parity one workflow at a time. It records,
-per workflow, how many inline-tool (P001) findings are tolerated; counts can only go down.
-
-```sh
-ci-parity baseline            # write .ci-parity-baseline.json from the current findings
-ci-parity check               # tolerate up to each count; any rise fails with P004
-```
-
-A workflow at 0, or missing from the baseline, is locked: any inline tool fails. When a
-count drops, `check` prints a ratchet table; run `ci-parity baseline` again to lock in
-the lower count. `baseline` refuses to raise a count unless given `--allow-regression`.
-`check --strict` ignores the baseline.
-
-The baseline is a count, not a list: in a workflow with a count of N, the first N
-inline-tool findings in file order are tolerated. Adding an inline step above existing
-ones moves which findings are tolerated, so the error is reported on an older step; the
-P004 count is what's new.
-
-## JSON output
-
-`ci-parity check --format json` prints one document. Its shape only changes with a new
-`version`.
-
-```json
-{
-  "version": 1,
-  "summary": { "errors": 1, "warnings": 0, "tolerated": 2, "allowed": 0 },
-  "findings": [
-    {
-      "rule": "P001",
-      "name": "inline-tool",
-      "severity": "error",
-      "file": ".github/workflows/ci.yml",
-      "line": 10,
-      "col": 14,
-      "job": "web",
-      "action": null,
-      "step": "Test",
-      "command": "pnpm test",
-      "message": "step \"Test\" in job \"web\" runs 'pnpm test' directly; already available as 'task test'",
-      "suggestion": "task test",
-      "reason": null
-    }
-  ],
-  "ratchet": {
-    ".github/workflows/ci.yml": { "baseline": 2, "current": 3, "locked": false }
-  }
-}
-```
-
-| Field | Type | Meaning |
-|-------|------|---------|
-| `version` | number | Schema version, currently `1`. |
-| `summary` | object | Finding counts by severity. |
-| `findings[].rule`, `.name` | string | Rule ID (`P001`..`P005`) and name. |
-| `findings[].severity` | string | `error`, `warning`, `tolerated` or `allowed`. JSON includes all four. |
-| `findings[].file`, `.line`, `.col` | string, number | Repo-relative path with forward slashes; 1-based position. |
-| `findings[].job` | string or null | Job ID; null for composite actions and P004. |
-| `findings[].action` | string or null | Action path for findings in a composite action. |
-| `findings[].step` | string or null | The step's `name:`; null when the step has none. |
-| `findings[].command` | string or null | The normalized inline command, for P001. |
-| `findings[].message` | string | The same text the other formats print. |
-| `findings[].suggestion` | string or null | A `task <name>` to use instead, for P001 and P002. |
-| `findings[].reason` | string or null | The allow reason, for allowed findings. |
-| `ratchet` | object or null | Per scanned file: baseline count, current count, and whether it is locked at 0. Null when no baseline applies (no file, or `--strict`). |
-
-Findings are sorted by file, line, column and rule ID.
-
-## SARIF output
-
-`ci-parity check --format sarif` prints a [SARIF 2.1.0](https://docs.oasis-open.org/sarif/sarif/v2.1.0/)
-log, so the findings can appear in GitHub code scanning (the Security tab) alongside the
-annotations. Errors are `error`, warnings `warning` and tolerated findings `note`; an
-allowed finding is included with its reason as an in-source suppression, so code scanning
-shows it as dismissed. Each result carries a fingerprint built from the rule, file, job,
-step and command, so moving lines doesn't open a new alert.
-
-With the action:
-
-```yaml
-jobs:
-  ci-parity:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-    steps:
-      - uses: actions/checkout@v7
-      - uses: jimmykurian/ci-parity@v0
-        id: parity
-        with:
-          format: sarif
-          fail-on-error: false
-      - uses: github/codeql-action/upload-sarif@v4
-        with:
-          sarif_file: ${{ steps.parity.outputs.sarif-file }}
-          category: ci-parity
-```
-
-Code scanning is free for public repositories; private ones need GitHub Advanced
-Security. With `fail-on-error: false` the job succeeds and code scanning reports the
-findings; leave it `true` to also fail the job.
-
-## FAQ
-
-**Why not actionlint or zizmor?** Use them too. actionlint checks workflow syntax and
-runs shellcheck on scripts, and zizmor finds security problems; neither knows about your
-task runner. ci-parity checks that CI and local runs use the same commands. This
-repository runs all three.
-
-**What about task2ci?** It generated workflows from Taskfile annotations, and it's
-archived. ci-parity keeps hand-written workflows and checks them instead, with a baseline
-so an existing repository can adopt it gradually.
-
-**What about Make, just or mise?** All three are supported with `runner: make`,
-`runner: just` and `runner: mise`; see [Other runners](#other-runners). In a repository
-using one runner, the others count as inline tools, because they bypass it.
-
-**How do I allow a step?** With a `# ci-parity: allow <reason>` comment, or an `allow`
-entry in `.ci-parity.yml`; see [Allowing a step](#allowing-a-step). To stop flagging a tool
-everywhere, add it to `tools.remove`.
-
-**Are PowerShell or cmd steps checked?** No. They're reported as P005 warnings and
-skipped, as are steps in any shell other than bash and sh.
+| | |
+| --- | --- |
+| [Guides](https://jimmykurian.github.io/ci-parity/guides/) | [Getting started](https://jimmykurian.github.io/ci-parity/guides/getting-started/), [configuring](https://jimmykurian.github.io/ci-parity/guides/configuring/), [adopting with a baseline](https://jimmykurian.github.io/ci-parity/guides/baseline/), [fixing findings](https://jimmykurian.github.io/ci-parity/guides/fixing/), [CI setup](https://jimmykurian.github.io/ci-parity/guides/ci/), [recipes](https://jimmykurian.github.io/ci-parity/guides/recipes/) and the [FAQ](https://jimmykurian.github.io/ci-parity/guides/faq/) |
+| [Rules](https://jimmykurian.github.io/ci-parity/rules/) | [P001](https://jimmykurian.github.io/ci-parity/rules/p001/) to [P005](https://jimmykurian.github.io/ci-parity/rules/p005/): what each catches, an example, and how to fix or allow it |
+| [Reference](https://jimmykurian.github.io/ci-parity/reference/) | Configuration, the baseline, the CLI and exit codes, the output formats and the GitHub Action |
+| [Architecture](https://jimmykurian.github.io/ci-parity/architecture/) | Packages and ports, flows, and design decisions |
+| [Changelog](https://jimmykurian.github.io/ci-parity/changelog/) | Every release |
 
 ## Architecture
 

@@ -7,5 +7,5 @@ contact_links:
     url: https://github.com/jimmykurian/ci-parity/blob/main/SECURITY.md
     about: Please don't open an issue for a vulnerability; follow the security policy.
   - name: Usage and configuration
-    url: https://github.com/jimmykurian/ci-parity#readme
-    about: The README covers install, configuration, the rules and the baseline.
+    url: https://jimmykurian.github.io/ci-parity/guides/
+    about: The guides cover install, configuration, the baseline and fixing findings, and the FAQ.

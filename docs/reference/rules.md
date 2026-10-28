@@ -4,6 +4,10 @@
 
 Rules P001 to P005: when each fires, its severity, its exact message, and how suggestions are chosen.
 
+Each rule also has a page with an example and how to fix or allow it:
+[P001](../rules/p001.md), [P002](../rules/p002.md), [P003](../rules/p003.md),
+[P004](../rules/p004.md) and [P005](../rules/p005.md).
+
 ## The rules
 
 | ID   | Name             | Severity                         | Trigger |

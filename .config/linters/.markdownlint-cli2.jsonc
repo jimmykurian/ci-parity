@@ -14,6 +14,8 @@
     // The README's logo heading switches with the reader's color scheme.
     "MD033": { "allowed_elements": ["h1", "picture", "source", "img"] },
     "MD046": { "style": "fenced" },
+    // Makefile recipes must be indented with tabs, so the examples keep them.
+    "MD010": { "ignore_code_languages": ["makefile"] },
     "MD048": { "style": "backtick" },
     // Table pipes needn't line up.
     "MD060": false
