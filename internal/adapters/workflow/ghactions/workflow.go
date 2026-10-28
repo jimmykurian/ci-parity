@@ -90,7 +90,7 @@ func steps(rel, job string, seq *yaml.Node, fallback string, lines []string) []d
 }
 
 func script(n *yaml.Node, lines []string) *domain.Script {
-	s := &domain.Script{Text: n.Value, Line: n.Line, Col: n.Column}
+	s := &domain.Script{Text: n.Value, Value: n.Value, Line: n.Line, Col: n.Column}
 	switch n.Style {
 	case yaml.LiteralStyle:
 		s.Block = true
@@ -105,6 +105,7 @@ func script(n *yaml.Node, lines []string) *domain.Script {
 		s.Col = n.Column + 1
 	default:
 		s.Segments = foldedPlain(lines, n.Line, n.Column, n.Value)
+		s.Plain = s.Segments == nil && !strings.Contains(n.Value, "\n")
 	}
 	// On a single-line value, `run: cmd # ci-parity: allow ...` ends in a YAML
 	// comment, not a shell one; put it back so allow comments work there too.

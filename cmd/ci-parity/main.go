@@ -28,6 +28,7 @@ const usageText = `Usage:
   ci-parity check    [--config PATH] [--baseline PATH] [--format text|github|json|sarif]
                      [--strict] [--verbose] [-C DIR]
   ci-parity baseline [--config PATH] [--baseline PATH] [--allow-regression] [-C DIR]
+  ci-parity fix      [--config PATH] [--dry-run] [-C DIR]
   ci-parity version
 `
 
@@ -47,6 +48,8 @@ func run(args []string, stdout, stderr io.Writer) int {
 		return runCheck(args[1:], stdout, stderr)
 	case "baseline":
 		return runBaseline(args[1:], stdout, stderr)
+	case "fix":
+		return runFix(args[1:], stdout, stderr)
 	case "version":
 		return runVersion(args[1:], stdout, stderr)
 	case "help", "-h", "-help", "--help":

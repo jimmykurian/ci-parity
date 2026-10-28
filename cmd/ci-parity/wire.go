@@ -30,6 +30,7 @@ func newApp(dir string) (*app.App, error) {
 		Tasks:     runner.Loader{Root: dir},
 		Extractor: posix.Extractor{},
 		Baselines: jsonfile.Store{Root: dir},
+		Editor:    ghactions.Source{Root: dir},
 	}, nil
 }
 
