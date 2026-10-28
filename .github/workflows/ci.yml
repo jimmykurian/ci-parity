@@ -184,9 +184,76 @@ jobs:
           category: ci-parity
 
   # Posts (or updates) one comment on the pull request with a table of every check.
+  platforms:
+    name: Tests (${{ matrix.os }})
+    # The Checks job runs every test on Linux; this runs them on the other runner OSes,
+    # where paths, line endings and the built binary differ.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+      - uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d # v5.2.4
+        with:
+          version: 2026.10.21
+          install_args: task
+      - if: ${{ !cancelled() }}
+        run: task test:unit
+      - if: ${{ !cancelled() }}
+        run: task test:integration
+      - if: ${{ !cancelled() }}
+        run: task test:e2e
+      - if: ${{ !cancelled() }}
+        run: task test:perf
+
+  action-download:
+    name: Action download (${{ matrix.os }})
+    # Self-check passes a prebuilt binary; this runs the action as users do, with no binary
+    # input: it resolves the latest release, downloads the archive for the runner,
+    # verifies it against checksums.txt and runs it.
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@6be3c7ed4c21d4f76b208d351d95aac273ebb76d # v5.2.4
+        with:
+          version: 2026.10.21
+          install_args: task
+      - id: findings
+        uses: ./ # zizmor: ignore[self-repository]
+        with:
+          working-directory: testdata/fixtures/inline-tools
+          format: text
+          fail-on-error: "false"
+      - env:
+          ERRORS: ${{ steps.findings.outputs.errors }}
+          WARNINGS: ${{ steps.findings.outputs.warnings }}
+          TOLERATED: ${{ steps.findings.outputs.tolerated }}
+        run: task action:expect -- 8 0 0
+      # This repository has no findings, so the downloaded release must pass it.
+      - uses: ./ # zizmor: ignore[self-repository]
+
   report:
     name: Check table
-    needs: [checks, self-check]
+    needs: [checks, self-check, platforms, action-download]
     if: ${{ always() && github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -241,6 +308,16 @@ jobs:
                 job: 'self-check',
                 rows: [['ci-parity on its own workflows, through the action', '', 'self_check']],
               },
+              {
+                title: 'Other platforms',
+                job: 'platforms',
+                rows: [['Unit, integration, end-to-end and performance tests on macOS and Windows', '', 'job']],
+              },
+              {
+                title: 'Action download',
+                job: 'action-download',
+                rows: [['The action, downloading and verifying the latest release on Linux, macOS and Windows', '', 'job']],
+              },
             ];
 
             const failed = Object.values(needs).some(({ result: r }) => r !== 'success');
@@ -254,8 +331,14 @@ jobs:
               }
               lines.push('| Check | Task | Result |', '|:------|:-----|:-------|');
               for (const [label, task, key] of rows) {
-                const how = task ? `\`task ${task}\`` : key === 'secrets' ? 'gitleaks-action' : '`uses: ./`';
-                lines.push(`| ${label} | ${how} | ${result(outputs[key])} |`);
+                const how = task
+                  ? `\`task ${task}\``
+                  : key === 'secrets'
+                    ? 'gitleaks-action'
+                    : key === 'job' && job === 'platforms'
+                      ? '`task test:*`'
+                      : '`uses: ./`';
+                lines.push(`| ${label} | ${how} | ${result(key === 'job' ? jobResult : outputs[key])} |`);
               }
               lines.push('');
             }
@@ -290,7 +373,7 @@ jobs:
   # git credentials stay on the runner.
   badges:
     name: Badges
-    needs: [checks, self-check]
+    needs: [checks, self-check, platforms, action-download]
     if: ${{ always() && github.ref == 'refs/heads/main' && github.event_name == 'push' }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
@@ -330,6 +413,8 @@ jobs:
               'build/docs-site.json': status(c.site_build),
               'build/build.json': status(c.build),
               'build/self-check.json': status(s.self_check),
+              'build/platforms.json': status(needs.platforms?.result),
+              'build/action-download.json': status(needs['action-download']?.result),
               'security/gitleaks.json': status(c.secrets),
               'security/govulncheck.json': status(c.vuln),
             };

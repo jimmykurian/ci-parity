@@ -30,7 +30,8 @@ tasks:
   test:unit:
     desc: Run the unit tests, which sit next to the code they test
     cmds:
-      - go test $(go list ./... | grep -v /test/)
+      # Package patterns, not a `go list | grep` pipe, so it runs the same on every OS.
+      - go test ./cmd/... ./internal/...
 
   test:integration:
     desc: Run the CLI in-process against every fixture (golden, baseline and fix tests)
@@ -41,6 +42,16 @@ tasks:
     desc: Build the binary and run it as a separate process
     cmds:
       - go test ./test/e2e/...
+
+  test:perf:
+    desc: Check that ci-parity checks 50 workflows in under a second
+    cmds:
+      - go test -count=1 ./test/perf/...
+
+  bench:
+    desc: Benchmark check on 50 workflows
+    cmds:
+      - go test -run '^$' -bench . -benchmem ./test/perf/...
 
   lint:
     desc: Run every linter
