@@ -45,6 +45,10 @@ func (fakeTasks) File() string                    { return "Taskfile.yml" }
 func (fakeTasks) Tasks() []string                 { return nil }
 func (fakeTasks) IsInternal(string) bool          { return false }
 func (fakeTasks) Commands(string) []string        { return nil }
+func (fakeTasks) Command() string                 { return "task" }
+func (fakeTasks) Names(args []domain.Word) []domain.Word {
+	return args
+}
 
 // fakeExtractor reports every script as one inline pnpm call.
 type fakeExtractor struct{}

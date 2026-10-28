@@ -75,7 +75,7 @@ func TestUnwrap(t *testing.T) {
 }
 
 func TestCommandSuggestionUnwraps(t *testing.T) {
-	s := &suggester{byCommand: map[string]string{}}
+	s := &suggester{byCommand: map[string]string{}, invoke: "task"}
 	for name, cmd := range map[string]string{"lint": "eslint .", "test": "uv run pytest", "fmt": "npx prettier --check .", "check": "pnpm run check"} {
 		for _, key := range keys(cmd) {
 			s.byCommand[key] = name

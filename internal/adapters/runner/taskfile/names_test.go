@@ -1,4 +1,4 @@
-package rules
+package taskfile
 
 import (
 	"strings"
@@ -37,15 +37,15 @@ func TestTaskNames(t *testing.T) {
 			args = append(args, domain.Word{Text: f, Literal: true})
 		}
 		var got []string
-		for _, w := range taskNames(args) {
+		for _, w := range (&Taskfile{}).Names(args) {
 			got = append(got, w.Text)
 		}
 		if diff := cmp.Diff(tt.want, got); diff != "" {
-			t.Errorf("taskNames(%q) (-want +got):\n%s", tt.args, diff)
+			t.Errorf("(&Taskfile{}).Names(%q) (-want +got):\n%s", tt.args, diff)
 		}
 	}
 	dynamic := []domain.Word{{Text: "${{ inputs.target }}"}, {Text: "build", Literal: true}}
-	if got := taskNames(dynamic); len(got) != 1 || got[0].Text != "build" {
+	if got := (&Taskfile{}).Names(dynamic); len(got) != 1 || got[0].Text != "build" {
 		t.Errorf("non-literal names are skipped, got %v", got)
 	}
 }
