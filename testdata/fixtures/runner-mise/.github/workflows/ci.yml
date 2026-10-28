@@ -1,0 +1,22 @@
+name: ci
+on: [push]
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and test
+        run: "mise run build ::: test --verbose"
+      - name: Alias
+        run: mise r t
+      - name: File task
+        run: mise run db:migrate
+      - name: Inline test
+        run: go test ./...
+      - name: Typo
+        run: mise run tset
+      - name: Hidden task
+        run: mise run release
+      - name: Another directory
+        run: mise run -C web build
+      - name: Through just
+        run: just build
