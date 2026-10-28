@@ -47,9 +47,15 @@ or pull request and the maintainer's agreement before any code.
   checks it.
 - **Clean architecture with ports.** Rules and use cases never import a parser or a file
   format, so a new runner or output format is a new adapter. See [Packages](packages.md).
-- **Four Go dependencies:** `gopkg.in/yaml.v3`, `mvdan.cc/sh/v3`,
-  `github.com/BurntSushi/toml` (mise config) and `github.com/google/go-cmp` (tests). Dev
-  tools are pinned in `mise.toml`, never in `go.mod`.
+- **Three Go dependencies in the binary,** `gopkg.in/yaml.v3`, `mvdan.cc/sh/v3` and
+  `github.com/BurntSushi/toml` (mise config), and three for tests:
+  `github.com/google/go-cmp` for golden diffs, and `github.com/onsi/ginkgo/v2` and
+  `github.com/onsi/gomega` for the integration and end-to-end specs. Dev tools are pinned
+  in `mise.toml`, never in `go.mod`.
+- **BDD specs for the outer layers only.** The integration and end-to-end tests are
+  Ginkgo specs: they describe behavior the way the reference does, and `gexec` builds and
+  runs the binary. Unit tests stay `testing` table tests, which is what Go contributors
+  expect, and they need to sit in their package to reach unexported functions.
 - **Golden fixtures drive the tests.** Each case is a miniature repository with its
   expected output in every format, so behavior is reviewed as text diffs.
 

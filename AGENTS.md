@@ -30,6 +30,8 @@ Dependencies point inward: `cmd` → `cli` → `adapters` → `app` → `rules` 
   `task test -- -update` regenerates goldens; read the diff, every change must be meant.
 - Run `task hooks:install` once. The hooks run gitleaks, the linters and the commit-message
   check, and refuse commits and pushes on `main`: work on a branch and open a pull request.
+- Unit tests are `testing` table tests next to the code; the specs in `test/integration/`
+  and `test/e2e/` use Ginkgo and Gomega (`Describe`, `It`, `Expect`, `gexec`).
 - Prefer a new fixture to a mock. Fixtures are synthetic (`acme-app`, `widget-service`).
 - Commit messages and PR titles describe the change.
 - Keep `README.md` and `docs/` accurate whenever behavior changes; follow
@@ -39,8 +41,8 @@ Dependencies point inward: `cmd` → `cli` → `adapters` → `app` → `rules` 
 
 - Behavior, rule IDs, messages, config keys and output formats are documented in
   `docs/reference/`. To change one, or to add a dependency beyond yaml.v3, mvdan.cc/sh/v3,
-  BurntSushi/toml and go-cmp, propose it and stop to ask first; then update the reference
-  in the same pull request.
+  BurntSushi/toml, and go-cmp, ginkgo/v2 and gomega for tests, propose it and stop to ask
+  first; then update the reference in the same pull request.
 - Read runner files statically; never run `task`, `make`, `just` or `mise`. No network
   access at check time, and nothing depends on the environment except `-C`.
 - Reported paths are repo-relative with forward slashes; output is sorted by file, line,
