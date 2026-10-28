@@ -5,13 +5,9 @@
 
 ### Features
 
-* **report:** add SARIF output (Phase 5) ([#8](https://github.com/jimmykurian/ci-parity/issues/8)) ([129f39e](https://github.com/jimmykurian/ci-parity/commit/129f39e488e6a36c512bb0ace45d58f558377ce4))
-* **rules:** look through package runners when suggesting tasks (Phase 6) ([#9](https://github.com/jimmykurian/ci-parity/issues/9)) ([4a952ec](https://github.com/jimmykurian/ci-parity/commit/4a952ec2fba90484893aa8f1ee5969778851401d))
+* **report:** add SARIF output ([#8](https://github.com/jimmykurian/ci-parity/issues/8)) ([129f39e](https://github.com/jimmykurian/ci-parity/commit/129f39e488e6a36c512bb0ace45d58f558377ce4))
+* **rules:** look through package runners when suggesting tasks ([#9](https://github.com/jimmykurian/ci-parity/issues/9)) ([4a952ec](https://github.com/jimmykurian/ci-parity/commit/4a952ec2fba90484893aa8f1ee5969778851401d))
 
-
-### Documentation
-
-* tick Phase 4 ([#6](https://github.com/jimmykurian/ci-parity/issues/6)) ([5ff6087](https://github.com/jimmykurian/ci-parity/commit/5ff6087d871842c8b745a8beff880501d564f431))
 
 ## [0.1.1](https://github.com/jimmykurian/ci-parity/compare/v0.1.0...v0.1.1) (2026-10-27)
 
@@ -30,7 +26,7 @@
 
 ### Features
 
-* **action:** add the GitHub Action, releases and complete README (Phase 4) ([b3dab72](https://github.com/jimmykurian/ci-parity/commit/b3dab72cb64a1cb02fb3a712396747a27a0e69c3))
+* **action:** add the GitHub Action, releases and complete README ([b3dab72](https://github.com/jimmykurian/ci-parity/commit/b3dab72cb64a1cb02fb3a712396747a27a0e69c3))
 * **baseline:** read, write and apply the inline-tool ratchet ([db0a183](https://github.com/jimmykurian/ci-parity/commit/db0a183aae8cac67d45135a080c0dfc926677625))
 * **cli:** add subcommand dispatch and version command ([d5e9b58](https://github.com/jimmykurian/ci-parity/commit/d5e9b58e4ad842c4d579e1775898f4226d341bd4))
 * **cli:** add the baseline subcommand and check --strict, --baseline and formats ([d58c51a](https://github.com/jimmykurian/ci-parity/commit/d58c51af186b505b55c64f5be0be9ecd887aab7b))
@@ -68,16 +64,14 @@
 * add a status table to the README ([32013f1](https://github.com/jimmykurian/ci-parity/commit/32013f16ecb42350ae35ae5fd7529d728e12ed7b))
 * add ACCESSIBILITY.md with output and documentation rules ([6193b2a](https://github.com/jimmykurian/ci-parity/commit/6193b2ad30cac2b1b2d7a62b4a2885cb5c2182d6))
 * add issue and pull request templates and community files ([caf26cf](https://github.com/jimmykurian/ci-parity/commit/caf26cfe80d16f404c7e8e83596f9870b0228b4c))
-* add README and decisions log, tick Phase 0 ([77529c6](https://github.com/jimmykurian/ci-parity/commit/77529c6f78a449ca0961da0f8d677cd2b8e732cb))
+* add README and decisions log ([77529c6](https://github.com/jimmykurian/ci-parity/commit/77529c6f78a449ca0961da0f8d677cd2b8e732cb))
 * add v0.1 spec, build plan and agent instructions ([8dbda98](https://github.com/jimmykurian/ci-parity/commit/8dbda98944e5b907c41d2a1c2bbd8ad6acd1ffb3))
 * adopt a clean-architecture package layout ([1ef5cca](https://github.com/jimmykurian/ci-parity/commit/1ef5cca6353b4503bf00de43275e6a00b4473ec7))
-* document the baseline and JSON schema, tick Phase 3 ([a721173](https://github.com/jimmykurian/ci-parity/commit/a7211734d03100aaa77f69d0ea07ef7505712305))
+* document the baseline and JSON schema ([a721173](https://github.com/jimmykurian/ci-parity/commit/a7211734d03100aaa77f69d0ea07ef7505712305))
 * drop the CLAUDE.md rule from AGENTS.md ([38a9ad2](https://github.com/jimmykurian/ci-parity/commit/38a9ad20fdf25c883c4c7d6ed59c78c7ef6c3b1f))
 * make AGENTS.md the only agent instruction file ([b35a4c3](https://github.com/jimmykurian/ci-parity/commit/b35a4c32c3f7de428e2d5c5a74419c3572b50f7e))
-* specify Phase 2 invoker, include and suggestion rules ([562875c](https://github.com/jimmykurian/ci-parity/commit/562875c864cf886900281a2f7b57dd69ecdd7b6f))
-* specify wrapper value flags and Phase 1 clarifications ([ca28490](https://github.com/jimmykurian/ci-parity/commit/ca284909bf9f66b4c3ec53861db39c3d4eeb7b45))
-* tick Phase 1 ([24fc93e](https://github.com/jimmykurian/ci-parity/commit/24fc93e3fb9da5a917f1491afba8ab55746c5f67))
-* tick Phase 2 ([91266e6](https://github.com/jimmykurian/ci-parity/commit/91266e65662dceed94ee41429825b7b71aaba202))
+* specify invoker, include and suggestion rules ([562875c](https://github.com/jimmykurian/ci-parity/commit/562875c864cf886900281a2f7b57dd69ecdd7b6f))
+* specify wrapper value flags and clarify the spec ([ca28490](https://github.com/jimmykurian/ci-parity/commit/ca284909bf9f66b4c3ec53861db39c3d4eeb7b45))
 
 
 ### Code Refactoring
