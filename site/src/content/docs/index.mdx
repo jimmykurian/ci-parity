@@ -6,6 +6,10 @@ description: Lint GitHub Actions workflows so CI runs project commands through t
 template: splash
 hero:
   tagline: Check that GitHub Actions workflows run project commands through the task runner, instead of calling tools inline. A per-workflow baseline lets you adopt it today and only ever shrinks.
+  image:
+    light: ../../images/hero-light.svg
+    dark: ../../images/hero-dark.svg
+    alt: A workflow step running pnpm test is flagged P001 because the Taskfile already runs it; ci-parity fix rewrites the step to task test.
   actions:
     - text: Get started
       link: /ci-parity/guides/getting-started/
@@ -15,21 +19,121 @@ hero:
       variant: minimal
 ---
 
-import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
+import Ratchet from '../../components/Ratchet.astro';
 
-Add it to a workflow, after checkout:
+## See it in action
 
-```yaml
-- uses: jimmykurian/ci-parity@v0
+A workflow that calls pnpm directly, next to a Taskfile that already wraps those commands:
+
+```text frame="terminal" title="ci-parity check"
+.github/workflows/ci.yml
+  9:14    P001 inline-tool   step "Install" in job "test" runs 'pnpm install --frozen-lockfile' directly; already available as 'task install'
+  11:14   P001 inline-tool   step "Test" in job "test" runs 'pnpm test' directly; already available as 'task test'
+  13:19   P002 unknown-task  'task lint' is not defined in Taskfile.yml (closest: test)
+
+3 errors, 0 warnings, 0 tolerated, 0 allowed
 ```
 
-It reads Taskfile, make, just and mise tasks without running them, flags steps that call
-`pnpm test`, `go build` and other tools directly, and suggests the task that already does
-the same thing.
+Each finding names the step, the command, and the task that already runs it.
+[Getting started](/ci-parity/guides/getting-started/) walks through it.
+
+## How it works
+
+```mermaid
+flowchart LR
+    wf["Workflows and<br/>composite actions"] --> cp
+    rf["Taskfile, Makefile,<br/>justfile or mise.toml"] --> cp
+    bl["Baseline"] --> cp
+    cp(["ci-parity<br/>reads them, runs nothing"]) --> ann["Annotations on<br/>the pull request"]
+    cp --> cs["Code scanning<br/>alerts"]
+    cp --> fix["ci-parity fix<br/>rewrites safe steps"]
+```
+
+It reads the files as text: it never runs your task runner, your scripts or the network.
+Every finding is on the exact line and column, in [four formats](/ci-parity/reference/output-formats/).
+
+## Works with your task runner
+
+<Tabs syncKey="runner">
+  <TabItem label="Taskfile" icon="seti:yaml">
+    ```yaml title=".github/workflows/ci.yml"
+    - uses: go-task/setup-task@v2
+    - run: task test
+    ```
+    The default: no config needed. Internal tasks (`internal: true`) are reported as
+    [P003](/ci-parity/rules/p003/).
+  </TabItem>
+  <TabItem label="make" icon="seti:makefile">
+    ```yaml title=".github/workflows/ci.yml"
+    - run: make test
+    ```
+    With `runner: make` in `.ci-parity.yml`. Includes are followed; `.PHONY` and pattern
+    rules aren't targets.
+  </TabItem>
+  <TabItem label="just" icon="seti:shell">
+    ```yaml title=".github/workflows/ci.yml"
+    - uses: extractions/setup-just@v4
+    - run: just test
+    ```
+    With `runner: just`. Imports and modules are followed, and `[private]` recipes are
+    reported as [P003](/ci-parity/rules/p003/).
+  </TabItem>
+  <TabItem label="mise" icon="setting">
+    ```yaml title=".github/workflows/ci.yml"
+    - uses: jdx/mise-action@v5
+    - run: mise run test
+    ```
+    With `runner: mise`. Tasks in `mise.toml`, includes and file tasks; `hide = true` is
+    reported as [P003](/ci-parity/rules/p003/).
+  </TabItem>
+</Tabs>
+
+[Recipes](/ci-parity/guides/recipes/) has a passing setup for each.
+
+## Adopt it today, finish later
+
+A repository with dozens of inline steps doesn't have to fix them first.
+`ci-parity baseline` records each workflow's count, the check tolerates that many, and the
+count can only go down.
+
+<Ratchet />
+
+[Adopting with a baseline](/ci-parity/guides/baseline/) shows each step, and
+[`ci-parity fix`](/ci-parity/guides/fixing/) rewrites the steps it safely can.
+
+## What it reports
 
 <CardGrid>
-  <LinkCard title="Adopt with a baseline" description="Turn it on today and let the count of inline steps only go down." href="/ci-parity/guides/baseline/" />
-  <LinkCard title="Rules" description="P001 to P005: what each catches, an example, and how to fix it." href="/ci-parity/rules/" />
-  <LinkCard title="CI setup" description="Annotations on pull requests, or alerts in code scanning." href="/ci-parity/guides/ci/" />
-  <LinkCard title="Recipes" description="A passing setup for Taskfile, make, just and mise." href="/ci-parity/guides/recipes/" />
+  <Card title="P001 inline-tool" icon="seti:shell">
+    A `run:` step calls `pnpm`, `go`, `docker` or another tool directly.
+    [Fix or allow it →](/ci-parity/rules/p001/)
+  </Card>
+  <Card title="P002 unknown-task" icon="magnifier">
+    CI calls a task the runner doesn't define, with the closest name.
+    [Details →](/ci-parity/rules/p002/)
+  </Card>
+  <Card title="P003 internal-task" icon="close">
+    CI calls an internal, private or hidden task. [Details →](/ci-parity/rules/p003/)
+  </Card>
+  <Card title="P004 regression" icon="up-arrow">
+    A workflow has more inline steps than its baseline allows.
+    [Details →](/ci-parity/rules/p004/)
+  </Card>
+  <Card title="P005 unsupported" icon="information">
+    A step it can't analyze, such as a PowerShell step, is reported as a warning.
+    [Details →](/ci-parity/rules/p005/)
+  </Card>
+  <Card title="Everything else" icon="approve-check">
+    Steps that call your task runner pass. [All the rules →](/ci-parity/rules/)
+  </Card>
+</CardGrid>
+
+## Get it
+
+<CardGrid>
+  <LinkCard title="GitHub Action" description="uses: jimmykurian/ci-parity@v0, with annotations or SARIF." href="/ci-parity/guides/ci/" />
+  <LinkCard title="Binary, go install or mise" description="Release archives for linux, darwin and windows." href="/ci-parity/guides/getting-started/" />
+  <LinkCard title="pre-commit hook" description="Check workflows before they're pushed." href="/ci-parity/guides/getting-started/#pre-commit" />
+  <LinkCard title="Configure it" description="Runner, tools, and steps you mean to keep." href="/ci-parity/guides/configuring/" />
 </CardGrid>

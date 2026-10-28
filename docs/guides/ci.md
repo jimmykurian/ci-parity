@@ -5,6 +5,14 @@
 Run ci-parity in GitHub Actions: annotations on pull requests, code scanning alerts, or
 counts for a later step.
 
+```mermaid
+flowchart LR
+    pr["Pull request"] --> job["Workflow job:<br/>checkout, then<br/>jimmykurian/ci-parity@v0"]
+    job -->|"format: github<br/>(default)"| ann["Annotations on the<br/>changed workflow lines"]
+    job -->|"format: sarif"| up["upload-sarif"] --> cs["Code scanning alerts,<br/>each linked to its rule page"]
+    job -->|"fail-on-error: false"| out["Outputs: errors,<br/>warnings, tolerated"]
+```
+
 ## Annotations on pull requests
 
 The action's default format, `github`, turns each finding into an annotation on the

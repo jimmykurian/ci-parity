@@ -1,0 +1,19 @@
+/* Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+   SPDX-License-Identifier: Apache-2.0 */
+
+/* The home page's hero illustration shows workflow code, so it needs more room than
+   Starlight's default image column to stay legible. Unlayered, so it wins over
+   Starlight's own layered styles. */
+.hero > img {
+  width: min(100%, 30rem);
+}
+
+@media (min-width: 50rem) {
+  .hero {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hero > img {
+    width: min(100%, 36rem);
+  }
+}

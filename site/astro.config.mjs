@@ -23,6 +23,7 @@ export default defineConfig({
       // The logo includes the wordmark, so it stands in for the title text.
       logo: { light: './src/assets/logo-light.svg', dark: './src/assets/logo-dark.svg', replacesTitle: true },
       social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/jimmykurian/ci-parity' }],
+      customCss: ['./src/styles/custom.css'],
       // Each page ends with its own "Last reviewed" date.
       lastUpdated: false,
       sidebar: [

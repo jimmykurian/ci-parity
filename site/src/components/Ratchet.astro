@@ -1,0 +1,117 @@
+---
+// Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+// SPDX-License-Identifier: Apache-2.0
+
+// An illustration of the baseline ratchet for the home page: each `ci-parity baseline`
+// locks in a lower count of inline steps until the workflow is locked at 0. The counts
+// are made up; the caption says so.
+
+const steps = [
+  { label: 'Adopt', count: 12 },
+  { label: 'Week 2', count: 9 },
+  { label: 'Week 4', count: 6 },
+  { label: 'Week 6', count: 2 },
+  { label: 'Locked', count: 0 },
+];
+const max = 12;
+const barWidth = 64;
+const gap = 36;
+const height = 150;
+const top = 28;
+---
+
+<figure class="ratchet">
+  <svg
+    viewBox={`0 0 ${steps.length * (barWidth + gap) + gap} ${top + height + 48}`}
+    role="img"
+    aria-labelledby="ratchet-title ratchet-desc"
+  >
+    <title id="ratchet-title">The baseline ratchet</title>
+    <desc id="ratchet-desc">
+      An example workflow starts with 12 inline steps in its baseline, then 9, 6, 2, and finally 0,
+      where it is locked: each run of ci-parity baseline records a lower count, and a count can
+      never go back up.
+    </desc>
+    <line class="axis" x1={gap / 2} x2={steps.length * (barWidth + gap) + gap / 2} y1={top + height} y2={top + height} />
+    {
+      steps.map((step, i) => {
+        const x = gap + i * (barWidth + gap);
+        const h = step.count === 0 ? 4 : (step.count / max) * height;
+        const y = top + height - h;
+        return (
+          <g>
+            <rect class={step.count === 0 ? 'bar locked' : 'bar'} x={x} y={y} width={barWidth} height={h} rx="6" />
+            <text class="count" x={x + barWidth / 2} y={y - 8} text-anchor="middle">
+              {step.count === 0 ? '0 🔒' : step.count}
+            </text>
+            <text class="label" x={x + barWidth / 2} y={top + height + 22} text-anchor="middle">
+              {step.label}
+            </text>
+            {i < steps.length - 1 && (
+              <path
+                class="arrow"
+                d={`M${x + barWidth + 6} ${top + height - 18} h${gap - 12}`}
+                marker-end="url(#ratchet-arrow)"
+              />
+            )}
+          </g>
+        );
+      })
+    }
+    <defs>
+      <marker id="ratchet-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path class="arrowhead" d="M0 0 L10 5 L0 10 z" />
+      </marker>
+    </defs>
+  </svg>
+  <figcaption>
+    Illustration: inline steps allowed by one workflow's baseline. Each <code>ci-parity baseline</code>
+    locks in a lower count, and a rise fails the check.
+  </figcaption>
+</figure>
+
+<style>
+  .ratchet {
+    margin: 1.5rem 0;
+  }
+  .ratchet svg {
+    width: 100%;
+    max-width: 36rem;
+    height: auto;
+    display: block;
+    margin-inline: auto;
+  }
+  .bar {
+    fill: var(--sl-color-accent);
+    opacity: 0.85;
+  }
+  .bar.locked {
+    fill: var(--sl-color-green);
+    opacity: 1;
+  }
+  .axis {
+    stroke: var(--sl-color-gray-5);
+  }
+  .count {
+    fill: var(--sl-color-white);
+    font: 600 15px var(--sl-font-system-mono);
+  }
+  .label {
+    fill: var(--sl-color-gray-3);
+    font: 13px var(--sl-font-system);
+  }
+  .arrow {
+    stroke: var(--sl-color-gray-4);
+    stroke-width: 1.5;
+    fill: none;
+  }
+  .arrowhead {
+    fill: var(--sl-color-gray-4);
+  }
+  figcaption {
+    text-align: center;
+    color: var(--sl-color-gray-3);
+    font-size: var(--sl-text-sm);
+    margin-top: 0.5rem;
+  }
+</style>
