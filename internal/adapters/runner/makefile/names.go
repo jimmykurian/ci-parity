@@ -10,6 +10,9 @@ import (
 // Command is how CI calls a make target.
 func (m *Makefile) Command() string { return "make" }
 
+// Internal is how P003 would describe an internal target; make has none.
+func (m *Makefile) Internal() string { return "is internal" }
+
 // otherFile are make flags that point the call at another makefile or
 // directory, whose targets cannot be checked.
 var otherFile = map[string]bool{"-f": true, "--file": true, "--makefile": true, "-C": true, "--directory": true}

@@ -56,6 +56,6 @@ func (c *checker) task(f *domain.File, s *domain.Step, name string, line, col in
 		}
 	case c.runner.IsInternal(name):
 		c.add(f, s, domain.InternalTask, domain.SeverityError, line, col,
-			fmt.Sprintf("'%s' is marked internal: true and should not be invoked from CI", name))
+			fmt.Sprintf("'%s' %s and should not be invoked from CI", name, c.runner.Internal()))
 	}
 }

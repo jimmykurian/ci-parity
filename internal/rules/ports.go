@@ -17,6 +17,9 @@ type TaskSource interface {
 	// Command returns how CI calls a task, such as "task" or "mise run"; messages
 	// and suggestions use it.
 	Command() string
+	// Internal returns how P003 describes an internal task, in the runner's own
+	// terms, such as "is marked internal: true" or "is private".
+	Internal() string
 	// Names returns the task names among a shell invoker call's arguments, and
 	// none when the call targets another file or runs no task.
 	Names(args []domain.Word) []domain.Word

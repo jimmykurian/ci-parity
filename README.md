@@ -183,7 +183,7 @@ ci-parity baseline     # records today's counts in .ci-parity-baseline.json; com
 the defaults:
 
 ```yaml
-runner: taskfile                  # or make; see Other runners
+runner: taskfile                  # or make or just; see Other runners
 taskfile: ""                      # empty: Taskfile.yml, taskfile.yml, Taskfile.yaml,
                                   # taskfile.yaml, then the .dist variants
 workflows:
@@ -227,7 +227,14 @@ repository root instead of a Taskfile, with its `include`s. CI calls targets wit
 or `gmake`, messages and suggestions say `make <target>`, and `task` counts as an inline
 tool. A call with `-f` or `-C` points at another makefile and isn't checked, and plain
 `make` (the default goal) isn't either. `.PHONY`, pattern rules and variables aren't
-targets. just and mise are coming next.
+targets.
+
+With `runner: just`, ci-parity reads the `justfile` (or `Justfile`, `.justfile`) with its
+`import`s and `mod`ules. The words after a recipe are its arguments, as many as its
+parameters take, so `just deploy staging` checks only `deploy`; module recipes are named
+`db::migrate`, called as `just db migrate` or `just db::migrate`. A `[private]` recipe, or
+one whose name starts with `_`, is reported as P003. `--list`, `--show` and other
+subcommands, and calls with `-f` or `-d`, aren't checked. mise is coming next.
 
 An unknown key, a wrong type, an `allow` entry without a `reason`, or `replace` combined
 with `extend` or `remove` is an error that names the key (exit 2).
@@ -272,7 +279,8 @@ The messages are stable, so you can search for them:
 
 - P001: `step "Test" in job "test" runs 'pnpm test' directly; already available as 'task test'`
 - P002: `'task lint' is not defined in Taskfile.yml (closest: test)`
-- P003: `'deploy:prod' is marked internal: true and should not be invoked from CI`
+- P003: `'deploy:prod' is marked internal: true and should not be invoked from CI` (with
+  just, `is private`)
 - P004: `.github/workflows/ci.yml has 3 inline-tool findings, baseline allows 2`
 - P005: `step uses shell 'pwsh'; not analyzed`
 
@@ -396,8 +404,8 @@ repository runs all three.
 archived. ci-parity keeps hand-written workflows and checks them instead, with a baseline
 so an existing repository can adopt it gradually.
 
-**What about Make, just or mise?** Make is supported with `runner: make`; see
-[Other runners](#other-runners). just and mise readers are in progress. In a repository
+**What about Make, just or mise?** Make and just are supported with `runner: make` and
+`runner: just`; see [Other runners](#other-runners). A mise reader is in progress. In a repository
 using one runner, the others count as inline tools, because they bypass it.
 
 **How do I allow a step?** With a `# ci-parity: allow <reason>` comment, or an `allow`

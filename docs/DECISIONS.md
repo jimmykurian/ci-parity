@@ -6,6 +6,16 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-28: P003 wording per runner (accepted)
+
+Problem: P003 said "is marked internal: true" for every runner, but that is Taskfile
+syntax; a just recipe is private (`[private]` or a leading `_`) and a mise task is
+hidden (`hide = true`).
+
+Change: P003 reads `'<name>' <marker> and should not be invoked from CI`, where the
+marker is the runner's own: `is marked internal: true` for taskfile (unchanged),
+`is private` for just and `is hidden` for mise. make has no internal targets.
+
 ### 2026-10-28: Make, just and mise readers (accepted)
 
 Problem: only Taskfiles are read, and `make`, `just` and `mise` are always flagged as

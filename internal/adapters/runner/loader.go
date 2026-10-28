@@ -4,6 +4,7 @@ package runner
 import (
 	"fmt"
 
+	"github.com/jimmykurian/ci-parity/internal/adapters/runner/justfile"
 	"github.com/jimmykurian/ci-parity/internal/adapters/runner/makefile"
 	"github.com/jimmykurian/ci-parity/internal/adapters/runner/taskfile"
 	"github.com/jimmykurian/ci-parity/internal/domain"
@@ -16,13 +17,15 @@ type Loader struct {
 }
 
 // Load reads the runner's file: the Taskfile at path (or discovered when path
-// is empty), or the discovered Makefile.
+// is empty), or the discovered Makefile or justfile.
 func (l Loader) Load(runner, path string) (rules.TaskSource, error) {
 	switch runner {
 	case domain.RunnerTaskfile:
 		return orNil(taskfile.Load(l.Root, path))
 	case domain.RunnerMake:
 		return orNil(makefile.Load(l.Root))
+	case domain.RunnerJust:
+		return orNil(justfile.Load(l.Root))
 	}
 	return nil, fmt.Errorf("runner %q has no reader", runner)
 }

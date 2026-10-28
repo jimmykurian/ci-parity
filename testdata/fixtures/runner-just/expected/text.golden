@@ -1,0 +1,7 @@
+.github/workflows/ci.yml
+  18:14   P001 inline-tool   step "Inline build" in job "ci" runs 'go build ./...' directly; already available as 'just build'
+  20:19   P002 unknown-task  'just biuld' is not defined in justfile (closest: build)
+  22:19   P003 internal-task 'release' is private and should not be invoked from CI
+  26:14   P001 inline-tool   step "Through make" in job "ci" runs 'make build' directly
+
+4 errors, 0 warnings, 0 tolerated, 0 allowed

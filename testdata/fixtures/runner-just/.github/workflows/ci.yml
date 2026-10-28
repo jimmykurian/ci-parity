@@ -1,0 +1,26 @@
+name: ci
+on: [push]
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        run: just build
+      - name: Test with flags
+        run: just test -race -count=1
+      - name: Deploy
+        run: just deploy staging
+      - name: Alias
+        run: just t
+      - name: Migrate
+        run: just db migrate v42
+      - name: Inline build
+        run: go build ./...
+      - name: Typo
+        run: just biuld
+      - name: Private recipe
+        run: just release
+      - name: List
+        run: just --list
+      - name: Through make
+        run: make build

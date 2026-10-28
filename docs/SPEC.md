@@ -364,7 +364,8 @@ command takes the place of `task` in `task <name>`: `make lint`, `just lint`,
   use `in action "<path>"` instead of `in job`.
 - P002: `'task <name>' is not defined in <taskfile>` followed, when a suggestion exists,
   by ` (closest: <name>)`.
-- P003: `'<name>' is marked internal: true and should not be invoked from CI`.
+- P003: `'<name>' is marked internal: true and should not be invoked from CI`. With just
+  it reads `is private`, and with mise `is hidden`, in place of `is marked internal: true`.
 - P004: `<workflow> has <current> inline-tool findings, baseline allows <baseline>` or
   `<workflow> is locked at 0 and has <current> inline-tool findings`.
 - P005: `step uses shell '<shell>'; not analyzed`, `composite step has no shell; not

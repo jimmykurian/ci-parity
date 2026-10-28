@@ -24,7 +24,7 @@
               "id": "P002",
               "name": "unknown-task",
               "shortDescription": {
-                "text": "CI calls a task that the Taskfile does not define."
+                "text": "CI calls a task that the task runner does not define."
               },
               "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
               "defaultConfiguration": {
@@ -35,7 +35,7 @@
               "id": "P003",
               "name": "internal-task",
               "shortDescription": {
-                "text": "CI calls a task marked internal: true."
+                "text": "CI calls a task the task runner marks internal, private or hidden."
               },
               "helpUri": "https://github.com/jimmykurian/ci-parity#rules",
               "defaultConfiguration": {

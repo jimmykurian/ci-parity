@@ -1,0 +1,4 @@
+::error file=.github/workflows/ci.yml,line=18,col=14,title=P001 inline-tool::step "Inline build" in job "ci" runs 'go build ./...' directly; already available as 'just build'
+::error file=.github/workflows/ci.yml,line=20,col=19,title=P002 unknown-task::'just biuld' is not defined in justfile (closest: build)
+::error file=.github/workflows/ci.yml,line=22,col=19,title=P003 internal-task::'release' is private and should not be invoked from CI
+::error file=.github/workflows/ci.yml,line=26,col=14,title=P001 inline-tool::step "Through make" in job "ci" runs 'make build' directly
