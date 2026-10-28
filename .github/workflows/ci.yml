@@ -344,7 +344,9 @@ jobs:
                     ? 'gitleaks-action'
                     : key === 'job' && job === 'platforms'
                       ? '`task test:*`'
-                      : '`uses: ./`';
+                      : key === 'job' && job === 'action-download'
+                        ? '`uses: jimmykurian/ci-parity`'
+                        : '`uses: ./`';
                 lines.push(`| ${label} | ${how} | ${result(key === 'job' ? jobResult : outputs[key])} |`);
               }
               lines.push('');
