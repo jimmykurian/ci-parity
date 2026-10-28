@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/jimmykurian/ci-parity/compare/v0.3.0...v0.4.0) (2026-10-28)
+
+
+### Features
+
+* **cli:** add ci-parity fix to rewrite safe inline steps to their task ([#15](https://github.com/jimmykurian/ci-parity/issues/15)) ([f80e68b](https://github.com/jimmykurian/ci-parity/commit/f80e68bb84605ac264758464ef4ee49289905f48))
+
 ## [0.3.0](https://github.com/jimmykurian/ci-parity/compare/v0.2.0...v0.3.0) (2026-10-28)
 
 
