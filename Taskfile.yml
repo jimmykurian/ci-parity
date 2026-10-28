@@ -189,32 +189,6 @@ tasks:
     cmds:
       - go run ./cmd/ci-parity check
 
-  scrub:
-    desc: Fail if tracked or untracked files contain a term from $SCRUB_TERMS_FILE
-    cmds:
-      - |
-        if [ -z "${SCRUB_TERMS_FILE:-}" ]; then
-          echo "warning: SCRUB_TERMS_FILE is unset; skipping scrub"
-          exit 0
-        fi
-        if [ ! -r "$SCRUB_TERMS_FILE" ]; then
-          echo "SCRUB_TERMS_FILE=$SCRUB_TERMS_FILE is not readable"
-          exit 1
-        fi
-        # Blank lines would match everything; lines starting with # are comments.
-        terms=$(mktemp)
-        trap 'rm -f "$terms"' EXIT
-        grep -v -e '^[[:space:]]*$' -e '^#' "$SCRUB_TERMS_FILE" > "$terms" || true
-        if [ ! -s "$terms" ]; then
-          echo "scrub: no terms in $SCRUB_TERMS_FILE"
-          exit 0
-        fi
-        if git grep --untracked -I -n -i -F -f "$terms"; then
-          echo "scrub: forbidden terms found"
-          exit 1
-        fi
-        echo "scrub: clean"
-
   ci:
     desc: Run every check CI runs
     cmds:
@@ -223,4 +197,3 @@ tasks:
       - task: test
       - task: build
       - task: self-check
-      - task: scrub

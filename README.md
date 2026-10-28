@@ -33,9 +33,9 @@ Each badge is a check from the last CI run on `main` (`.github/workflows/ci.yml`
 
 ### Security
 
-| Branch | gitleaks | govulncheck | Scrub |
-| --- | --- | --- | --- |
-| main | [![gitleaks](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fsecurity%2Fgitleaks.json&style=flat-square&logo=git&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![govulncheck](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fsecurity%2Fgovulncheck.json&style=flat-square&logo=go&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![Scrub](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fsecurity%2Fscrub.json&style=flat-square&logo=git&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) |
+| Branch | gitleaks | govulncheck |
+| --- | --- | --- |
+| main | [![gitleaks](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fsecurity%2Fgitleaks.json&style=flat-square&logo=git&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) | [![govulncheck](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fjimmykurian%2Fci-parity%2Fbadges%2Fsecurity%2Fgovulncheck.json&style=flat-square&logo=go&logoColor=white&label=%20&labelColor=555)](https://github.com/jimmykurian/ci-parity/actions/workflows/ci.yml?query=branch%3Amain) |
 
 ### Tech stack
 
@@ -450,7 +450,7 @@ skipped, as are steps in any shell other than bash and sh.
 ## Development
 
 Every command runs through the [Taskfile](Taskfile.yml); CI calls the same tasks.
-`task ci` runs formatting, lint, tests, build, self-check and scrub. The linters and
+`task ci` runs formatting, lint, tests, build and self-check. The linters and
 formatters, from golangci-lint to typos, are pinned in [mise.toml](mise.toml) at the
 versions CI uses; with [mise](https://mise.jdx.dev/), `mise install` sets them up.
 `task hooks:install` turns on the pre-commit, commit-msg and pre-push hooks in

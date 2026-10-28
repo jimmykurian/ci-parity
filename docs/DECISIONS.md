@@ -6,6 +6,33 @@ Proposed entries block work until the owner answers.
 
 ## Log
 
+### 2026-10-28: drop the clean-room rule and the scrub check (accepted)
+
+Problem: the clean-room section and `task scrub` were the maintainer's private
+constraints written as project rules. In a public repository they make no sense to a
+contributor: the scrub reads a terms file only the maintainer has, and "don't read other
+repositories on this machine" only applies to one machine.
+
+Change, at the owner's request: the Clean room section leaves AGENTS.md, and `task scrub`
+leaves the Taskfile, `task ci`, the pre-commit hook, CI, the PR check table and the README
+badges. Copying is covered the usual open-source way, by CONTRIBUTING's Apache-2.0 terms,
+and secrets by gitleaks, whose hits are fixed, never allowlisted.
+
+### 2026-10-28: a shorter AGENTS.md (accepted)
+
+Problem: AGENTS.md had grown to 95 lines, much of it rules that tools already enforce
+(formatting, exported doc comments, commit messages) or detail kept elsewhere
+(the task list, the test harness), which dilutes the rules no tool checks.
+
+Change, at the owner's request and following HumanLayer's guidance on agent instruction
+files: AGENTS.md says what the project is, maps where things live, says how to work and
+verify, and keeps only rules that are universal and unchecked, pointing to CONTRIBUTING,
+SPEC, ACCESSIBILITY and the README for detail. Dropped as enforced or stated elsewhere:
+the Go version and module path (go.mod), the flag package (covered by the dependency
+rule), exported doc comments (revive), the command list (CONTRIBUTING), the harness
+details, the PowerShell rule (SPEC). Dropped as a style preference: keeping functions
+under about 60 lines.
+
 ### 2026-10-28: fix handles quoted values, wrappers and one-line blocks (accepted)
 
 Problem: fix only rewrote an unquoted value that was exactly the command, so common

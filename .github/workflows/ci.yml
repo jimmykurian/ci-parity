@@ -44,7 +44,6 @@ jobs:
       release: ${{ steps.release.outcome }}
       test: ${{ steps.test.outcome }}
       build: ${{ steps.build.outcome }}
-      scrub: ${{ steps.scrub.outcome }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -100,9 +99,6 @@ jobs:
       - id: build
         if: ${{ !cancelled() }}
         run: task build
-      - id: scrub
-        if: ${{ !cancelled() }}
-        run: task scrub
 
   self-check:
     name: Self-check
@@ -205,7 +201,6 @@ jobs:
                   ['Release config (goreleaser check)', 'lint:release', 'release'],
                   ['Tests and golden fixtures', 'test', 'test'],
                   ['Build', 'build', 'build'],
-                  ['Forbidden terms (scrub)', 'scrub', 'scrub'],
                 ],
               },
               {
@@ -300,7 +295,6 @@ jobs:
               'build/self-check.json': status(s.self_check),
               'security/gitleaks.json': status(c.secrets),
               'security/govulncheck.json': status(c.vuln),
-              'security/scrub.json': status(c.scrub),
             };
 
             const { owner, repo } = context.repo;

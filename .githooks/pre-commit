@@ -35,7 +35,6 @@ check() {
 }
 
 check "secrets" gitleaks gitleaks git --pre-commit --staged --no-banner --log-level warn --redact .
-check "scrub" task task --silent scrub
 
 if stage '\.go$'; then
   check "go format" golangci-lint golangci-lint fmt --diff "${FILES[@]}"
