@@ -4,7 +4,11 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { changelog, convert, outputPath, rewriteLink, route } from './sync-docs.mjs';
+import { mkdtempSync, readdirSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+import { changelog, convert, outputPath, publishSchemas, rewriteLink, route } from './sync-docs.mjs';
 
 const noDirs = () => false;
 
@@ -159,4 +163,20 @@ test('changelog drops the H1 and turns off the edit link', () => {
   assert.match(got, /\neditUrl: false\n---\n/);
   assert.ok(got.endsWith('## [0.6.0](https://example.com) (2026-10-28)\n\n* a change\n'), got);
   assert.ok(!got.includes('# Changelog'), got);
+});
+
+test('publishSchemas copies only the .schema.json files into public/schemas', () => {
+  // Arrange
+  const schemas = mkdtempSync(join(tmpdir(), 'schemas-'));
+  const publicDir = mkdtempSync(join(tmpdir(), 'public-'));
+  writeFileSync(join(schemas, 'config.schema.json'), '{}');
+  writeFileSync(join(schemas, 'output.schema.json'), '{}');
+  writeFileSync(join(schemas, 'notes.md'), '# not a schema');
+
+  // Act
+  const got = publishSchemas(schemas, publicDir);
+
+  // Assert
+  assert.deepEqual(got, ['config.schema.json', 'output.schema.json']);
+  assert.deepEqual(readdirSync(join(publicDir, 'schemas')).sort(), got);
 });

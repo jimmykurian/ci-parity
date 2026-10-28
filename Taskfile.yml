@@ -6,6 +6,7 @@ version: "3"
 vars:
   BIN: ./bin/ci-parity
   MARKDOWNLINT: markdownlint-cli2@0.23.3
+  AJV: ajv-cli@5.0.0
   VERSION:
     sh: git describe --tags --always --dirty 2>/dev/null || echo dev
   COMMIT:
@@ -65,6 +66,7 @@ tasks:
       - task: lint:spelling
       - task: lint:editorconfig
       - task: lint:headers
+      - task: lint:schemas
       - task: lint:release
 
   lint:go:
@@ -136,6 +138,37 @@ tasks:
       # each format; this checks charset, line endings, final newlines and
       # trailing whitespace.
       - editorconfig-checker -config .config/linters/editorconfig-checker.json
+
+  lint:schemas:
+    desc: Check the JSON Schemas in schemas/ against the fixtures, goldens and this repo's own files (ajv-cli)
+    cmds:
+      - silent: true
+        cmd: |
+          set -e
+          ajv() { pnx {{.AJV}} "$@" --spec=draft2020 --strict=false; }
+          tmp="$(mktemp -d)"
+          trap 'rm -rf "$tmp"' EXIT
+          # ajv-cli picks its parser from the extension, so the JSON goldens are copied to
+          # .json files. A fixture that exits 2 prints no JSON, so its golden is empty.
+          for f in testdata/fixtures/*/expected/json.golden; do
+            name="${f#testdata/fixtures/}"
+            [ -s "$f" ] && cp "$f" "$tmp/${name%%/*}.json"
+          done
+          ajv validate -s schemas/output.schema.json -d "$tmp/*.json"
+          ajv validate -s schemas/config.schema.json -d .ci-parity.yml
+          ajv validate -s schemas/baseline.schema.json -d .ci-parity-baseline.json
+          for f in testdata/fixtures/*/.ci-parity.yml; do
+            case "$f" in
+              */config-error/*) ajv test -s schemas/config.schema.json -d "$f" --invalid ;;
+              *) ajv validate -s schemas/config.schema.json -d "$f" ;;
+            esac
+          done
+          for f in testdata/fixtures/*/.ci-parity-baseline.json; do
+            case "$f" in
+              */baseline-invalid/*) ajv test -s schemas/baseline.schema.json -d "$f" --invalid ;;
+              *) ajv validate -s schemas/baseline.schema.json -d "$f" ;;
+            esac
+          done
 
   lint:headers:
     desc: Check every file starts with the Apache-2.0 license header (exceptions in .config/linters/headers-exclude.txt)
