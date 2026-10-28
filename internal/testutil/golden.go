@@ -73,6 +73,8 @@ func RunGolden(t *testing.T, root string, formats []string, run RunFunc) {
 	}
 }
 
+// compareGolden fails the test when got differs from the golden file at path, or
+// rewrites the file under -update.
 func compareGolden(t *testing.T, path string, got []byte, stderr string) {
 	t.Helper()
 	if *update {
@@ -88,6 +90,8 @@ func compareGolden(t *testing.T, path string, got []byte, stderr string) {
 	}
 }
 
+// compareExitCode fails the test when got differs from the exit code in path, or
+// rewrites it under -update.
 func compareExitCode(t *testing.T, path string, got int, stderr string) {
 	t.Helper()
 	if *update {
@@ -107,6 +111,8 @@ func compareExitCode(t *testing.T, path string, got int, stderr string) {
 	}
 }
 
+// writeFile writes data to path, creating its directory, and fails the test on
+// error.
 func writeFile(t *testing.T, path string, data []byte) {
 	t.Helper()
 	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {

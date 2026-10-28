@@ -62,6 +62,7 @@ func unwrap(words []string) ([]string, bool) {
 	return nil, false
 }
 
+// hasPrefix reports whether words starts with prefix.
 func hasPrefix(words, prefix []string) bool {
 	if len(words) < len(prefix) {
 		return false

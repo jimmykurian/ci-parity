@@ -97,6 +97,8 @@ func foldedPlain(src []string, line, col int, value string) []domain.Segment {
 	return nil
 }
 
+// verified folds lines and returns their segments only when the result matches
+// value, the scalar as the YAML parser read it.
 func verified(lines []foldLine, value string) []domain.Segment {
 	text, segs := fold(lines)
 	if strings.TrimRight(text, "\n") != strings.TrimRight(value, "\n") {

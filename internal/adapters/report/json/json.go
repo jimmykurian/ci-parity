@@ -15,6 +15,7 @@ import (
 // Version is the JSON schema version. It changes only with the schema.
 const Version = 1
 
+// document is the whole JSON output.
 type document struct {
 	Version  int                    `json:"version"`
 	Summary  summary                `json:"summary"`
@@ -22,6 +23,7 @@ type document struct {
 	Ratchet  map[string]ratchetItem `json:"ratchet"`
 }
 
+// summary counts the findings by severity.
 type summary struct {
 	Errors    int `json:"errors"`
 	Warnings  int `json:"warnings"`
@@ -29,6 +31,8 @@ type summary struct {
 	Allowed   int `json:"allowed"`
 }
 
+// finding is one finding in the JSON output. Optional fields are null when
+// empty, never omitted.
 type finding struct {
 	Rule       string  `json:"rule"`
 	Name       string  `json:"name"`
@@ -45,6 +49,7 @@ type finding struct {
 	Reason     *string `json:"reason"`
 }
 
+// ratchetItem is one workflow's baseline and current inline-tool counts.
 type ratchetItem struct {
 	Baseline int  `json:"baseline"`
 	Current  int  `json:"current"`
@@ -80,6 +85,7 @@ func Write(w io.Writer, findings []domain.Finding, rows []domain.Row) error {
 	return enc.Encode(doc)
 }
 
+// convert maps a finding to its JSON shape.
 func convert(f domain.Finding) finding {
 	out := finding{
 		Rule: f.Rule, Name: f.Name(), Severity: string(f.Severity), File: f.File,

@@ -102,6 +102,7 @@ func (m *Makefile) include(names []string, depth int, stack []string) {
 	}
 }
 
+// contains reports whether s is in list.
 func contains(list []string, s string) bool {
 	for _, x := range list {
 		if x == s {
@@ -111,6 +112,8 @@ func contains(list []string, s string) bool {
 	return false
 }
 
+// rel makes path repo-relative with forward slashes, or leaves it as is when it
+// sits outside the repository.
 func (m *Makefile) rel(path string) string {
 	if r, err := filepath.Rel(m.root, path); err == nil && !strings.HasPrefix(r, "..") {
 		return filepath.ToSlash(r)

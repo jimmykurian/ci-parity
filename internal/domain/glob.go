@@ -12,6 +12,8 @@ func MatchPath(pattern, name string) bool {
 	return matchSegments(strings.Split(pattern, "/"), strings.Split(name, "/"))
 }
 
+// matchSegments matches path segments against pattern segments; a `**` segment
+// may take any number of them.
 func matchSegments(pats, segs []string) bool {
 	for len(pats) > 0 {
 		if pats[0] == "**" {

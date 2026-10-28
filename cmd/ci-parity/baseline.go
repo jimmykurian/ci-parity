@@ -12,6 +12,8 @@ import (
 	"github.com/jimmykurian/ci-parity/internal/app"
 )
 
+// runBaseline runs `ci-parity baseline`: it records the current inline-tool counts
+// and returns the exit code.
 func runBaseline(args []string, stdout, stderr io.Writer) int {
 	flags := newFlagSet("baseline", stderr)
 	configPath := flags.String("config", "", "path to the config file")
@@ -48,6 +50,7 @@ func runBaseline(args []string, stdout, stderr io.Writer) int {
 	return exitOK
 }
 
+// plural formats n with word, adding an s unless n is 1.
 func plural(n int, word string) string {
 	if n == 1 {
 		return fmt.Sprintf("%d %s", n, word)

@@ -15,6 +15,7 @@ type suggester struct {
 	names     []string          // invocable, non-internal names
 }
 
+// newSuggester indexes the runner's non-internal tasks by the commands they run.
 func newSuggester(r TaskSource) *suggester {
 	s := &suggester{byCommand: map[string]string{}, invoke: r.Command()}
 	for _, name := range r.Tasks() {
@@ -95,6 +96,7 @@ func canonical(cmd string) string {
 	return strings.Join(f, " ")
 }
 
+// levenshtein returns the edit distance between a and b, counted in runes.
 func levenshtein(a, b string) int {
 	ra, rb := []rune(a), []rune(b)
 	prev := make([]int, len(rb)+1)

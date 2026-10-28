@@ -57,6 +57,7 @@ type ParseError struct {
 	Message   string
 }
 
+// Error returns the parser's message.
 func (e *ParseError) Error() string {
 	return e.Message
 }

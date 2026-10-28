@@ -61,6 +61,7 @@ func Write(root, path string, counts map[string]int) error {
 	return nil
 }
 
+// join resolves path against root unless it is already absolute.
 func join(root, path string) string {
 	if filepath.IsAbs(path) {
 		return path

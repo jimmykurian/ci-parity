@@ -116,6 +116,8 @@ func (t *Taskfile) addTasks(tasks []task, prefixes []string, internal bool) {
 	}
 }
 
+// add records a task name. The first definition wins, so a task stays internal
+// or not as first seen.
 func (t *Taskfile) add(name string, internal bool) {
 	if _, ok := t.internal[name]; !ok {
 		t.internal[name] = internal
@@ -182,6 +184,8 @@ func discover(dir string) (string, bool) {
 	return "", false
 }
 
+// rel makes path repo-relative with forward slashes, or leaves it as is when it
+// sits outside the repository.
 func (t *Taskfile) rel(path string) string {
 	if r, err := filepath.Rel(t.root, path); err == nil && !strings.HasPrefix(r, "..") {
 		return filepath.ToSlash(r)

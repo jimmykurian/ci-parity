@@ -86,6 +86,8 @@ func Apply(b *Baseline, paths []string, findings []Finding) ([]Finding, []Row) {
 	return findings, rows
 }
 
+// regression is the P004 finding for a workflow above its baseline, or with any
+// inline-tool finding while locked.
 func regression(r Row) Finding {
 	msg := fmt.Sprintf("%s has %d inline-tool findings, baseline allows %d", r.File, r.Current, r.Baseline)
 	if r.Locked() {

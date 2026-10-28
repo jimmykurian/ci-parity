@@ -82,10 +82,12 @@ func (s *schema) check(n *yaml.Node, path string) error {
 	return nil
 }
 
+// isNull reports whether n is an explicit YAML null, such as `key:` or `key: ~`.
 func isNull(n *yaml.Node) bool {
 	return n.Kind == yaml.ScalarNode && n.Tag == "!!null"
 }
 
+// join appends key to the dotted path of its parent.
 func join(path, key string) string {
 	if path == "" {
 		return key
@@ -93,6 +95,7 @@ func join(path, key string) string {
 	return path + "." + key
 }
 
+// describe names a dotted path for an error message, or "the config" for the root.
 func describe(path string) string {
 	if path == "" {
 		return "the config"
@@ -100,6 +103,7 @@ func describe(path string) string {
 	return path
 }
 
+// kindName names a YAML node kind for an error message.
 func kindName(k yaml.Kind) string {
 	switch k {
 	case yaml.MappingNode:

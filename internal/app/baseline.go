@@ -31,6 +31,7 @@ type RegressionError struct {
 	Rows []domain.Row
 }
 
+// Error reports that the baseline was not raised.
 func (e *RegressionError) Error() string {
 	return "refusing to raise the baseline"
 }

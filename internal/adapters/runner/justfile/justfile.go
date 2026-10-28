@@ -152,6 +152,8 @@ func (j *Justfile) resolveAliases() {
 	}
 }
 
+// rel makes path repo-relative with forward slashes, or leaves it as is when it
+// sits outside the repository.
 func (j *Justfile) rel(path string) string {
 	if r, err := filepath.Rel(j.root, path); err == nil && !strings.HasPrefix(r, "..") {
 		return filepath.ToSlash(r)

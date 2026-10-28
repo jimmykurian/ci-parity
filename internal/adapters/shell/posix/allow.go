@@ -18,6 +18,8 @@ type allowComment struct {
 	alone  bool // the comment is the only thing on its line
 }
 
+// comment records a `# ci-parity: allow <reason>` comment by line, or a problem
+// when it has no reason.
 func (e *extractor) comment(c *syntax.Comment) {
 	m := allowPattern.FindStringSubmatch(c.Text)
 	if m == nil {

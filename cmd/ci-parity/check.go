@@ -11,6 +11,8 @@ import (
 	"github.com/jimmykurian/ci-parity/internal/app"
 )
 
+// runCheck runs `ci-parity check`: it reports findings in the chosen format and
+// returns the exit code.
 func runCheck(args []string, stdout, stderr io.Writer) int {
 	flags := newFlagSet("check", stderr)
 	configPath := flags.String("config", "", "path to the config file")
