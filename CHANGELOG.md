@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.0](https://github.com/jimmykurian/ci-parity/compare/v0.7.0...v0.8.0) (2026-10-28)
+
+
+### Features
+
+* harden for 1.0: cross-platform tests, action download test, performance test, compatibility and JSON Schemas ([#35](https://github.com/jimmykurian/ci-parity/issues/35)) ([e0d461c](https://github.com/jimmykurian/ci-parity/commit/e0d461c8141ad906a1f6c0594c3f4b5dfd10e36a))
+
 ## [0.7.0](https://github.com/jimmykurian/ci-parity/compare/v0.6.0...v0.7.0) (2026-10-28)
 
 
