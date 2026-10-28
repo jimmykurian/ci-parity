@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.6.0](https://github.com/jimmykurian/ci-parity/compare/v0.5.1...v0.6.0) (2026-10-28)
+
+
+### Features
+
+* add a pre-commit hook and mise install instructions ([#23](https://github.com/jimmykurian/ci-parity/issues/23)) ([37d3660](https://github.com/jimmykurian/ci-parity/commit/37d36605644a19d46f375793cb400070238825c0))
+
 ## [0.5.1](https://github.com/jimmykurian/ci-parity/compare/v0.5.0...v0.5.1) (2026-10-28)
 
 
