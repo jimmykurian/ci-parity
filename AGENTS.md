@@ -26,6 +26,8 @@ baseline that only shrinks. A Go CLI plus a composite GitHub Action (`action.yml
 - `schemas/`: JSON Schemas for the config, baseline and JSON output; they change with
   `docs/reference/`, and `task lint:schemas` checks them against the fixtures
 - `test/perf/`: the timed check on 50 workflows (`task test:perf`, `task bench`)
+- `tools/metrics/`: the README's code metrics; after changing code, run
+  `task metrics:readme`, or CI's `task metrics:check` fails
 - `site/`: the Starlight docs site, built from `docs/` by `scripts/sync-docs.mjs` and
   deployed to GitHub Pages; edit `docs/`, never the generated pages
 

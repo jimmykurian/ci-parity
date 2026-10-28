@@ -23,4 +23,5 @@ uv = "0.13.5" # runs pipx tools
 node = "24.22.1" # for pnx, which runs markdownlint-cli2 (version in Taskfile.yml)
 "npm:pnpm" = "11.21.0" # 12.x releases fail mise's npm provenance (trust) check
 typos = "1.51.1"
+"aqua:boyter/scc" = "4.1.0" # lines of code for task metrics
 editorconfig-checker = "4.0.2"

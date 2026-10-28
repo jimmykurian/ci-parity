@@ -46,6 +46,7 @@ jobs:
       editorconfig: ${{ steps.editorconfig.outcome }}
       headers: ${{ steps.headers.outcome }}
       schemas: ${{ steps.schemas.outcome }}
+      metrics: ${{ steps.metrics.outcome }}
       release: ${{ steps.release.outcome }}
       unit: ${{ steps.unit.outcome }}
       integration: ${{ steps.integration.outcome }}
@@ -105,6 +106,9 @@ jobs:
       - id: schemas
         if: ${{ !cancelled() }}
         run: task lint:schemas
+      - id: metrics
+        if: ${{ !cancelled() }}
+        run: task metrics:check
       - id: release
         if: ${{ !cancelled() }}
         run: task lint:release
@@ -301,6 +305,7 @@ jobs:
                   ['EditorConfig', 'lint:editorconfig', 'editorconfig'],
                   ['License headers', 'lint:headers', 'headers'],
                   ['JSON Schemas (ajv)', 'lint:schemas', 'schemas'],
+                  ['Code metrics in the README', 'metrics:check', 'metrics'],
                   ['Release config (goreleaser check)', 'lint:release', 'release'],
                   ['Unit tests', 'test:unit', 'unit'],
                   ['Integration tests (golden fixtures)', 'test:integration', 'integration'],
@@ -416,6 +421,7 @@ jobs:
               'checks/editorconfig.json': status(c.editorconfig),
               'checks/headers.json': status(c.headers),
               'checks/schemas.json': status(c.schemas),
+              'checks/metrics.json': status(c.metrics),
               'checks/release.json': status(c.release),
               'build/unit-tests.json': status(c.unit),
               'build/integration-tests.json': status(c.integration),

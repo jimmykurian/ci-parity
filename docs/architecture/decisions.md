@@ -89,6 +89,10 @@ or pull request and the maintainer's agreement before any code.
 - **The baseline stays a count.** Fingerprint lists (one entry per tolerated finding)
   would name exactly the new step, but they'd mean a breaking v2 format whose entries
   change whenever a step is reformatted. See [Baseline: why a count](../reference/baseline.md#why-a-count).
+- **Code metrics are checked, not proposed.** The README's metrics (scc lines of code, Go
+  function complexity from `tools/metrics`) fail CI when stale, so each pull request
+  updates them. A bot pull request would need a GitHub App: one opened with
+  `GITHUB_TOKEN` starts no checks.
 - **The formats have JSON Schemas** in `schemas/`, published with the docs site, checked
   against every fixture by `task lint:schemas`, and the config schema's keys are tested
   against the parser's.

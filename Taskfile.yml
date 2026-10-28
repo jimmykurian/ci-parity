@@ -7,6 +7,9 @@ vars:
   BIN: ./bin/ci-parity
   MARKDOWNLINT: markdownlint-cli2@0.23.3
   AJV: ajv-cli@5.0.0
+  # The tracked code the README's metrics count: Go, and the docs site's own code.
+  METRICS_FILES: "'*.go' 'site/*.mjs' 'site/*.ts' 'site/*.astro' 'site/*.css'"
+  SCC_ARGS: --format json --by-file --no-cocomo
   VERSION:
     sh: git describe --tags --always --dirty 2>/dev/null || echo dev
   COMMIT:
@@ -32,7 +35,7 @@ tasks:
     desc: Run the unit tests, which sit next to the code they test
     cmds:
       # Package patterns, not a `go list | grep` pipe, so it runs the same on every OS.
-      - go test ./cmd/... ./internal/...
+      - go test ./cmd/... ./internal/... ./tools/...
 
   test:integration:
     desc: Run the CLI in-process against every fixture (golden, baseline and fix tests)
@@ -48,6 +51,26 @@ tasks:
     desc: Check that ci-parity checks 50 workflows in under a second
     cmds:
       - go test -count=1 ./test/perf/...
+
+  metrics:
+    desc: Print the code metrics (lines of code with scc, Go function complexity)
+    preconditions: &scc
+      - sh: command -v scc
+        msg: "scc not found on PATH; run `mise install`"
+    cmds:
+      - scc {{.SCC_ARGS}} $(git ls-files {{.METRICS_FILES}}) | go run ./tools/metrics
+
+  metrics:readme:
+    desc: Write the code metrics into the README's METRICS block
+    preconditions: *scc
+    cmds:
+      - scc {{.SCC_ARGS}} $(git ls-files {{.METRICS_FILES}}) | go run ./tools/metrics -write
+
+  metrics:check:
+    desc: Fail when the README's code metrics are out of date (CI runs this)
+    preconditions: *scc
+    cmds:
+      - scc {{.SCC_ARGS}} $(git ls-files {{.METRICS_FILES}}) | go run ./tools/metrics -check
 
   bench:
     desc: Benchmark check on 50 workflows
@@ -335,6 +358,7 @@ tasks:
       - task: test
       - task: build
       - task: self-check
+      - task: metrics:check
       - task: site:install
       - task: site:test
       - task: site:build
