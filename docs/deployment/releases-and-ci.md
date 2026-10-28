@@ -24,8 +24,11 @@ and its binaries are published.
 to its author, or a bot's to the owner.
 
 The "Protect main" ruleset requires squash-merged pull requests, signed commits, linear
-history, and the **Checks** and **Self-check** jobs; it blocks force pushes and deletion,
-and repository admins can bypass it.
+history, and the **Checks**, **Self-check**, **Tests (macos-latest)** and
+**Tests (windows-latest)** jobs; it blocks force pushes and deletion, and repository admins
+can bypass it. **Action download** isn't required: it tests the published release, which a
+pull request can't change, and it can fail for reasons outside the repository, such as the
+minute after a release before its archives are uploaded.
 
 Every `run:` step calls `task`, and every third-party action is pinned to a full commit
 SHA with a version comment. The repository checks its own workflows with ci-parity:

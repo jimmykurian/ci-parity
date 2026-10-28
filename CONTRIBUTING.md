@@ -194,8 +194,10 @@ A check whose tool isn't installed is skipped with a warning; CI runs everything
   the commit it ran on and a link to the run, and updates it on each push.
 - The PR is labeled by the paths it changes (`.github/labeler.yml`) and assigned to
   whoever opened it; bots' PRs go to the owner. `.github/CODEOWNERS` requests review.
-- Once the repository is public, a GitHub ruleset protects `main`: squash merges only,
-  signed commits, linear history, and the **Checks** and **Self-check** jobs must pass.
+- A GitHub ruleset protects `main`: squash merges only, signed commits, linear history,
+  and the **Checks**, **Self-check**, **Tests (macos-latest)** and
+  **Tests (windows-latest)** jobs must pass. **Action download** isn't required: it tests
+  the published release, which a pull request can't change.
 - Every `run:` step in this repo's workflows calls `task`. Setup goes in
   `uses:` steps pinned to a full commit SHA with a version comment. Anything
   else needs a `# ci-parity: allow <reason>` comment on the line.
