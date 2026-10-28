@@ -4,6 +4,7 @@
   // The devcontainer installs the same list (.devcontainer/devcontainer.json).
   "recommendations": [
     "golang.go",
+    "astro-build.astro-vscode",
     "task.vscode-task",
     "hverlin.mise-vscode",
     "redhat.vscode-yaml",

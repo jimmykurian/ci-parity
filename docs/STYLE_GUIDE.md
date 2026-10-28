@@ -58,8 +58,11 @@ Mark behavior added after v0.1 with the version it arrived in ("from v0.3").
 - **Code blocks:** give every fence a language: `sh`, `yaml`, `json`, `go`, `text` for
   output and trees, `mermaid` for diagrams.
 - **Links:** relative paths to files in the repository; link text that says where it
-  goes.
-- **Lint:** `task lint:markdown` and `task lint:spelling` check every page.
+  goes. The pages render on GitHub and on the [docs site](https://jimmykurian.github.io/ci-parity/),
+  which rewrites links between pages into site routes and points links out of `docs/` at
+  GitHub, so a relative `.md` link works in both.
+- **Lint:** `task lint:markdown` and `task lint:spelling` check every page, and
+  `task site:build` fails on a broken link or anchor between pages.
 
 ## See also
 

@@ -18,6 +18,7 @@
       // The same list as .vscode/extensions.json.
       "extensions": [
         "golang.go",
+        "astro-build.astro-vscode",
         "task.vscode-task",
         "hverlin.mise-vscode",
         "redhat.vscode-yaml",

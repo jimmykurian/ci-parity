@@ -21,6 +21,8 @@ baseline that only shrinks. A Go CLI plus a composite GitHub Action (`action.yml
   fixtures; `test/e2e/` builds the binary and runs it as a process
 - `docs/reference/` is the contract; `docs/architecture/` shows how it fits together and
   why; `docs/README.md` indexes the rest
+- `site/`: the Starlight docs site, built from `docs/` by `scripts/sync-docs.mjs` and
+  deployed to GitHub Pages; edit `docs/`, never the generated pages
 
 Dependencies point inward: `cmd` → `cli` → `adapters` → `app` → `rules` → `domain`.
 

@@ -11,6 +11,9 @@
 > may change commands, config keys and output. Rule IDs, the baseline format and the JSON
 > schema change only with a new `version` in the file.
 
+**Documentation:** <https://jimmykurian.github.io/ci-parity/>: the reference, the
+architecture, and how it's tested and released, with search.
+
 ci-parity checks that GitHub Actions workflows invoke project commands through the
 repository's task runner instead of calling build, test, lint and deploy tools inline.
 It reports every inline invocation, verifies that every task CI references exists, and

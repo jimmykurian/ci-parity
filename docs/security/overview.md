@@ -36,6 +36,9 @@ workflows, composite actions, runner files, `.ci-parity.yml` and the baseline.
   workflows.
 - Dev tools are pinned in `mise.toml`; mise's npm provenance check is not bypassed.
 - The release job uses no caches, so a cache written elsewhere can't reach the binaries.
+- The docs site's npm packages are pinned in `site/pnpm-lock.yaml`, install no scripts
+  unless `site/pnpm-workspace.yaml` allows them, and never reach the binary. The Pages
+  deploy builds without caches, and only its deploy job can write to Pages.
 
 ## Repository controls
 
