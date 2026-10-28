@@ -311,9 +311,10 @@ interface and its own call syntax; the rules are unchanged.
 
 - Discovery: the root file is found in the repository root, names matched exactly.
   make: `GNUmakefile`, `makefile`, `Makefile`. just: `justfile`, `Justfile`,
-  `.justfile`. mise: `mise.toml`, `.mise.toml`, `mise/config.toml`,
-  `.mise/config.toml`, `.config/mise.toml`, `.config/mise/config.toml`, merged in
-  mise's order. The `taskfile` key is only for `runner: taskfile`; set with another
+  `.justfile`. mise: every one of `.config/mise/config.toml`, `.config/mise.toml`,
+  `mise/config.toml`, `.mise/config.toml`, `mise.toml` and `.mise.toml` that exists,
+  read in that order, a later file's task replacing an earlier one's; messages name the
+  last one found. The `taskfile` key is only for `runner: taskfile`; set with another
   runner it is a config error. A missing root file exits 2.
 - Defaults by runner: `invokers.shell` is `[make, gmake]`, `[just]` or
   `["mise run", "mise r", "mise tasks run"]`, and `invokers.actions` is empty, unless
@@ -338,12 +339,16 @@ interface and its own call syntax; the rules are unchanged.
   one); `just mod recipe` and `just mod::recipe` both name a module recipe. `-f`,
   `--justfile`, `-d` and `--working-directory` select another justfile; `--set` takes
   two values.
-- mise: `[tasks.name]` tables and `name = "cmd"` entries, with `run` (string or list)
-  as the commands, `alias` as aliases and `hide = true` as internal; file tasks under
-  `mise-tasks/`, `.mise-tasks/`, `mise/tasks/`, `.mise/tasks/` and
-  `.config/mise/tasks/` (named from the path, `db/migrate` as `db:migrate`, with no
-  commands); and `task_config.includes`. A call names one task, then its arguments;
-  `:::` starts another task. `-C` and `--cd` select another directory.
+- mise: `[tasks.name]` tables and `name = "cmd"` (or list) entries, with `run` (string
+  or list) as the commands, `alias` (string or list) as aliases and `hide = true` as
+  internal; executable file tasks under `.config/mise/tasks/`, `mise/tasks/`,
+  `.mise/tasks/`, `mise-tasks/` and `.mise-tasks/` (named from the path, `db/migrate`
+  as `db:migrate`, hidden by a `#MISE hide=true` line, with no commands); and
+  `task_config.includes`, each a task TOML file whose top-level tables are tasks or a
+  directory of file tasks, a missing one skipped. A call names one task, then its
+  arguments; `:::` starts another task. `-C` and `--cd` select another directory; a
+  task name holding a glob (`lint:*`) is not checked; `-j --jobs -E --env -t --tool
+  --timeout -o --output -s --shell` take a value.
 
 ## 6. Rules
 
@@ -554,7 +559,7 @@ locked at 0.
 Dev tools (golangci-lint v2, govulncheck, actionlint, zizmor, gitleaks, shellcheck,
 yamllint, markdownlint-cli2, typos, editorconfig-checker) are pinned in `mise.toml` and
 never added to `go.mod`, as `tool` directives or otherwise; the dependency rule in
-`AGENTS.md` covers `go.mod` and stays at three modules. In CI they come from a
+`AGENTS.md` covers `go.mod` and its four modules. In CI they come from a
 SHA-pinned `jdx/mise-action` step before the `task` steps; gitleaks also runs as its own
 `uses:` step, not part of `task ci`. Locally `mise install` sets them up; each
 `task lint:<group>` checks its binaries are on `PATH` and fails with an install hint
