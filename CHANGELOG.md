@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/jimmykurian/ci-parity/compare/v0.1.1...v0.2.0) (2026-10-28)
+
+
+### Features
+
+* **report:** add SARIF output (Phase 5) ([#8](https://github.com/jimmykurian/ci-parity/issues/8)) ([129f39e](https://github.com/jimmykurian/ci-parity/commit/129f39e488e6a36c512bb0ace45d58f558377ce4))
+* **rules:** look through package runners when suggesting tasks (Phase 6) ([#9](https://github.com/jimmykurian/ci-parity/issues/9)) ([4a952ec](https://github.com/jimmykurian/ci-parity/commit/4a952ec2fba90484893aa8f1ee5969778851401d))
+
+
+### Documentation
+
+* tick Phase 4 ([#6](https://github.com/jimmykurian/ci-parity/issues/6)) ([5ff6087](https://github.com/jimmykurian/ci-parity/commit/5ff6087d871842c8b745a8beff880501d564f431))
+
 ## [0.1.1](https://github.com/jimmykurian/ci-parity/compare/v0.1.0...v0.1.1) (2026-10-27)
 
 
