@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.3](https://github.com/jimmykurian/ci-parity/compare/v0.8.2...v0.8.3) (2026-10-29)
+
+
+### Documentation
+
+* lead the README with the demo, install and quick start ([#67](https://github.com/jimmykurian/ci-parity/issues/67)) ([f843757](https://github.com/jimmykurian/ci-parity/commit/f8437578f2412bcbddd33b8e2b7b952068693c16))
+
 ## [0.8.2](https://github.com/jimmykurian/ci-parity/compare/v0.8.1...v0.8.2) (2026-10-29)
 
 
