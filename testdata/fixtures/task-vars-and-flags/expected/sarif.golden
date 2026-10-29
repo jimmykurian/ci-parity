@@ -91,6 +91,30 @@
           "partialFingerprints": {
             "ciParity/v1": "837d34498789640e1114b2ae8af00b7f"
           }
+        },
+        {
+          "ruleId": "P002",
+          "level": "error",
+          "message": {
+            "text": "'task tets' is not defined in Taskfile.yml (closest: test)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 36,
+                  "startColumn": 56
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "0443923e1a4aa5095d11d80f8ac87054"
+          }
         }
       ]
     }

@@ -30,3 +30,9 @@ jobs:
         run: task --silent -C 4 tset
       - name: Dynamic task name
         run: task ${{ inputs.target }}
+      - name: Grouped output, as task's own CI runs it
+        run: task -o group --output-group-begin '::group::{{.TASK}}' --output-group-end '::endgroup::' test
+      - name: Flags with values before an unknown task
+        run: task --timeout 30s --temp-dir .cache/task tets
+      - name: Shell completion runs no task
+        run: task --completion bash > task.bash

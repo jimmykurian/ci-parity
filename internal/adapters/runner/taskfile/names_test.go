@@ -34,6 +34,13 @@ func TestTaskNames(t *testing.T) {
 		{"-dweb build", nil},
 		{"--global setup", nil},
 		{"-g setup", nil},
+		{"-o group --output-group-begin ::group::{{.TASK}} --output-group-end ::endgroup:: ci", []string{"ci"}},
+		{"--sort alphanumeric --list-all", nil},
+		{"--temp-dir .cache/task --timeout 30s --expiry 1h build", []string{"build"}},
+		{"--cacert ca.pem --cert client.pem --cert-key client.key build", []string{"build"}},
+		{"--remote-cache-dir .cache --trusted-hosts example.com build", []string{"build"}},
+		{"--completion bash", nil},
+		{"--completion=zsh", nil},
 	}
 	for _, tt := range tests {
 		// Arrange

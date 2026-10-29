@@ -1,7 +1,7 @@
 {
   "version": 1,
   "summary": {
-    "errors": 1,
+    "errors": 2,
     "warnings": 0,
     "tolerated": 0,
     "allowed": 0
@@ -19,6 +19,21 @@
       "step": "Unknown after flags",
       "command": null,
       "message": "'task tset' is not defined in Taskfile.yml (closest: test)",
+      "suggestion": "task test",
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 36,
+      "col": 56,
+      "job": "build",
+      "action": null,
+      "step": "Flags with values before an unknown task",
+      "command": null,
+      "message": "'task tets' is not defined in Taskfile.yml (closest: test)",
       "suggestion": "task test",
       "reason": null
     }
