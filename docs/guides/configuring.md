@@ -21,7 +21,8 @@ workflows:
   - .github/actions/**/action.yml
   - .github/actions/**/action.yaml
 invokers:
-  shell: [task, go-task, "go tool task"]
+  shell: [task, go-task, "go tool task", "go tool github.com/go-task/task/v3/cmd/task",
+          "go run github.com/go-task/task/v3/cmd/task"]
   actions:
     - uses: ./.github/actions/run-task
       input: task

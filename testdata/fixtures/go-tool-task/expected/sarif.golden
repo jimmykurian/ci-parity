@@ -115,6 +115,30 @@
           "partialFingerprints": {
             "ciParity/v1": "32171b4e1bbc035b251657eeadc6cabe"
           }
+        },
+        {
+          "ruleId": "P002",
+          "level": "error",
+          "message": {
+            "text": "'task tset' is not defined in Taskfile.yml (closest: test)"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 22,
+                  "startColumn": 57
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "c6c9a6e0080b0939057d0f8db26a35df"
+          }
         }
       ]
     }

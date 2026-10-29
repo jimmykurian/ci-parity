@@ -1,7 +1,7 @@
 {
   "version": 1,
   "summary": {
-    "errors": 2,
+    "errors": 3,
     "warnings": 0,
     "tolerated": 0,
     "allowed": 0
@@ -34,6 +34,21 @@
       "step": "Inline go test has a task",
       "command": "go test ./...",
       "message": "step \"Inline go test has a task\" in job \"build\" runs 'go test ./...' directly; already available as 'task test'",
+      "suggestion": "task test",
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 22,
+      "col": 57,
+      "job": "build",
+      "action": null,
+      "step": "Unknown through go run",
+      "command": null,
+      "message": "'task tset' is not defined in Taskfile.yml (closest: test)",
       "suggestion": "task test",
       "reason": null
     }
