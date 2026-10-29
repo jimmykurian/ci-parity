@@ -12,10 +12,10 @@ hero:
     alt: A workflow step running pnpm test is flagged P001 because the Taskfile already runs it; ci-parity fix rewrites the step to task test.
   actions:
     - text: Get started
-      link: /ci-parity/guides/getting-started/
+      link: /guides/getting-started/
       icon: right-arrow
     - text: Why ci-parity
-      link: /ci-parity/guides/why/
+      link: /guides/why/
       variant: minimal
 ---
 
@@ -24,7 +24,7 @@ import Ratchet from '../../components/Ratchet.astro';
 
 ## See it in action
 
-<img class="demo" src="/ci-parity/ci-parity-demo.svg" alt="A terminal session: ci-parity check reports three inline tools, each already available as a task; ci-parity fix rewrites the three steps; ci-parity check then reports 0 errors." />
+<img class="demo" src="/ci-parity-demo.svg" alt="A terminal session: ci-parity check reports three inline tools, each already available as a task; ci-parity fix rewrites the three steps; ci-parity check then reports 0 errors." />
 
 The same check on a workflow that calls pnpm directly, next to a Taskfile that already
 wraps those commands:
@@ -39,7 +39,7 @@ wraps those commands:
 ```
 
 Each finding names the step, the command, and the task that already runs it.
-[Getting started](/ci-parity/guides/getting-started/) walks through it.
+[Getting started](/guides/getting-started/) walks through it.
 
 ## How it works
 
@@ -54,7 +54,7 @@ flowchart LR
 ```
 
 It reads the files as text: it never runs your task runner, your scripts or the network.
-Every finding is on the exact line and column, in [four formats](/ci-parity/reference/output-formats/).
+Every finding is on the exact line and column, in [four formats](/reference/output-formats/).
 
 ## In your pull requests
 
@@ -64,16 +64,16 @@ repository.
 
 <div class="shots">
   <figure>
-    <a href="/ci-parity/pr-annotations.png"><img src="/ci-parity/pr-annotations.png" alt="A pull request's Files changed tab: under line 21, run: golangci-lint run ./..., an annotation reads P001 inline-tool, already available as 'task lint:go', with the matching code scanning alert below it." /></a>
+    <a href="/pr-annotations.png"><img src="/pr-annotations.png" alt="A pull request's Files changed tab: under line 21, run: golangci-lint run ./..., an annotation reads P001 inline-tool, already available as 'task lint:go', with the matching code scanning alert below it." /></a>
     <figcaption>An annotation and a code scanning alert on the line that caused them</figcaption>
   </figure>
   <figure>
-    <a href="/ci-parity/code-scanning.png"><img src="/ci-parity/code-scanning.png" alt="The ci-parity code scanning check on a pull request: 4 new alerts including 4 errors, each listed with its line and message." /></a>
+    <a href="/code-scanning.png"><img src="/code-scanning.png" alt="The ci-parity code scanning check on a pull request: 4 new alerts including 4 errors, each listed with its line and message." /></a>
     <figcaption>The code scanning check: every new alert, with its rule</figcaption>
   </figure>
 </div>
 
-[CI setup](/ci-parity/guides/ci/) has both workflows.
+[CI setup](/guides/ci/) has both workflows.
 
 ## Works with your task runner
 
@@ -84,7 +84,7 @@ repository.
     - run: task test
     ```
     The default: no config needed. Internal tasks (`internal: true`) are reported as
-    [P003](/ci-parity/rules/p003/).
+    [P003](/rules/p003/).
   </TabItem>
   <TabItem label="make" icon="seti:makefile">
     ```yaml title=".github/workflows/ci.yml"
@@ -99,7 +99,7 @@ repository.
     - run: just test
     ```
     With `runner: just`. Imports and modules are followed, and `[private]` recipes are
-    reported as [P003](/ci-parity/rules/p003/).
+    reported as [P003](/rules/p003/).
   </TabItem>
   <TabItem label="mise" icon="setting">
     ```yaml title=".github/workflows/ci.yml"
@@ -107,11 +107,11 @@ repository.
     - run: mise run test
     ```
     With `runner: mise`. Tasks in `mise.toml`, includes and file tasks; `hide = true` is
-    reported as [P003](/ci-parity/rules/p003/).
+    reported as [P003](/rules/p003/).
   </TabItem>
 </Tabs>
 
-[Recipes](/ci-parity/guides/recipes/) has a passing setup for each.
+[Recipes](/guides/recipes/) has a passing setup for each.
 
 ## Adopt it today, finish later
 
@@ -121,41 +121,41 @@ count can only go down.
 
 <Ratchet />
 
-[Adopting with a baseline](/ci-parity/guides/baseline/) shows each step, and
-[`ci-parity fix`](/ci-parity/guides/fixing/) rewrites the steps it safely can.
+[Adopting with a baseline](/guides/baseline/) shows each step, and
+[`ci-parity fix`](/guides/fixing/) rewrites the steps it safely can.
 
 ## What it reports
 
 <CardGrid>
   <Card title="P001 inline-tool" icon="seti:shell">
     A `run:` step calls `pnpm`, `go`, `docker` or another tool directly.
-    [Fix or allow it →](/ci-parity/rules/p001/)
+    [Fix or allow it →](/rules/p001/)
   </Card>
   <Card title="P002 unknown-task" icon="magnifier">
     CI calls a task the runner doesn't define, with the closest name.
-    [Details →](/ci-parity/rules/p002/)
+    [Details →](/rules/p002/)
   </Card>
   <Card title="P003 internal-task" icon="close">
-    CI calls an internal, private or hidden task. [Details →](/ci-parity/rules/p003/)
+    CI calls an internal, private or hidden task. [Details →](/rules/p003/)
   </Card>
   <Card title="P004 regression" icon="up-arrow">
     A workflow has more inline steps than its baseline allows.
-    [Details →](/ci-parity/rules/p004/)
+    [Details →](/rules/p004/)
   </Card>
   <Card title="P005 unsupported" icon="information">
     A step it can't analyze, such as a PowerShell step, is reported as a warning.
-    [Details →](/ci-parity/rules/p005/)
+    [Details →](/rules/p005/)
   </Card>
   <Card title="Everything else" icon="approve-check">
-    Steps that call your task runner pass. [All the rules →](/ci-parity/rules/)
+    Steps that call your task runner pass. [All the rules →](/rules/)
   </Card>
 </CardGrid>
 
 ## Get it
 
 <CardGrid>
-  <LinkCard title="GitHub Action" description="uses: jimmykurian/ci-parity@v0, with annotations or SARIF." href="/ci-parity/guides/ci/" />
-  <LinkCard title="Binary, go install or mise" description="Release archives for linux, darwin and windows." href="/ci-parity/guides/getting-started/" />
-  <LinkCard title="pre-commit hook" description="Check workflows before they're pushed." href="/ci-parity/guides/getting-started/#pre-commit" />
-  <LinkCard title="Configure it" description="Runner, tools, and steps you mean to keep." href="/ci-parity/guides/configuring/" />
+  <LinkCard title="GitHub Action" description="uses: jimmykurian/ci-parity@v0, with annotations or SARIF." href="/guides/ci/" />
+  <LinkCard title="Binary, go install or mise" description="Release archives for linux, darwin and windows." href="/guides/getting-started/" />
+  <LinkCard title="pre-commit hook" description="Check workflows before they're pushed." href="/guides/getting-started/#pre-commit" />
+  <LinkCard title="Configure it" description="Runner, tools, and steps you mean to keep." href="/guides/configuring/" />
 </CardGrid>

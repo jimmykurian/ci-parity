@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://jimmykurian.github.io/ci-parity/schemas/output.schema.json",
+  "$id": "https://ci-parity.is-a.dev/schemas/output.schema.json",
   "title": "ci-parity check --format json, version 1",
-  "description": "See https://jimmykurian.github.io/ci-parity/reference/output-formats/",
+  "description": "See https://ci-parity.is-a.dev/reference/output-formats/",
   "type": "object",
   "additionalProperties": false,
   "required": [

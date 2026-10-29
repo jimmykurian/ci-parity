@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://jimmykurian.github.io/ci-parity/schemas/config.schema.json",
+  "$id": "https://ci-parity.is-a.dev/schemas/config.schema.json",
   "title": "ci-parity configuration (.ci-parity.yml)",
-  "description": "Every key is optional; a key set to null keeps its default. See https://jimmykurian.github.io/ci-parity/reference/configuration/",
+  "description": "Every key is optional; a key set to null keeps its default. See https://ci-parity.is-a.dev/reference/configuration/",
   "type": "object",
   "additionalProperties": false,
   "properties": {

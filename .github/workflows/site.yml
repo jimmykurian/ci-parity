@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Builds the docs site from docs/ and deploys it to GitHub Pages at
-# https://jimmykurian.github.io/ci-parity/. Pull requests build it in ci.yml; this
+# https://ci-parity.is-a.dev/. Pull requests build it in ci.yml; this
 # deploys what lands on main.
 name: Docs site
 
