@@ -1,1 +1,2 @@
 ::error file=.github/workflows/ci.yml,line=30,col=33,title=P002 unknown-task::'task tset' is not defined in Taskfile.yml (closest: test)
+::error file=.github/workflows/ci.yml,line=36,col=56,title=P002 unknown-task::'task tets' is not defined in Taskfile.yml (closest: test)

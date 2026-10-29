@@ -96,13 +96,16 @@ Shell invokers are word sequences. `go tool task` matches the three words `go`, 
 `task`. After the invoker words, parse arguments:
 
 - Stop at `--`.
-- Skip flags. These flags consume the next argument: `-t --taskfile -d --dir
-  -C --concurrency -I --interval -o --output`. A flag written as `--flag=value`
+- Skip flags. These flags consume the next argument, as `task --help` lists them:
+  `-t --taskfile -d --dir -C --concurrency -I --interval -o --output
+  --output-group-begin --output-group-end --sort --temp-dir --timeout --expiry --cacert
+  --cert --cert-key --remote-cache-dir --trusted-hosts`. A flag written as `--flag=value`
   carries its value and consumes nothing further. Any other argument starting with `-`
   is a flag that consumes nothing.
 - Arguments of the form `KEY=VALUE` are task variables, not task names.
 - `-t`, `--taskfile`, `-d`, `--dir` (in any form, including `--dir=web` and `-dweb`),
   `-g` and `--global` select a Taskfile other than the root one, so the call is ignored.
+  So is `--completion` (also `--completion=bash`), which prints a shell completion script.
 - Every remaining argument is a task name. A task name that is not a literal word cannot
   be checked and is skipped. Zero task names (for example `task --list`) means the call
   is ignored.
