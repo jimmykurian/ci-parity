@@ -14,7 +14,7 @@ released. The same pages are published, with search, at [https://jimmykurian.git
 | [Reference](reference/README.md) | The contract: configuration, the baseline, how workflows and runner files are read, the rules and their messages, the CLI and exit codes, the output formats and the GitHub Action |
 | [Architecture](architecture/README.md) | The system context, the packages and their ports, the check, fix and release flows, and the design decisions |
 | [Releases and CI](deployment/releases-and-ci.md) | The CI jobs, the check table and badges, the `main` ruleset, and how a release and the Marketplace listing are published |
-| [Testing](testing/testing-strategy.md) | Golden fixtures, fix fixtures, unit and use-case tests, and the action's tests |
+| [Testing](testing/testing-strategy.md) | Golden fixtures, fix fixtures, unit and use-case tests, the action's tests, and the [field trial](testing/field-trial.md) on public repositories |
 | [Security](security/overview.md) | The threat model, the action's input handling, the supply chain and the repository controls |
 
 ## Related documentation

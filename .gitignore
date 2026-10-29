@@ -33,3 +33,6 @@ Thumbs.db
 
 # Local Claude Code settings
 .claude/settings.local.json
+
+# Repositories fetched by `task trial`
+/.cache/

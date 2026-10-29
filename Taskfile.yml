@@ -52,6 +52,12 @@ tasks:
     cmds:
       - go test -count=1 ./test/perf/...
 
+  trial:
+    desc: Run the field trial on the public repositories in test/trial/repos.yml (needs the network)
+    deps: [build]
+    cmds:
+      - go run ./tools/trial
+
   metrics:
     desc: Print the code metrics (lines of code with scc, Go function complexity)
     preconditions: &scc

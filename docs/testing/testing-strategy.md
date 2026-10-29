@@ -17,6 +17,7 @@ The test suites, what each one proves, and how to add to them. `task test` runs 
 | End-to-end | `test/e2e/` | The built binary, run as a process: the stamped version, exit codes, stdout and stderr, the working directory in place of `-C`, and `fix` writing to disk |
 | Performance | `test/perf/` | `check` on a generated repository of 50 workflows (1,200 steps) takes under a second; `task bench` reports time and allocations |
 | Schemas | `schemas/`, `task lint:schemas` | Every JSON golden, fixture config and baseline matches its JSON Schema, and the deliberately broken ones don't; a unit test keeps the config schema's keys in step with the parser |
+| Field trial | `test/trial/`, `task trial` | ci-parity on 10 public repositories at pinned commits; every P002 and suggestion is checked by hand. Not in `task ci`, since it needs the network. See [Field trial](field-trial.md) |
 | Action tests | the **Self-check** and **Action download** CI jobs | The action from this checkout on this repository and on a fixture with findings; and the published action downloading, verifying and running the latest release on Linux, macOS and Windows |
 
 Every test layer runs on Linux in the **Checks** job and on macOS and Windows in the
@@ -108,6 +109,7 @@ repository, with no findings, never reaches.
 ## See also
 
 - [Documentation index](../README.md)
+- [Field trial](field-trial.md)
 - [CONTRIBUTING.md](../../CONTRIBUTING.md)
 - [Releases and CI](../deployment/releases-and-ci.md)
 

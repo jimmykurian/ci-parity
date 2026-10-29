@@ -1,0 +1,41 @@
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+
+# The field trial's repositories, each pinned to the commit it was first run on, so a
+# re-run after a fix shows only what ci-parity changed. `task trial` runs them; the
+# method and results are in docs/testing/field-trial.md.
+repos:
+  # Taskfile: task itself, a large Go project, and one calling task through `go tool`.
+  - repo: go-task/task
+    commit: ad2782e1709f0bcf8fbbe0d8e00c2d239141e099
+    runner: taskfile
+  - repo: goreleaser/goreleaser
+    commit: 2e260e4af35c00e0ad41e479c3830f9cfe858e36
+    runner: taskfile
+  - repo: arduino/arduino-cli
+    commit: 5636914eaa11206b9cfdf41b81ccd788c5216610
+    runner: taskfile
+  # make: a shared Makefile.common with pattern rules, a monorepo, and PowerShell steps.
+  - repo: prometheus/prometheus
+    commit: 3cb40f50066011274b4e54ca7944045851a67d0a
+    runner: make
+  - repo: traefik/traefik
+    commit: 074d02c09fae5a89463caf478013455f108316a2
+    runner: make
+  - repo: cli/cli
+    commit: f7a06a18a91eef5c0b218b549dab64b86f36f8b9
+    runner: make
+  # just: just itself, and a large monorepo with composite actions.
+  - repo: casey/just
+    commit: c7317c85c21ebd83ea4bb8de26f8afec44c7e597
+    runner: just
+  - repo: oxc-project/oxc
+    commit: 0c81934ba0a4934e9c3d80bcde12212cbfdc1bbc
+    runner: just
+  # mise: mise itself (task_config.includes) and file tasks under mise-tasks/.
+  - repo: jdx/mise
+    commit: 2469666485402fcb8d25f8cfba3e4c2740ebc794
+    runner: mise
+  - repo: jdx/hk
+    commit: ce2c251a72a1f04bc2061052e4c385ffd001b976
+    runner: mise
