@@ -41,7 +41,7 @@ tar -xzf "ci-parity_${VERSION}_linux_amd64.tar.gz"
 go install github.com/jimmykurian/ci-parity/cmd/ci-parity@latest
 ```
 
-A `go install` build reports its version as `dev`; the release binaries carry the
+It needs Go 1.26 or newer. A `go install` build reports its version as `dev`; the release binaries carry the
 version, commit and date.
 
 ### mise

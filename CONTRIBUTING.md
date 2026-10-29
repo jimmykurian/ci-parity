@@ -28,7 +28,8 @@ the approach.
 
 **Prerequisites:**
 
-- Go, at the version in `go.mod` (Go downloads the pinned toolchain itself)
+- Go 1.26 or newer; Go downloads the toolchain `go.mod` pins (its `toolchain` line) itself,
+  so development and CI build with the newest release
 - [mise](https://mise.jdx.dev), which installs task and every linter at the
   versions in `mise.toml`. Without mise, install those yourself at the same
   versions. Linter configs live in `.config/linters/`.

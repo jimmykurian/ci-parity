@@ -44,6 +44,9 @@ or pull request and the maintainer's agreement before any code.
 
 ## How it is built
 
+- **`go.mod`'s `go` line is the lowest Go that builds it, 1.26 (mvdan/sh's floor), and
+  its `toolchain` line is the release CI builds with.** `go install …@latest` reads only
+  the `go` line, so Go 1.26 users don't download a newer toolchain.
 - **Every file carries an SPDX license header,** `SPDX-License-Identifier: Apache-2.0`
   under a copyright line, so a file copied out of the repository keeps its license.
   "All rights reserved" is left out: it contradicts the license. `task lint:headers`
