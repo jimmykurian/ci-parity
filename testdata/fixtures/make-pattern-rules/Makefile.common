@@ -1,0 +1,11 @@
+# Every name runs the common- target of the same name.
+%: common-% ;
+
+common-proto:
+	buf generate
+
+common-print-version:
+	@echo 1.4.0
+
+common-lint:
+	golangci-lint run

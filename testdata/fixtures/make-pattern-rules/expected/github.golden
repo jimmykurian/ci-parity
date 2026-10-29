@@ -1,0 +1,2 @@
+::error file=.github/workflows/ci.yml,line=14,col=19,title=P002 unknown-task::'make release' is not defined in Makefile
+::error file=.github/workflows/ci.yml,line=16,col=14,title=P001 inline-tool::step "Inline command suggests the target, not the pattern name" in job "widget-service" runs 'golangci-lint run' directly; already available as 'make common-lint'

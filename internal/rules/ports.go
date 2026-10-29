@@ -12,6 +12,9 @@ type TaskSource interface {
 	File() string
 	// Tasks returns every name CI can invoke, including aliases, sorted.
 	Tasks() []string
+	// Matches reports whether a name Tasks doesn't list is still defined, such
+	// as by a make pattern rule. Such names are never suggested.
+	Matches(name string) bool
 	// IsInternal reports whether the task called name is marked internal.
 	IsInternal(name string) bool
 	// Commands returns the command strings of the task defined under name.

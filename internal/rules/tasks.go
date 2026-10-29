@@ -50,7 +50,7 @@ func (c *checker) actionInvoker(f *domain.File, s *domain.Step) {
 // internal one.
 func (c *checker) task(f *domain.File, s *domain.Step, name string, line, col int) {
 	switch {
-	case !c.tasks[name]:
+	case !c.tasks[name] && !c.runner.Matches(name):
 		msg := fmt.Sprintf("'%s %s' is not defined in %s", c.runner.Command(), name, c.runner.File())
 		fd := c.add(f, s, domain.UnknownTask, domain.SeverityError, line, col, msg)
 		if closest := c.suggest.closest(name); closest != "" {

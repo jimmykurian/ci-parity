@@ -26,6 +26,14 @@ type Makefile struct {
 	commands map[string][]string // target -> recipe lines
 	prereqs  map[string]bool     // targets with prerequisites
 	suffixes map[string]bool     // the known suffixes, for suffix rules
+	patterns []pattern           // pattern rules, such as `%: common-%`
+}
+
+// pattern is a pattern rule's target, such as `build-%`, and its prerequisites
+// that hold a %.
+type pattern struct {
+	target  string
+	prereqs []string
 }
 
 // defaultSuffixes is GNU make's default suffix list.
@@ -144,6 +152,39 @@ func (m *Makefile) Tasks() []string {
 	}
 	sort.Strings(names)
 	return names
+}
+
+// Matches reports whether a pattern rule makes name: name fits its target
+// with a non-empty stem, and each prerequisite holding a %, with the stem put
+// in, is a target or a file in the repository. `%: common-% ;` makes `proto`
+// when `common-proto` is a target.
+func (m *Makefile) Matches(name string) bool {
+	for _, p := range m.patterns {
+		before, after, _ := strings.Cut(p.target, "%")
+		if len(name) <= len(before)+len(after) || !strings.HasPrefix(name, before) || !strings.HasSuffix(name, after) {
+			continue
+		}
+		stem := name[len(before) : len(name)-len(after)]
+		if m.made(p.prereqs, stem) {
+			return true
+		}
+	}
+	return false
+}
+
+// made reports whether every prerequisite, with stem in place of its %, is a
+// target or a file in the repository.
+func (m *Makefile) made(prereqs []string, stem string) bool {
+	for _, pre := range prereqs {
+		pre = strings.Replace(pre, "%", stem, 1)
+		if _, ok := m.commands[pre]; ok {
+			continue
+		}
+		if _, err := os.Stat(filepath.Join(m.root, filepath.FromSlash(pre))); err != nil {
+			return false
+		}
+	}
+	return true
 }
 
 // IsInternal reports false: make has no internal targets.

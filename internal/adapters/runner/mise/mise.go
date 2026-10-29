@@ -317,6 +317,9 @@ func (m *Mise) Tasks() []string {
 	return names
 }
 
+// Matches reports false: every name is listed by Tasks.
+func (*Mise) Matches(string) bool { return false }
+
 // IsInternal reports whether a task is hidden.
 func (m *Mise) IsInternal(name string) bool {
 	t, ok := m.tasks[name]

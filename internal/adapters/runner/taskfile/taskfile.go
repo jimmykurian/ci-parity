@@ -252,6 +252,9 @@ func (t *Taskfile) Tasks() []string {
 	return names
 }
 
+// Matches reports false: every name is listed by Tasks.
+func (*Taskfile) Matches(string) bool { return false }
+
 // IsInternal reports whether the task called name is internal.
 func (t *Taskfile) IsInternal(name string) bool { return t.internal[name] }
 

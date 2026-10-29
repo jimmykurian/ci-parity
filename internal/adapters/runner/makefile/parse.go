@@ -120,7 +120,11 @@ func (p *parser) rule(text string) {
 	}
 	var targets []string
 	for _, t := range names {
-		if t == "&" || specialTargets[t] || (!hasPrereqs && p.suffixRule(t)) || strings.ContainsAny(t, "%$") {
+		if t == "&" || specialTargets[t] || (!hasPrereqs && p.suffixRule(t)) || strings.Contains(t, "$") {
+			continue
+		}
+		if strings.Contains(t, "%") {
+			p.pattern(t, strings.Fields(prereqs))
 			continue
 		}
 		targets = append(targets, t)
@@ -135,6 +139,18 @@ func (p *parser) rule(text string) {
 	if hasInline {
 		p.recipe("\t" + inline)
 	}
+}
+
+// pattern records a pattern rule's target and the prerequisites that hold a %.
+// The others are fixed files or targets, the same for every name.
+func (p *parser) pattern(target string, prereqs []string) {
+	pt := pattern{target: target}
+	for _, pre := range prereqs {
+		if pre != "|" && strings.Contains(pre, "%") {
+			pt.prereqs = append(pt.prereqs, pre)
+		}
+	}
+	p.m.patterns = append(p.m.patterns, pt)
 }
 
 // suffixes applies a `.SUFFIXES` rule: its prerequisites join the known
