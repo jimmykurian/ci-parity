@@ -1,7 +1,7 @@
 {
   "version": 1,
   "summary": {
-    "errors": 10,
+    "errors": 12,
     "warnings": 0,
     "tolerated": 0,
     "allowed": 0
@@ -154,6 +154,36 @@
       "step": "One of a task's two commands does not match",
       "command": "pnpm build",
       "message": "step \"One of a task's two commands does not match\" in job \"web\" runs 'pnpm build' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 28,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Extra arguments from a variable get no suggestion",
+      "command": "pnpm test",
+      "message": "step \"Extra arguments from a variable get no suggestion\" in job \"web\" runs 'pnpm test' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 30,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Extra arguments from an expression get no suggestion",
+      "command": "pnpm lint",
+      "message": "step \"Extra arguments from an expression get no suggestion\" in job \"web\" runs 'pnpm lint' directly",
       "suggestion": null,
       "reason": null
     }

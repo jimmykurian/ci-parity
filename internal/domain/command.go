@@ -32,6 +32,7 @@ type Command struct {
 	Kind       CommandKind
 	Name       string // tool basename, or the invoker as configured
 	Normalized string // literal words from the command on, joined by single spaces
+	Partial    bool   // a word from the command on isn't literal, so Normalized leaves it out
 	Args       []Word // invoker arguments after the invoker words
 	Line, Col  int    // 1-based position within the script
 	Allowed    bool

@@ -24,3 +24,7 @@ jobs:
         run: pnpm typecheck
       - name: One of a task's two commands does not match
         run: pnpm build
+      - name: Extra arguments from a variable get no suggestion
+        run: pnpm test $EXTRA_ARGS
+      - name: Extra arguments from an expression get no suggestion
+        run: pnpm lint ${{ inputs.lint-args }}

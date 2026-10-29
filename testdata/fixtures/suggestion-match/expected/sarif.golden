@@ -307,6 +307,54 @@
           "partialFingerprints": {
             "ciParity/v1": "d5cff052c67d575490af82d839ad6386"
           }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Extra arguments from a variable get no suggestion\" in job \"web\" runs 'pnpm test' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "85400ebcf8c6315015bbcf51f9f324a6"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Extra arguments from an expression get no suggestion\" in job \"web\" runs 'pnpm lint' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 30,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "e46aa17c302b93c25e24c2b7aa0810b3"
+          }
         }
       ]
     }

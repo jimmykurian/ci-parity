@@ -187,7 +187,8 @@ func (e *extractor) call(c *syntax.CallExpr) {
 	}
 	if name := path.Base(cmd.Text); e.opts.Tools[name] {
 		e.res.Commands = append(e.res.Commands, domain.Command{
-			Kind: domain.KindTool, Name: name, Normalized: normalize(words[i:]), Line: line, Col: col,
+			Kind: domain.KindTool, Name: name, Normalized: normalize(words[i:]), Partial: partial(words[i:]),
+			Line: line, Col: col,
 		})
 	}
 }
@@ -317,6 +318,16 @@ func (e *extractor) matchInvoker(words []domain.Word) (string, int) {
 // problem records something that stops part of the script being analyzed.
 func (e *extractor) problem(line, col int, msg string) {
 	e.res.Problems = append(e.res.Problems, domain.Problem{Line: line, Col: col, Message: msg})
+}
+
+// partial reports whether any of words isn't literal, which normalize drops.
+func partial(words []domain.Word) bool {
+	for _, w := range words {
+		if !w.Literal {
+			return true
+		}
+	}
+	return false
 }
 
 // normalize joins a command's literal words with single spaces, dropping words

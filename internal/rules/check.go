@@ -106,7 +106,9 @@ func (c *checker) parseError(f *domain.File, s *domain.Step, err error) {
 
 // inlineTool reports P001 for a tool called directly, allowed when an allow
 // comment or rule covers it, with the task that runs it in the step's working
-// directory and a fix when there is one.
+// directory and a fix when there is one. A command with a word that isn't
+// literal gets no suggestion: its normalized form leaves that word out, so a
+// task matching it would not run the same thing.
 func (c *checker) inlineTool(f *domain.File, s *domain.Step, cmd domain.Command) {
 	line, col := s.Run.Position(cmd.Line, cmd.Col)
 	msg := fmt.Sprintf("%s %s runs '%s' directly", stepRef(s), scope(f, s), cmd.Normalized)
@@ -117,7 +119,10 @@ func (c *checker) inlineTool(f *domain.File, s *domain.Step, cmd domain.Command)
 		sev, reason = domain.SeverityAllowed, r
 	}
 	dir, dirKnown := domain.RepoDir(s.WorkingDir)
-	suggestion := c.suggest.command(cmd.Normalized, dir, dirKnown)
+	suggestion := ""
+	if !cmd.Partial {
+		suggestion = c.suggest.command(cmd.Normalized, dir, dirKnown)
+	}
 	if suggestion != "" {
 		msg += fmt.Sprintf("; already available as '%s'", suggestion)
 	}

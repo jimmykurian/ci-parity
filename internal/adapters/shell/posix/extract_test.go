@@ -232,3 +232,32 @@ func TestExtractParseError(t *testing.T) {
 }
 
 var _ rules.CommandExtractor = Extractor{}
+
+func TestExtractPartial(t *testing.T) {
+	// Arrange
+	tests := map[string]bool{
+		"pnpm test":                    false,
+		"pnpm test --reporter=dot":     false,
+		"pnpm test $EXTRA_ARGS":        true,
+		"pnpm test \"$EXTRA_ARGS\"":    true,
+		"pnpm lint __GHA_EXPR_0__":     true,
+		"pnpm --filter $(pkg) build":   true,
+		"CI=$CI pnpm test":             false, // an assignment before the command
+		"sudo -u $USER docker build .": false, // a wrapper's option before the command
+	}
+	for script, want := range tests {
+		// Act
+		res, err := Extract(script, testOpts)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		// Assert
+		if len(res.Commands) != 1 {
+			t.Fatalf("Extract(%q) found %d commands, want 1", script, len(res.Commands))
+		}
+		if got := res.Commands[0].Partial; got != want {
+			t.Errorf("Extract(%q).Partial = %v, want %v", script, got, want)
+		}
+	}
+}
