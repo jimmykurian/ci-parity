@@ -68,6 +68,7 @@ tasks:
 | `task test:e2e` | builds the binary and runs it as a process (`test/e2e/`) |
 | `task test:perf` | times `check` on 50 generated workflows; fails above one second |
 | `task bench` | benchmarks `check` on 50 workflows |
+| `task trial` | runs the [field trial](docs/testing/field-trial.md) on public repositories at pinned commits and prints a report; needs the network |
 | `task metrics` | prints the code metrics: lines of code (scc) and Go function complexity |
 | `task metrics:readme` | writes them into the README; run it after changing code, since CI checks them with `task metrics:check` |
 | `task lint:schemas` | checks the JSON Schemas in `schemas/` against every fixture, golden and this repo's files |
