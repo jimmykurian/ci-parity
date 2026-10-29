@@ -4,5 +4,6 @@
   22:14   P001 inline-tool   step "Through Task" in job "build" runs 'task build' directly
   26:14   P001 inline-tool   step "Target with a prerequisite" in job "build" runs 'go vet ./...' directly
   28:14   P001 inline-tool   step "One of a target's two lines" in job "build" runs 'go mod tidy' directly
+  32:19   P002 unknown-task  'make .c.o' is not defined in Makefile
 
-5 errors, 0 warnings, 0 tolerated, 0 allowed
+6 errors, 0 warnings, 0 tolerated, 0 allowed

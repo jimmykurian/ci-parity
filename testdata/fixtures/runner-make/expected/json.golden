@@ -1,7 +1,7 @@
 {
   "version": 1,
   "summary": {
-    "errors": 5,
+    "errors": 6,
     "warnings": 0,
     "tolerated": 0,
     "allowed": 0
@@ -79,6 +79,21 @@
       "step": "One of a target's two lines",
       "command": "go mod tidy",
       "message": "step \"One of a target's two lines\" in job \"build\" runs 'go mod tidy' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 32,
+      "col": 19,
+      "job": "build",
+      "action": null,
+      "step": "Suffix rule is not a target",
+      "command": null,
+      "message": "'make .c.o' is not defined in Makefile",
       "suggestion": null,
       "reason": null
     }

@@ -26,3 +26,7 @@ jobs:
         run: go vet ./...
       - name: One of a target's two lines
         run: go mod tidy
+      - name: Target starting with a dot
+        run: make .venv
+      - name: Suffix rule is not a target
+        run: make .c.o
