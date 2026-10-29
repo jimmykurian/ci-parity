@@ -23,14 +23,14 @@ without regressing.
 
 ```yaml
 - uses: actions/checkout@v7
-- uses: jimmykurian/ci-parity@v0
+- uses: jimmykurian/ci-parity@v1
 ```
 
 Or as a binary, with `go install`, mise, or a pre-commit hook:
 [Getting started](https://ci-parity.is-a.dev/guides/getting-started/).
 
-Until v1.0.0, a minor release may change commands, config keys and output; rule IDs, the
-baseline format and the JSON schema change only with a new `version` in the file.
+Rule IDs, messages, config keys and the output formats change only with a new major
+version; see [Compatibility](https://ci-parity.is-a.dev/reference/compatibility/).
 
 ## Quick start
 

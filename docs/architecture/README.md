@@ -17,7 +17,7 @@ the decisions behind them. Diagrams are Mermaid, which GitHub renders in place.
 ```mermaid
 flowchart LR
     dev["Developer<br/>(local CLI)"] --> cli
-    ci["GitHub Actions job<br/>(uses: jimmykurian/ci-parity@v0)"] --> action
+    ci["GitHub Actions job<br/>(uses: jimmykurian/ci-parity@v1)"] --> action
     action["Composite action<br/>action.yml"] -->|"downloads and verifies"| rel["GitHub Release<br/>binaries and checksums.txt"]
     action --> cli["ci-parity binary"]
     cli -->|reads| repo["Repository files<br/>workflows, composite actions,<br/>Taskfile / Makefile / justfile / mise,<br/>.ci-parity.yml, baseline"]
@@ -36,4 +36,4 @@ before the check starts.
 - [Documentation index](../README.md)
 - [Reference](../reference/README.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

@@ -39,7 +39,7 @@ jobs:
       - run: task install
       - run: task lint
       - run: task test
-      - uses: jimmykurian/ci-parity@v0
+      - uses: jimmykurian/ci-parity@v1
 ```
 
 Taskfile is the default runner, so no config is needed. Setup, such as installing pnpm
@@ -78,7 +78,7 @@ jobs:
           go-version-file: go.mod
       - run: make lint
       - run: make test
-      - uses: jimmykurian/ci-parity@v0
+      - uses: jimmykurian/ci-parity@v1
 ```
 
 ## just
@@ -114,7 +114,7 @@ jobs:
       - uses: extractions/setup-just@v4
       - run: just lint
       - run: just test
-      - uses: jimmykurian/ci-parity@v0
+      - uses: jimmykurian/ci-parity@v1
 ```
 
 `release-notes` is `[private]`, so calling it from CI would be a
@@ -153,7 +153,7 @@ jobs:
       - uses: jdx/mise-action@v5
       - run: mise run lint
       - run: mise run test
-      - uses: jimmykurian/ci-parity@v0
+      - uses: jimmykurian/ci-parity@v1
 ```
 
 Package runners are looked through when suggesting a task, so an inline `run: pytest`
@@ -170,4 +170,4 @@ here is reported with the task that runs `uv run pytest`:
 - [Configuring](configuring.md#runners)
 - [Runners reference](../reference/runners.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

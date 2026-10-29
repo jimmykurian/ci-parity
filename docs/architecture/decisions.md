@@ -76,8 +76,8 @@ or pull request and the maintainer's agreement before any code.
 - **goreleaser in the same workflow,** because a tag created with `GITHUB_TOKEN` starts no
   other workflow. The release job uses no caches, and every action is pinned to a commit
   SHA.
-- **`v0` floats** to the newest release, so `uses: jimmykurian/ci-parity@v0` picks up
-  fixes; pin a version or SHA to avoid that.
+- **The major tag floats:** `v1` follows the newest 1.x release, so
+  `uses: jimmykurian/ci-parity@v1` picks up fixes; pin a version or SHA to avoid that.
 - **A Starlight site built from `docs/`, on GitHub Pages.** `docs/` stays the single
   source and keeps rendering on GitHub; a sync step turns each H1 into a page title and
   rewrites links, so no page is written twice. Starlight (Astro) brings search, light and

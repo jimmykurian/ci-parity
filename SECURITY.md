@@ -12,8 +12,8 @@ repository being checked, which in CI may come from an untrusted pull request.
 
 ## Supported versions
 
-ci-parity is pre-1.0. Only the latest `v0.x` release, and `main`, get fixes. A
-fix ships as a new patch release, and the floating `v0` tag moves to it.
+Only the latest `v1.x` release, and `main`, get fixes. A fix ships as a new
+patch release, and the floating `v1` tag moves to it.
 
 ## Reporting a vulnerability
 

@@ -11,7 +11,7 @@ branding:
 
 inputs:
   version:
-    description: Release tag to run, such as v0.1.0. Empty uses the action's own ref when it is an exact vX.Y.Z tag, otherwise the latest release.
+    description: Release tag to run, such as v1.0.0. Empty uses the action's own ref when it is an exact vX.Y.Z tag, otherwise the latest release.
     required: false
     default: ""
   binary:

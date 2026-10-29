@@ -69,7 +69,7 @@ Preview locally with `task site:dev`, or `task site:build` then `task site:previ
 1. Release Please opens or updates one release pull request, `chore: release X.Y.Z`,
    bumping `.github/.release-please-manifest.json`, `CHANGELOG.md` and every line of
    `docs/guides/getting-started.md` marked `x-release-please-version` from the
-   Conventional Commits since the last release. Before 1.0, a `feat` is a minor release and anything else listed (`fix`,
+   Conventional Commits since the last release. A breaking change (`!` or a `BREAKING CHANGE` footer) is a major release, a `feat` a minor one, and anything else listed (`fix`,
    `perf`, `docs`, `refactor`) a patch; `chore`, `ci`, `build`, `test` and `style` are
    hidden and cut no release.
 2. It runs with `GITHUB_TOKEN`, so the release pull request starts no checks on its own:
@@ -82,8 +82,9 @@ Preview locally with `task site:dev`, or `task site:build` then `task site:previ
    draft (`use_existing_draft`), then publishes it. The latest release therefore always
    has its archives, which the action downloads; if the build fails, the release stays a
    draft that users don't see. The build uses no caches.
-4. `task release:float` moves the `v0` tag to the release, so
-   `uses: jimmykurian/ci-parity@v0` follows it. Pre-releases don't move it.
+4. `task release:float` moves the release's major tag, such as `v1`, to it, so
+   `uses: jimmykurian/ci-parity@v1` follows it. Pre-releases don't move it, and `v0` stays
+   on the last 0.x release.
 5. To update the Marketplace listing, edit the new release on GitHub, keep "Publish this
    Action to the GitHub Marketplace" ticked, and save.
 
@@ -97,4 +98,4 @@ Preview locally with `task site:dev`, or `task site:build` then `task site:previ
 - [GitHub Action](../reference/action.md)
 - [CONTRIBUTING.md](../../CONTRIBUTING.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

@@ -276,7 +276,7 @@ tasks:
       - goreleaser release --snapshot --clean
 
   release:float:
-    desc: "Point the floating major tag at a release: task release:float -- v0.1.0 (the release workflow runs this)"
+    desc: "Point the floating major tag at a release: task release:float -- v1.0.0 (the release workflow runs this)"
     silent: true
     requires:
       vars: [CLI_ARGS]
