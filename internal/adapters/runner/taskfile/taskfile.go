@@ -33,6 +33,7 @@ type Taskfile struct {
 	file     string
 	internal map[string]bool     // every invocable name -> internal
 	commands map[string][]string // canonical task name -> command strings
+	more     map[string]bool     // canonical task name -> does more than run its commands
 	dirs     map[string]string   // canonical task name -> repo-relative directory it runs in
 }
 
@@ -48,7 +49,7 @@ func Load(root, path string) (*Taskfile, error) {
 	} else if filepath.IsAbs(path) {
 		full = path
 	}
-	t := &Taskfile{root: root, internal: map[string]bool{}, commands: map[string][]string{}, dirs: map[string]string{}}
+	t := &Taskfile{root: root, internal: map[string]bool{}, commands: map[string][]string{}, more: map[string]bool{}, dirs: map[string]string{}}
 	t.file = t.rel(full)
 	if _, err := os.Stat(full); err != nil {
 		return nil, fmt.Errorf("read Taskfile %s: %w", t.file, err)
@@ -110,6 +111,7 @@ func (t *Taskfile) addTasks(tasks []task, prefixes []string, internal bool, dir 
 			t.add(p+tk.name, hidden)
 			if i == 0 && len(tk.cmds) > 0 {
 				t.commands[p+tk.name] = tk.cmds
+				t.more[p+tk.name] = tk.more
 				if d, ok := t.taskDir(dir, tk.dir); ok {
 					t.dirs[p+tk.name] = d
 				}
@@ -255,6 +257,10 @@ func (t *Taskfile) IsInternal(name string) bool { return t.internal[name] }
 
 // Commands returns the command strings of the task defined under name.
 func (t *Taskfile) Commands(name string) []string { return t.commands[name] }
+
+// RunsMore reports whether the task defined under name has deps:, or calls
+// another task, loops or defers in its cmds:.
+func (t *Taskfile) RunsMore(name string) bool { return t.more[name] }
 
 // Reaches reports whether `task` called from dir, repo-relative, reads the root
 // Taskfile: dir is at or below the Taskfile's directory, and neither dir nor a

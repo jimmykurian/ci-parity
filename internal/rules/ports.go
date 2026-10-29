@@ -17,6 +17,10 @@ type TaskSource interface {
 	// Commands returns the command strings of the task defined under name.
 	// Aliases and namespace shortcuts return none, so suggestions name the task.
 	Commands(name string) []string
+	// RunsMore reports whether the task called name does more than run its
+	// Commands: it has dependencies, or calls other tasks or loops. Suggestions
+	// skip it, as calling it would run more than the step does.
+	RunsMore(name string) bool
 	// Dir returns the directory the task called name runs its commands in,
 	// repo-relative with forward slashes and "" for the root, or false when it
 	// can't be known statically, such as a templated dir. Suggestions need it

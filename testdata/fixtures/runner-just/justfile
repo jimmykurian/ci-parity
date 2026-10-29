@@ -14,3 +14,10 @@ release:
 alias t := test
 
 mod db
+
+check: build
+    go vet ./...
+
+tidy:
+    go mod tidy
+    go generate ./...

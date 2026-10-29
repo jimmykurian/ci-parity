@@ -111,6 +111,9 @@ func (p *parser) rule(text string) {
 		if _, ok := p.m.commands[t]; !ok {
 			p.m.commands[t] = nil
 		}
+		if strings.TrimSpace(prereqs) != "" {
+			p.m.prereqs[t] = true
+		}
 	}
 	p.current = targets
 	if hasInline {

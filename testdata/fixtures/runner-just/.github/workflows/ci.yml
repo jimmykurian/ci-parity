@@ -24,3 +24,7 @@ jobs:
         run: just --list
       - name: Through make
         run: make build
+      - name: Recipe with a dependency
+        run: go vet ./...
+      - name: One of a recipe's two lines
+        run: go mod tidy

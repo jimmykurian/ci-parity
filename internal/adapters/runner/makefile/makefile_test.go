@@ -181,3 +181,35 @@ func TestNames(t *testing.T) {
 		}
 	}
 }
+
+func TestRunsMore(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"Makefile": strings.Join([]string{
+		".PHONY: build vet",
+		"build:",
+		"\tgo build ./...",
+		"vet: build",
+		"\tgo vet ./...",
+		"test: | tmp",
+		"\tgo test ./...",
+		"lint: ; golangci-lint run",
+		"gen:",
+		"gen: tools",
+		"\tgo generate ./...",
+		"",
+	}, "\n")})
+	want := map[string]bool{"build": false, "lint": false, "vet": true, "test": true, "gen": true}
+
+	// Act
+	m, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
+	for name, more := range want {
+		if got := m.RunsMore(name); got != more {
+			t.Errorf("RunsMore(%s) = %v, want %v", name, got, more)
+		}
+	}
+}

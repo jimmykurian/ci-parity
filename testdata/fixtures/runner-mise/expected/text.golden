@@ -3,5 +3,7 @@
   16:23   P002 unknown-task  'mise run tset' is not defined in mise.toml (closest: test)
   18:23   P003 internal-task 'release' is hidden and should not be invoked from CI
   22:14   P001 inline-tool   step "Through just" in job "ci" runs 'just build' directly
+  24:14   P001 inline-tool   step "Task with depends" in job "ci" runs 'go vet ./...' directly
+  26:14   P001 inline-tool   step "Task that runs another task" in job "ci" runs 'go mod tidy' directly
 
-4 errors, 0 warnings, 0 tolerated, 0 allowed
+6 errors, 0 warnings, 0 tolerated, 0 allowed

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "summary": {
-    "errors": 3,
+    "errors": 5,
     "warnings": 0,
     "tolerated": 0,
     "allowed": 0
@@ -49,6 +49,36 @@
       "step": "Through Task",
       "command": "task build",
       "message": "step \"Through Task\" in job \"build\" runs 'task build' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 26,
+      "col": 14,
+      "job": "build",
+      "action": null,
+      "step": "Target with a prerequisite",
+      "command": "go vet ./...",
+      "message": "step \"Target with a prerequisite\" in job \"build\" runs 'go vet ./...' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 28,
+      "col": 14,
+      "job": "build",
+      "action": null,
+      "step": "One of a target's two lines",
+      "command": "go mod tidy",
+      "message": "step \"One of a target's two lines\" in job \"build\" runs 'go mod tidy' directly",
       "suggestion": null,
       "reason": null
     }

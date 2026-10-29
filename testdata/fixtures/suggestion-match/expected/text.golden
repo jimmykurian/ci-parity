@@ -6,5 +6,8 @@
   16:14   P001 inline-tool   step "Only an internal task matches" in job "web" runs 'pnpm db:migrate' directly
   18:14   P001 inline-tool   step "Extra whitespace" in job "web" runs 'pnpm test' directly; already available as 'task test'
   20:14   P001 inline-tool   step "Templated command does not match" in job "web" runs 'pnpm exec playwright test' directly
+  22:14   P001 inline-tool   step "Task with deps does not match" in job "web" runs 'pnpm vet' directly
+  24:14   P001 inline-tool   step "Task that calls another task does not match" in job "web" runs 'pnpm typecheck' directly
+  26:14   P001 inline-tool   step "One of a task's two commands does not match" in job "web" runs 'pnpm build' directly
 
-7 errors, 0 warnings, 0 tolerated, 0 allowed
+10 errors, 0 warnings, 0 tolerated, 0 allowed

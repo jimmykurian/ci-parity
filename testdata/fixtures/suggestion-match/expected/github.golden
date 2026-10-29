@@ -5,3 +5,6 @@
 ::error file=.github/workflows/ci.yml,line=16,col=14,title=P001 inline-tool::step "Only an internal task matches" in job "web" runs 'pnpm db:migrate' directly
 ::error file=.github/workflows/ci.yml,line=18,col=14,title=P001 inline-tool::step "Extra whitespace" in job "web" runs 'pnpm test' directly; already available as 'task test'
 ::error file=.github/workflows/ci.yml,line=20,col=14,title=P001 inline-tool::step "Templated command does not match" in job "web" runs 'pnpm exec playwright test' directly
+::error file=.github/workflows/ci.yml,line=22,col=14,title=P001 inline-tool::step "Task with deps does not match" in job "web" runs 'pnpm vet' directly
+::error file=.github/workflows/ci.yml,line=24,col=14,title=P001 inline-tool::step "Task that calls another task does not match" in job "web" runs 'pnpm typecheck' directly
+::error file=.github/workflows/ci.yml,line=26,col=14,title=P001 inline-tool::step "One of a task's two commands does not match" in job "web" runs 'pnpm build' directly

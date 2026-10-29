@@ -1,3 +1,5 @@
 ::error file=.github/workflows/ci.yml,line=14,col=14,title=P001 inline-tool::step "Unit tests" in job "build" runs 'go test ./...' directly; already available as 'make test'
 ::error file=.github/workflows/ci.yml,line=16,col=19,title=P002 unknown-task::'make tset' is not defined in Makefile (closest: test)
 ::error file=.github/workflows/ci.yml,line=22,col=14,title=P001 inline-tool::step "Through Task" in job "build" runs 'task build' directly
+::error file=.github/workflows/ci.yml,line=26,col=14,title=P001 inline-tool::step "Target with a prerequisite" in job "build" runs 'go vet ./...' directly
+::error file=.github/workflows/ci.yml,line=28,col=14,title=P001 inline-tool::step "One of a target's two lines" in job "build" runs 'go mod tidy' directly

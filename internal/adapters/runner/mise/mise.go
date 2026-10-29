@@ -34,6 +34,7 @@ var TaskDirs = []string{".config/mise/tasks", "mise/tasks", ".mise/tasks", "mise
 type task struct {
 	hidden   bool
 	commands []string
+	more     bool   // depends, depends_post, or a run entry that isn't a command
 	dir      string // repo-relative directory it runs in, when dirKnown
 	dirKnown bool
 }
@@ -138,6 +139,7 @@ func (m *Mise) addTasks(tasks map[string]any) {
 			t.commands = stringsOf(v)
 		case map[string]any:
 			t.commands = stringsOf(v["run"])
+			t.more = len(stringsOf(v["depends"])) > 0 || len(stringsOf(v["depends_post"])) > 0 || hasTable(v["run"])
 			t.hidden, _ = v["hide"].(bool)
 			if d, ok := v["dir"].(string); ok {
 				t.dir, t.dirKnown = domain.RepoDir(d)
@@ -150,6 +152,18 @@ func (m *Mise) addTasks(tasks map[string]any) {
 		}
 		m.tasks[name] = t
 	}
+}
+
+// hasTable reports whether a run list holds an entry that isn't a string, such
+// as `{ task = "lint" }`.
+func hasTable(v any) bool {
+	list, _ := v.([]any)
+	for _, x := range list {
+		if _, ok := x.(string); !ok {
+			return true
+		}
+	}
+	return false
 }
 
 // stringsOf returns a string, or the strings of a list, with whitespace
@@ -273,6 +287,13 @@ func (m *Mise) Dir(name string) (string, bool) {
 // Reaches reports true: mise reads the config files of every parent directory,
 // so the project's tasks run from anywhere in the repository.
 func (m *Mise) Reaches(string) bool { return true }
+
+// RunsMore reports whether a task has depends or depends_post, or runs another
+// task from its run list.
+func (m *Mise) RunsMore(name string) bool {
+	t, ok := m.tasks[name]
+	return ok && t.more
+}
 
 // Commands returns a task's run commands; aliases and file tasks have none.
 func (m *Mise) Commands(name string) []string {

@@ -206,3 +206,55 @@ func sorted(s []string) []string {
 	sort.Strings(out)
 	return out
 }
+
+func TestRunsMore(t *testing.T) {
+	// Arrange
+	root := writeTree(t, map[string]string{
+		"Taskfile.yml": `version: '3'
+includes:
+  web: web.yml
+tasks:
+  test: go test ./...
+  lint:
+    cmds:
+      - golangci-lint run
+  vet:
+    deps: [lint]
+    cmd: go vet ./...
+  ci:
+    cmds:
+      - go vet ./...
+      - task: test
+  loop:
+    cmds:
+      - for: [a, b]
+        cmd: echo {{.ITEM}}
+      - go build ./...
+  cleanup:
+    cmds:
+      - defer: rm -rf tmp
+      - go test ./...
+  none:
+    deps: []
+    cmd: go build ./...
+`,
+		"web.yml": "version: '3'\ntasks:\n  build:\n    deps: [gen]\n    cmd: pnpm build\n  gen: pnpm gen\n",
+	})
+	want := map[string]bool{
+		"test": false, "lint": false, "none": false, "web:gen": false,
+		"vet": true, "ci": true, "loop": true, "cleanup": true, "web:build": true,
+	}
+
+	// Act
+	tf, err := Load(root, "Taskfile.yml")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
+	for name, more := range want {
+		if got := tf.RunsMore(name); got != more {
+			t.Errorf("RunsMore(%q) = %v, want %v", name, got, more)
+		}
+	}
+}

@@ -65,8 +65,9 @@ $ ci-parity check
   their options, or variables like `CI=1`. Those stay, so `sudo pnpm lint` becomes
   `sudo task lint`.
 - The command matches a task exactly, which is when [P001](../rules/p001.md) shows
-  "already available as". That task runs in the step's `working-directory`, and calling
-  the runner from there finds it; otherwise there's no suggestion and nothing to fix.
+  "already available as". That task runs only that command, with no dependencies; it
+  runs in the step's `working-directory`, and calling the runner from there finds it.
+  Otherwise there's no suggestion and nothing to fix.
 
 Steps with `&&`, pipes, redirects, several lines or `${{ }}` are counted as needing a
 manual change. Each edit is checked against the file again just before it's written.
@@ -82,4 +83,4 @@ reminds you when that applies. See [Adopting with a baseline](baseline.md).
 - [P001 inline-tool](../rules/p001.md)
 - [CLI reference](../reference/cli.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

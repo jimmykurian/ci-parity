@@ -23,3 +23,15 @@ tasks:
   e2e:
     cmds:
       - pnpm exec playwright test {{.CLI_ARGS}}
+  vet:
+    deps: [format]
+    cmds:
+      - pnpm vet
+  typecheck:
+    cmds:
+      - pnpm typecheck
+      - task: lint
+  ci:
+    cmds:
+      - pnpm audit
+      - pnpm build

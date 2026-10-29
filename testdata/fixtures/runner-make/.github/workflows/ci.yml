@@ -22,3 +22,7 @@ jobs:
         run: task build
       - name: GNU make
         run: gmake lint
+      - name: Target with a prerequisite
+        run: go vet ./...
+      - name: One of a target's two lines
+        run: go mod tidy

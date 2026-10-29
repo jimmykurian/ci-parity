@@ -18,3 +18,9 @@ jobs:
         run: pnpm     test
       - name: Templated command does not match
         run: pnpm exec playwright test
+      - name: Task with deps does not match
+        run: pnpm vet
+      - name: Task that calls another task does not match
+        run: pnpm typecheck
+      - name: One of a task's two commands does not match
+        run: pnpm build
