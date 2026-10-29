@@ -3,13 +3,15 @@
 
 module github.com/jimmykurian/ci-parity
 
-go 1.27.0
+go 1.26.0
 
 toolchain go1.27.3
 
 require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/google/go-cmp v0.7.0
+	github.com/onsi/ginkgo/v2 v2.33.1
+	github.com/onsi/gomega v1.44.0
 	gopkg.in/yaml.v3 v3.0.1
 	mvdan.cc/sh/v3 v3.14.1
 )
@@ -19,8 +21,6 @@ require (
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/google/pprof v0.0.0-20260402051712-545e8a4df936 // indirect
-	github.com/onsi/ginkgo/v2 v2.33.1 // indirect
-	github.com/onsi/gomega v1.44.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/mod v0.36.0 // indirect
 	golang.org/x/net v0.56.0 // indirect
