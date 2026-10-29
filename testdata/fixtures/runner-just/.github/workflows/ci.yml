@@ -28,3 +28,11 @@ jobs:
         run: go vet ./...
       - name: One of a recipe's two lines
         run: go mod tidy
+      - name: Alias with a trailing comment
+        run: just bt
+      - name: Recipe from an import with a trailing comment
+        run: just lint-ci
+      - name: Global justfile
+        run: just -g fmt
+      - name: Value flags
+        run: just --jobs 4 --timestamp-format %H build

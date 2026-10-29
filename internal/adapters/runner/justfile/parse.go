@@ -66,7 +66,9 @@ func (p *parser) line(line string) {
 	if strings.HasPrefix(text, "#") {
 		return
 	}
-	if m := attribute.FindStringSubmatch(text); m != nil {
+	// Attribute, alias, import and mod lines may end in a comment.
+	bare := strings.TrimSpace(stripComment(text))
+	if m := attribute.FindStringSubmatch(bare); m != nil {
 		for _, a := range strings.Split(m[1], ",") {
 			switch a = strings.TrimSpace(a); {
 			case a == "private":
@@ -78,14 +80,14 @@ func (p *parser) line(line string) {
 		return
 	}
 	switch {
-	case aliasLine.MatchString(text):
-		m := aliasLine.FindStringSubmatch(text)
+	case aliasLine.MatchString(bare):
+		m := aliasLine.FindStringSubmatch(bare)
 		p.add(m[1], &recipe{alias: p.prefix + m[2]})
-	case importRe.MatchString(text):
-		m := importRe.FindStringSubmatch(text)
+	case importRe.MatchString(bare):
+		m := importRe.FindStringSubmatch(bare)
 		p.imports = append(p.imports, importLine{path: m[2], optional: m[1] == "?"})
-	case moduleRe.MatchString(text):
-		m := moduleRe.FindStringSubmatch(text)
+	case moduleRe.MatchString(bare):
+		m := moduleRe.FindStringSubmatch(bare)
 		p.modules = append(p.modules, module{name: m[2], path: m[3], optional: m[1] == "?"})
 	default:
 		p.recipe(text)
@@ -159,6 +161,24 @@ func (p *parser) body(line string) {
 		return
 	}
 	p.current.commands = append(p.current.commands, cmd)
+}
+
+// stripComment drops a # comment that is not inside quotes.
+func stripComment(s string) string {
+	var quote byte
+	for i := 0; i < len(s); i++ {
+		switch c := s[i]; {
+		case quote != 0:
+			if c == quote {
+				quote = 0
+			}
+		case c == '\'' || c == '"':
+			quote = c
+		case c == '#':
+			return s[:i]
+		}
+	}
+	return s
 }
 
 // colonOutsideQuotes returns the index of the first colon not inside a quoted

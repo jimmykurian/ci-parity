@@ -15,13 +15,22 @@ func (j *Justfile) Command() string { return "just" }
 // Internal is how P003 describes a private recipe.
 func (j *Justfile) Internal() string { return "is private" }
 
-// otherFile are flags that point just at another justfile or directory.
-var otherFile = map[string]bool{"-f": true, "--justfile": true, "-d": true, "--working-directory": true}
+// otherFile are flags that point just at another justfile or directory, or
+// change the file names it looks for.
+var otherFile = map[string]bool{
+	"-f": true, "--justfile": true, "-d": true, "--working-directory": true,
+	"-g": true, "--global-justfile": true, "--justfile-name": true,
+}
 
-// valueFlags take the next argument as their value; --set takes two.
+// valueFlags take the next argument as their value, as just 1.59's options
+// define them; --set takes two.
 var valueFlags = map[string]int{
-	"--set": 2, "--shell": 1, "--shell-arg": 1, "--dotenv-filename": 1, "--dotenv-path": 1,
-	"-E": 1, "--color": 1, "--chooser": 1, "--list-heading": 1, "--list-prefix": 1,
+	"--set": 2, "--alias-style": 1, "--ceiling": 1, "--chooser": 1, "--color": 1,
+	"--command-color": 1, "--cygpath": 1, "--dotenv-command": 1, "--dotenv-filename": 1,
+	"-F": 1, "--dotenv-path": 1, "-E": 1, "--dump-format": 1, "--evaluate-format": 1,
+	"--global-fallback-justfile": 1, "--group": 1, "--indentation": 1, "--jobs": 1,
+	"--list-heading": 1, "--list-prefix": 1, "--shell": 1, "--shell-arg": 1,
+	"--tempdir": 1, "--timestamp-format": 1,
 }
 
 // subcommands make just do something other than run recipes, so a call with
@@ -30,7 +39,8 @@ var subcommands = map[string]bool{
 	"-l": true, "--list": true, "--summary": true, "-s": true, "--show": true, "--evaluate": true,
 	"--choose": true, "--dump": true, "-e": true, "--edit": true, "--init": true, "--fmt": true,
 	"--variables": true, "--completions": true, "--groups": true, "-c": true, "--command": true,
-	"--changelog": true, "--man": true,
+	"--changelog": true, "--man": true, "--eval": true, "--format": true, "--initialize": true,
+	"--clean": true, "--json": true, "--request": true, "--usage": true,
 }
 
 // Names returns the recipes a just call names, each with the position of its

@@ -57,9 +57,15 @@ interface and its own call syntax; the rules are unchanged.
   given path). A recipe is internal when it is `[private]` or its name starts with `_`.
   Body lines without leading `@` or `-` are its commands. In a call, the words after a
   recipe are its arguments, as many as its parameters take (all the rest for a variadic
-  one); `just mod recipe` and `just mod::recipe` both name a module recipe. `-f`,
-  `--justfile`, `-d` and `--working-directory` select another justfile; `--set` takes
-  two values.
+  one); `just mod recipe` and `just mod::recipe` both name a module recipe. Attribute,
+  `alias`, `import` and `mod` lines may end in a `#` comment. `-f`, `--justfile`, `-d`,
+  `--working-directory`, `-g`, `--global-justfile` and `--justfile-name` select another
+  justfile, so the call is ignored, as is one with a subcommand such as `--list`,
+  `--show` or `--usage`. As just 1.59 defines its options, `--set` takes two values, and
+  `--alias-style --ceiling --chooser --color --command-color --cygpath --dotenv-command
+  --dotenv-filename -F --dotenv-path -E --dump-format --evaluate-format
+  --global-fallback-justfile --group --indentation --jobs --list-heading --list-prefix
+  --shell --shell-arg --tempdir --timestamp-format` take one.
 - mise: `[tasks.name]` tables and `name = "cmd"` (or list) entries, with `run` (string
   or list) as the commands, `alias` (string or list) as aliases and `hide = true` as
   internal; file tasks under `.config/mise/tasks/`, `mise/tasks/`,

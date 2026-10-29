@@ -21,3 +21,6 @@ check: build
 tidy:
     go mod tidy
     go generate ./...
+
+alias bt := build # shorthand
+import 'ci.just' # shared recipes

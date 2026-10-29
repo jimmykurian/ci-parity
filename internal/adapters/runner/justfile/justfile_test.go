@@ -211,6 +211,17 @@ func TestNames(t *testing.T) {
 		{"-d web build", nil},
 		{"--working-directory web build", nil},
 		{"--show build", nil},
+		{"-g build", nil}, // the user's global justfile
+		{"--global-justfile build", nil},
+		{"--justfile-name ci.just build", nil},
+		{"--jobs 4 --timestamp-format %H build", []string{"build"}},
+		{"-F .env.ci --group ci --tempdir /tmp build", []string{"build"}},
+		{"--alias-style left --ceiling .. --command-color red build", []string{"build"}},
+		{"--cygpath cygpath --dotenv-command env --indentation 2 build", []string{"build"}},
+		{"--global-fallback-justfile ~/.justfile build", []string{"build"}},
+		{"--eval", nil},
+		{"--usage build", nil},
+		{"--clean", nil},
 	}
 	for _, tt := range tests {
 		// Act
@@ -327,5 +338,38 @@ func TestRunsMore(t *testing.T) {
 		if got := j.RunsMore(name); got != more {
 			t.Errorf("RunsMore(%s) = %v, want %v", name, got, more)
 		}
+	}
+}
+
+func TestTrailingComments(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{
+		"justfile": strings.Join([]string{
+			"build:",
+			"    go build ./...",
+			"alias b := build # shorthand",
+			"[private] # not listed",
+			"release:",
+			"    goreleaser release",
+			"import 'mk/ci#1.just' # shared recipes",
+			"mod db # database tasks",
+			"",
+		}, "\n"),
+		"mk/ci#1.just": "ci:\n    go vet ./...\n",
+		"db/mod.just":  "migrate:\n    goose up\n",
+	})
+
+	// Act
+	j, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
+	if diff := cmp.Diff([]string{"b", "build", "ci", "db::migrate", "release"}, j.Tasks()); diff != "" {
+		t.Errorf("recipes (-want +got):\n%s", diff)
+	}
+	if !j.IsInternal("release") {
+		t.Error("IsInternal(release) = false; the [private] line has a comment")
 	}
 }
