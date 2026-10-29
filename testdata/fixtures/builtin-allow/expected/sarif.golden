@@ -1,0 +1,578 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ci-parity",
+          "version": "dev",
+          "informationUri": "https://github.com/jimmykurian/ci-parity",
+          "rules": [
+            {
+              "id": "P001",
+              "name": "inline-tool",
+              "shortDescription": {
+                "text": "A run: step calls a listed tool directly instead of through the task runner."
+              },
+              "helpUri": "https://ci-parity.is-a.dev/rules/p001/",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P002",
+              "name": "unknown-task",
+              "shortDescription": {
+                "text": "CI calls a task that the task runner does not define."
+              },
+              "helpUri": "https://ci-parity.is-a.dev/rules/p002/",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P003",
+              "name": "internal-task",
+              "shortDescription": {
+                "text": "CI calls a task the task runner marks internal, private or hidden."
+              },
+              "helpUri": "https://ci-parity.is-a.dev/rules/p003/",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P004",
+              "name": "regression",
+              "shortDescription": {
+                "text": "A workflow has more inline-tool findings than its baseline allows."
+              },
+              "helpUri": "https://ci-parity.is-a.dev/rules/p004/",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P005",
+              "name": "unsupported",
+              "shortDescription": {
+                "text": "A step that ci-parity cannot analyze."
+              },
+              "helpUri": "https://ci-parity.is-a.dev/rules/p005/",
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Versions\" in job \"widget-service\" runs 'go version' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 9,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "3bae62834f659806d22a5bd9eeac2da8"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "built-in: prints a version or environment"
+            }
+          ]
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Versions\" in job \"widget-service\" runs 'node --version' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "b19f788b28300e7f9b89ffef5d8dcf4d"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "built-in: prints a version or environment"
+            }
+          ]
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Versions\" in job \"widget-service\" runs 'go env GOVERSION' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 11,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "38f043b766afdbacc6509be13d5a7a62"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "built-in: prints a version or environment"
+            }
+          ]
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Pinned installs\" in job \"widget-service\" runs 'go install golang.org/x/vuln/cmd/govulncheck@v1.1.4' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 14,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "6122a0ba8aa0f68c04f78d7c36e9ed0e"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "built-in: installs a tool pinned to a version"
+            }
+          ]
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Pinned installs\" in job \"widget-service\" runs 'cargo install --locked mdbook@0.4.52' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "18c2dd5d158ce0fa019b5f568ade4456"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "built-in: installs a tool pinned to a version"
+            }
+          ]
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Pinned installs\" in job \"widget-service\" runs 'npm install --global corepack@0.34.0' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 16,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "acd5409be58d39d6076b3f1c9df8d33d"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "built-in: installs a tool pinned to a version"
+            }
+          ]
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Pinned installs\" in job \"widget-service\" runs 'pip install poetry==2.2.1' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 17,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "bdfadd2f73e4dbe2c1c4e56006b3d56e"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "built-in: installs a tool pinned to a version"
+            }
+          ]
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Sign in\" in job \"widget-service\" runs 'docker login ghcr.io -u acme --password-stdin' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "c91f549d5d398911abd362d137e52ec3"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "built-in: signs in or selects an account"
+            }
+          ]
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Sign in\" in job \"widget-service\" runs 'aws configure set region eu-west-1' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 21,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "259818d48aa33d03d3f97d43cc880605"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "built-in: signs in or selects an account"
+            }
+          ]
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Sign in\" in job \"widget-service\" runs 'gcloud auth configure-docker' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 22,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "f514a29c95e0aa2e58e31e13b989717d"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "built-in: signs in or selects an account"
+            }
+          ]
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Inline script\" in job \"widget-service\" runs 'python3 -c print('widget-service')' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 24,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "f786dc07dcbaeb2e20f98fe49be2c8db"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "built-in: runs an inline script"
+            }
+          ]
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Not version or info\" in job \"widget-service\" runs 'npm version patch' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 26,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "0e63fa1d2f7bc853eaeab9e9ef97f185"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Not pinned\" in job \"widget-service\" runs 'go install golang.org/x/vuln/cmd/govulncheck@latest' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 29,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "f8285d695e1214662b0e8c441a807e85"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Not pinned\" in job \"widget-service\" runs 'pip install -r requirements.txt' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 30,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "4e91089e78108cf6bf5e4296107175cf"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Not pinned\" in job \"widget-service\" runs 'npm install' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 31,
+                  "startColumn": 11
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "747d8bb03070ac4d1f06efd3337f0a20"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Not sign-in\" in job \"widget-service\" runs 'docker push ghcr.io/acme/widget-service' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 33,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "cf4d4298b45d9544a83843f75cae027b"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"A script file, not inline\" in job \"widget-service\" runs 'python3 scripts/build.py' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 35,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "95f84642998ad1a7108d6e4a0f4d3d67"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"The config's own allow entry wins\" in job \"widget-service\" runs 'docker logout ghcr.io' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 37,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "16ddb692762df1c2d0786e419795ee78"
+          },
+          "suppressions": [
+            {
+              "kind": "inSource",
+              "justification": "the runner is shared, so sign out after publishing"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

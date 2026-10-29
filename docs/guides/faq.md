@@ -33,6 +33,11 @@ With a `# ci-parity: allow <reason>` comment on the step's line or the line abov
 `allow` entry in `.ci-parity.yml`; see [Allowing a step](configuring.md#allowing-a-step).
 To stop flagging a tool everywhere, add it to `tools.remove`.
 
+Version checks, tool installs pinned to a version, sign-in commands and inline scripts
+are already allowed by the
+[built-in allow set](../reference/configuration.md#built-in-allow-set); set
+`builtin_allow: false` to have them reported.
+
 ## Why isn't my command flagged?
 
 Only tools on the list are flagged, matched on the command's basename; anything else is
@@ -60,4 +65,4 @@ inline step above older ones moves which finding is over the count. See
 - [Guides](README.md)
 - [Rules](../rules/README.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

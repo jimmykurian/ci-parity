@@ -1,0 +1,9 @@
+.github/workflows/ci.yml
+  26:14   P001 inline-tool   step "Not version or info" in job "widget-service" runs 'npm version patch' directly
+  29:11   P001 inline-tool   step "Not pinned" in job "widget-service" runs 'go install golang.org/x/vuln/cmd/govulncheck@latest' directly
+  30:11   P001 inline-tool   step "Not pinned" in job "widget-service" runs 'pip install -r requirements.txt' directly
+  31:11   P001 inline-tool   step "Not pinned" in job "widget-service" runs 'npm install' directly
+  33:14   P001 inline-tool   step "Not sign-in" in job "widget-service" runs 'docker push ghcr.io/acme/widget-service' directly
+  35:14   P001 inline-tool   step "A script file, not inline" in job "widget-service" runs 'python3 scripts/build.py' directly
+
+6 errors, 0 warnings, 0 tolerated, 12 allowed

@@ -1,0 +1,2 @@
+::error file=.github/workflows/ci.yml,line=8,col=14,title=P001 inline-tool::step "Version" in job "acme-app" runs 'go version' directly
+::error file=.github/workflows/ci.yml,line=10,col=14,title=P001 inline-tool::step "Sign in" in job "acme-app" runs 'docker login ghcr.io' directly

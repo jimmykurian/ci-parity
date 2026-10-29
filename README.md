@@ -149,17 +149,18 @@ so each change updates them. Run `task metrics` to see them locally.
 
 | Metric | Go code | Go tests | Docs site | Total |
 | --- | --- | --- | --- | --- |
-| Files | 62 | 33 | 6 | 101 |
-| Lines of code | 4,927 | 3,168 | 443 | 8,538 |
-| Functions | 276 | 150 | – | 426 |
-| Average complexity | 4.7 | 3.3 | – | 4.2 |
-| Max complexity | 18 | 16 | – | 18 |
+| Files | 63 | 34 | 6 | 103 |
+| Lines of code | 5,089 | 3,234 | 443 | 8,766 |
+| Functions | 286 | 151 | – | 437 |
+| Average complexity | 4.8 | 3.3 | – | 4.3 |
+| Max complexity | 24 | 16 | – | 24 |
 
 <details>
 <summary>The 10 most complex functions</summary>
 
 | Function | Where | Complexity |
 | --- | --- | --- |
+| `pinnedInstall` | `internal/domain/builtin_allow.go:60` | 24 |
 | `(*parser).rule` | `internal/adapters/runner/makefile/parse.go:102` | 18 |
 | `(*extractor).peel` | `internal/adapters/shell/posix/extract.go:263` | 18 |
 | `(*Justfile).read` | `internal/adapters/runner/justfile/justfile.go:83` | 17 |
@@ -169,7 +170,6 @@ so each change updates them. Run `task metrics` to see them locally.
 | `(*Makefile).Names` | `internal/adapters/runner/makefile/names.go:37` | 16 |
 | `(Source).Apply` | `internal/adapters/workflow/ghactions/edit.go:20` | 16 |
 | `validate` | `internal/adapters/config/yamlconfig/config.go:87` | 15 |
-| `Load` | `internal/adapters/workflow/ghactions/workflow.go:23` | 15 |
 
 </details>
 

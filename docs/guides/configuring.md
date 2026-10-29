@@ -99,10 +99,21 @@ allow:
 Allowed findings don't fail the check; `--verbose` lists them with their reason. An allow
 comment without a reason is reported as [P005](../rules/p005.md).
 
+Some setup and info commands are allowed out of the box, because nobody would move them
+into a task: version checks such as `go version`, tool installs pinned to a version such
+as `go install golang.org/x/vuln/cmd/govulncheck@v1.1.4`, sign-in such as
+`docker login`, and inline scripts such as `python3 -c`. The exact rules are in the
+[configuration reference](../reference/configuration.md#built-in-allow-set). To report
+them as errors, set:
+
+```yaml
+builtin_allow: false
+```
+
 ## See also
 
 - [Configuration reference](../reference/configuration.md)
 - [Runners reference](../reference/runners.md)
 - [Recipes](recipes.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

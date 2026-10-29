@@ -220,6 +220,14 @@
         }
       }
     },
+    "builtin_allow": {
+      "description": "Allow the built-in set of setup and info commands (versions, pinned tool installs, sign-in, inline scripts). Set false to report them as P001.",
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "default": true
+    },
     "baseline": {
       "description": "Path of the baseline file.",
       "type": [

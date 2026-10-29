@@ -1,0 +1,3 @@
+allow:
+  - match: "docker logout *"
+    reason: "the runner is shared, so sign out after publishing"

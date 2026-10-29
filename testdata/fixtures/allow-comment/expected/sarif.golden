@@ -132,7 +132,7 @@
           "ruleId": "P001",
           "level": "error",
           "message": {
-            "text": "step \"Publish\" in job \"release\" runs 'docker logout ghcr.io' directly"
+            "text": "step \"Publish\" in job \"release\" runs 'docker push widget-service:latest' directly"
           },
           "locations": [
             {
@@ -149,7 +149,7 @@
             }
           ],
           "partialFingerprints": {
-            "ciParity/v1": "c239027d6f0354b0eef2f17e75b3dbd6"
+            "ciParity/v1": "59ed54908906638fd9f110cef051dbd8"
           }
         },
         {

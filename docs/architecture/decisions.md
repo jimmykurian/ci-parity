@@ -32,6 +32,10 @@ or pull request and the maintainer's agreement before any code.
 - **Suggestions name only tasks that do exactly what the step does.** A task with one
   command, no dependencies and no calls to other tasks; otherwise `fix` would turn a
   format check into the whole CI run.
+- **Setup and info commands are allowed by default, not dropped.** Versions, pinned
+  installs, sign-in and inline scripts were a quarter of the field trial's errors, and
+  none belongs in a task. They are reported as `allowed` with a built-in reason, so they
+  stay visible, and `builtin_allow: false` restores them as errors.
 - **SARIF keeps allowed findings as suppressions** and gives each finding a fingerprint
   from its rule, file, job, step and command, so code scanning dismisses rather than
   forgets them and moving lines doesn't open a new alert.

@@ -49,6 +49,7 @@ tools:
   replace: []                     # non-empty replaces the built-in list entirely
 transparent: [sudo, env, time, nice, ionice, timeout, nohup, xvfb-run, chronic]
 allow: []                         # no commands are allowed by default
+builtin_allow: true               # allow the built-in setup and info commands
 baseline: .ci-parity-baseline.json
 ```
 
@@ -66,6 +67,25 @@ normalized command ([analysis](analysis.md#commands), step 6), `*` matches any r
 spaces, and `?` matches exactly one character. `docker push *` therefore matches
 `docker push ghcr.io/acme/widget-service:1.0.0`. Matching is case-sensitive.
 
+## Built-in allow set
+
+With `builtin_allow: true`, the default, these setup and info commands are reported as
+allowed, with the reason shown, rather than as P001. Each rule reads the normalized
+command, after wrappers. The config's own `allow` entries and allow comments are checked
+first, so their reason wins. `builtin_allow: false` reports them as P001.
+
+| Kind | Allowed | Reason |
+| --- | --- | --- |
+| Version and info | `<tool> --version` or `<tool> version`, with only flags after it; `<tool> -V` alone; `go env` | `built-in: prints a version or environment` |
+| Pinned tool installs | `go install` with every package `@<version>`; `cargo install` with every crate `name@<version>`, or one crate and `--version`, but not `--path` or `--git`; `npm install`/`npm i -g` or `--global`, and `pnpm add -g`, with every package `name@<version>`; `pip install`, `pip3 install` or `python -m pip install` with every package `name==<version>`, and no `-r`, `-e` or `-c`. `latest` is not a version. | `built-in: installs a tool pinned to a version` |
+| Sign-in | commands starting `docker login`, `docker logout`, `aws configure`, `az login`, `az account set`, `gcloud auth` or `gcloud config set` | `built-in: signs in or selects an account` |
+| Inline scripts | `python -c`, `python3 -c`, `node -e`, `node --eval`; and `python`, `python3` or `node` alone or with `-`, reading a script from standard input such as a heredoc | `built-in: runs an inline script` |
+
+So `npm version patch`, `pip install -r requirements.txt`, `go install ./cmd/widget-service`
+and `python3 scripts/build.py` are still P001.
+
+## Built-in tools
+
 Built-in tools, matched on the command's basename so `./node_modules/.bin/eslint` and
 `./gradlew` match:
 
@@ -80,7 +100,7 @@ Built-in tools, matched on the command's basename so `./node_modules/.bin/eslint
 - other runners, which count as bypasses when they are not the configured runner:
   `make just mise cargo-make`
 
-Config errors (unknown key, wrong type, `allow` entry without `reason`, `replace` used
+Config errors (unknown key, wrong type such as `builtin_allow: maybe`, `allow` entry without `reason`, `replace` used
 together with `extend` or `remove`) exit 2 with a message that names the key.
 
 ## See also
@@ -89,4 +109,4 @@ together with `extend` or `remove`) exit 2 with a message that names the key.
 - [Runners](runners.md)
 - [Baseline](baseline.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

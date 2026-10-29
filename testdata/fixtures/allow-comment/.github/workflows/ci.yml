@@ -9,7 +9,7 @@ jobs:
           docker push widget-service # ci-parity: allow images publish only from CI
           # ci-parity: allow the registry login has no local equivalent
           docker login ghcr.io
-          docker logout ghcr.io
+          docker push widget-service:latest
       - name: Missing reason
         run: pnpm publish # ci-parity: allow
       - name: One-line allow

@@ -12,13 +12,15 @@ import (
 // schema describes the expected shape of a config node so errors can name the
 // offending key instead of a Go type.
 type schema struct {
-	kind   yaml.Kind
-	fields map[string]*schema
-	elem   *schema
+	kind    yaml.Kind
+	fields  map[string]*schema
+	elem    *schema
+	boolean bool // a scalar that must be true or false
 }
 
 var (
 	scalar     = &schema{kind: yaml.ScalarNode}
+	boolean    = &schema{kind: yaml.ScalarNode, boolean: true}
 	scalarList = &schema{kind: yaml.SequenceNode, elem: scalar}
 )
 
@@ -44,14 +46,15 @@ var fileSchema = &schema{kind: yaml.MappingNode, fields: map[string]*schema{
 		"reason":    scalar,
 		"workflows": scalarList,
 	}}},
-	"baseline": scalar,
+	"builtin_allow": boolean,
+	"baseline":      scalar,
 }}
 
 // check validates n against s. Keys with a null value are removed from n so
 // that decoding leaves their defaults in place.
 func (s *schema) check(n *yaml.Node, path string) error {
-	if n.Kind != s.kind {
-		return fmt.Errorf("line %d: %s must be %s", n.Line, describe(path), kindName(s.kind))
+	if n.Kind != s.kind || (s.boolean && n.Tag != "!!bool") {
+		return fmt.Errorf("line %d: %s must be %s", n.Line, describe(path), s.name())
 	}
 	switch s.kind {
 	case yaml.MappingNode:
@@ -103,9 +106,12 @@ func describe(path string) string {
 	return path
 }
 
-// kindName names a YAML node kind for an error message.
-func kindName(k yaml.Kind) string {
-	switch k {
+// name says what s expects, for an error message.
+func (s *schema) name() string {
+	if s.boolean {
+		return "true or false"
+	}
+	switch s.kind {
 	case yaml.MappingNode:
 		return "a mapping"
 	case yaml.SequenceNode:

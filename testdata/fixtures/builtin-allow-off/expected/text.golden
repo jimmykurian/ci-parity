@@ -1,0 +1,5 @@
+.github/workflows/ci.yml
+  8:14    P001 inline-tool   step "Version" in job "acme-app" runs 'go version' directly
+  10:14   P001 inline-tool   step "Sign in" in job "acme-app" runs 'docker login ghcr.io' directly
+
+2 errors, 0 warnings, 0 tolerated, 0 allowed

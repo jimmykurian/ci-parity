@@ -177,6 +177,9 @@ func (c *checker) allowRule(file, command string) (string, bool) {
 			}
 		}
 	}
+	if c.cfg.BuiltinAllow {
+		return domain.BuiltinAllow(command)
+	}
 	return "", false
 }
 

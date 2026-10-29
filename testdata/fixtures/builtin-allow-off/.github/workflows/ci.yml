@@ -1,0 +1,10 @@
+name: ci
+on: [push]
+jobs:
+  acme-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Version
+        run: go version
+      - name: Sign in
+        run: docker login ghcr.io
