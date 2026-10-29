@@ -1,0 +1,16 @@
+name: ci
+on: [push]
+jobs:
+  widget-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explicit target
+        run: make build
+      - name: Name a pattern rule makes
+        run: make proto
+      - name: Another one
+        run: make print-version
+      - name: No common- target for it
+        run: make release
+      - name: Inline command suggests the target, not the pattern name
+        run: golangci-lint run

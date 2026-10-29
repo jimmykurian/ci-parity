@@ -188,6 +188,9 @@ func (j *Justfile) Tasks() []string {
 	return names
 }
 
+// Matches reports false: every name is listed by Tasks.
+func (*Justfile) Matches(string) bool { return false }
+
 // IsInternal reports whether a recipe or alias is private.
 func (j *Justfile) IsInternal(name string) bool {
 	r, ok := j.recipes[name]

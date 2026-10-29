@@ -253,3 +253,55 @@ func TestDottedTargets(t *testing.T) {
 		t.Errorf("Commands(.venv) (-want +got):\n%s", diff)
 	}
 }
+
+func TestPatternRules(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{
+		"Makefile": strings.Join([]string{
+			"include Makefile.common",
+			"build-%: cmd/%/main.go",
+			"\tgo build ./cmd/$*",
+			"docs-%:",
+			"\tmkdocs build -f $*.yml",
+			"",
+		}, "\n"),
+		"Makefile.common": strings.Join([]string{
+			"%: common-% ;",
+			"common-proto:",
+			"\tbuf generate",
+			"common-lint:",
+			"\tgolangci-lint run",
+			"",
+		}, "\n"),
+		"cmd/server/main.go": "package main\n",
+	})
+	tests := map[string]bool{
+		"proto":           true,  // common-proto is a target
+		"lint":            true,  // common-lint is a target
+		"release":         false, // no common-release
+		"build-server":    true,  // cmd/server/main.go exists
+		"build-agent":     false, // cmd/agent/main.go doesn't
+		"docs-site":       true,  // a pattern without prerequisites
+		"docs-":           false, // the stem can't be empty
+		"common-":         false, // nor here
+		"common-proto":    false, // a target, so Tasks lists it; no common-common-proto
+		"common-release":  false,
+		"build-server-ok": false,
+	}
+
+	// Act
+	m, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
+	if diff := cmp.Diff([]string{"common-lint", "common-proto"}, m.Tasks()); diff != "" {
+		t.Errorf("pattern rules are not listed (-want +got):\n%s", diff)
+	}
+	for name, want := range tests {
+		if got := m.Matches(name); got != want {
+			t.Errorf("Matches(%q) = %v, want %v", name, got, want)
+		}
+	}
+}

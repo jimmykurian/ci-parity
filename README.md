@@ -150,8 +150,8 @@ so each change updates them. Run `task metrics` to see them locally.
 | Metric | Go code | Go tests | Docs site | Total |
 | --- | --- | --- | --- | --- |
 | Files | 62 | 33 | 6 | 101 |
-| Lines of code | 4,867 | 3,097 | 443 | 8,407 |
-| Functions | 269 | 147 | – | 416 |
+| Lines of code | 4,914 | 3,144 | 443 | 8,501 |
+| Functions | 275 | 149 | – | 424 |
 | Average complexity | 4.7 | 3.3 | – | 4.2 |
 | Max complexity | 18 | 16 | – | 18 |
 
@@ -160,9 +160,9 @@ so each change updates them. Run `task metrics` to see them locally.
 
 | Function | Where | Complexity |
 | --- | --- | --- |
+| `(*parser).rule` | `internal/adapters/runner/makefile/parse.go:102` | 18 |
 | `(*extractor).peel` | `internal/adapters/shell/posix/extract.go:262` | 18 |
 | `(*Justfile).read` | `internal/adapters/runner/justfile/justfile.go:83` | 17 |
-| `(*parser).rule` | `internal/adapters/runner/makefile/parse.go:102` | 17 |
 | `(*Mise).Names` | `internal/adapters/runner/mise/names.go:31` | 17 |
 | `TestRequiredFields` | `internal/adapters/report/sarif/sarif_test.go:38` | 16 |
 | `(*parser).recipe` | `internal/adapters/runner/justfile/parse.go:100` | 16 |

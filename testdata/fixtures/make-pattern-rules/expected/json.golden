@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 2,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 14,
+      "col": 19,
+      "job": "widget-service",
+      "action": null,
+      "step": "No common- target for it",
+      "command": null,
+      "message": "'make release' is not defined in Makefile",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 16,
+      "col": 14,
+      "job": "widget-service",
+      "action": null,
+      "step": "Inline command suggests the target, not the pattern name",
+      "command": "golangci-lint run",
+      "message": "step \"Inline command suggests the target, not the pattern name\" in job \"widget-service\" runs 'golangci-lint run' directly; already available as 'make common-lint'",
+      "suggestion": "make common-lint",
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

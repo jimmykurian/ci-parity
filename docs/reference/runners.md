@@ -46,9 +46,13 @@ interface and its own call syntax; the rules are unchanged.
   `.SECONDARY`, `.SECONDEXPANSION`, `.DELETE_ON_ERROR`, `.IGNORE`, `.LOW_RESOLUTION_TIME`,
   `.SILENT`, `.EXPORT_ALL_VARIABLES`, `.NOTPARALLEL`, `.ONESHELL`, `.POSIX`, `.WAIT`),
   suffix rules (a target that is one or two known suffixes, such as `.c` or `.c.o`, with
-  no prerequisites), pattern rules (`%`), variable assignments (including
-  target-specific ones), `define` blocks and names holding `$` define none. Any other
-  name starting with a dot, such as `.venv`, is a target. The known suffixes start as
+  no prerequisites), variable assignments (including target-specific ones), `define`
+  blocks and names holding `$` define none. Any other name starting with a dot, such as
+  `.venv`, is a target. A pattern rule (a target holding `%`) lists no target, but a
+  call to a name it makes is not P002: the name fits the pattern with a non-empty stem,
+  and each prerequisite holding `%`, with the stem in its place, is a target or a file
+  in the repository. So `%: common-% ;` makes `proto` when `common-proto` is a target.
+  Names a pattern rule makes are never suggested. The known suffixes start as
   GNU make's default list; a `.SUFFIXES` rule adds its prerequisites, or clears the list
   when it has none. `include`, `-include` and `sinclude` of literal
   paths, resolved from the repository root, are followed to depth 10; a missing file is

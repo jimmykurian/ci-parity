@@ -1,0 +1,5 @@
+.github/workflows/ci.yml
+  14:19   P002 unknown-task  'make release' is not defined in Makefile
+  16:14   P001 inline-tool   step "Inline command suggests the target, not the pattern name" in job "widget-service" runs 'golangci-lint run' directly; already available as 'make common-lint'
+
+2 errors, 0 warnings, 0 tolerated, 0 allowed

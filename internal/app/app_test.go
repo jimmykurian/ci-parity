@@ -48,6 +48,7 @@ type fakeTasks struct{}
 func (fakeTasks) Load(string, string) (TaskSource, error) { return fakeTasks{}, nil }
 func (fakeTasks) File() string                            { return "Taskfile.yml" }
 func (fakeTasks) Tasks() []string                         { return nil }
+func (fakeTasks) Matches(string) bool                     { return false }
 func (fakeTasks) IsInternal(string) bool                  { return false }
 func (fakeTasks) Commands(string) []string                { return nil }
 func (fakeTasks) RunsMore(string) bool                    { return false }
