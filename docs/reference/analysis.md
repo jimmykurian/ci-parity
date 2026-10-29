@@ -93,7 +93,9 @@ reason emits P005 "allow comment without reason" and the command is not allowed.
 ## Invokers
 
 Shell invokers are word sequences. `go tool task` matches the three words `go`, `tool`,
-`task`. After the invoker words, parse arguments:
+`task`. After the first, an invoker word also matches itself followed by `@<version>`, so
+`go run github.com/go-task/task/v3/cmd/task@v3.40.0` matches the invoker
+`go run github.com/go-task/task/v3/cmd/task`. After the invoker words, parse arguments:
 
 - Stop at `--`.
 - Skip flags. These flags consume the next argument, as `task --help` lists them:

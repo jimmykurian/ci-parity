@@ -18,7 +18,13 @@ import (
 var testOpts = domain.ExtractOptions{
 	Tools:       set("pnpm", "npm", "go", "docker", "eslint", "python", "make"),
 	Transparent: set("sudo", "env", "time", "nice", "ionice", "timeout", "nohup"),
-	Invokers:    [][]string{{"task"}, {"go-task"}, {"go", "tool", "task"}},
+	Invokers: [][]string{
+		{"task"},
+		{"go-task"},
+		{"go", "tool", "task"},
+		{"go", "tool", "github.com/go-task/task/v3/cmd/task"},
+		{"go", "run", "github.com/go-task/task/v3/cmd/task"},
+	},
 }
 
 func set(names ...string) map[string]bool {
@@ -99,6 +105,18 @@ func TestExtract(t *testing.T) {
 		{"task invoker", "task build", []string{"1:1 invoker task build"}},
 		{"go tool task is an invoker, not go", "go tool task lint", []string{"1:1 invoker go tool task lint"}},
 		{"go tool other is go", "go tool cover -html=c.out", []string{"1:1 tool go tool cover -html=c.out"}},
+		{"go tool with task's module", "go tool github.com/go-task/task/v3/cmd/task lint", []string{
+			"1:1 invoker go tool github.com/go-task/task/v3/cmd/task lint",
+		}},
+		{"go run with a version", "go run github.com/go-task/task/v3/cmd/task@v3.40.0 lint", []string{
+			"1:1 invoker go run github.com/go-task/task/v3/cmd/task@v3.40.0 lint",
+		}},
+		{"go run of another module is go", "go run github.com/acme/tool@v1 lint", []string{
+			"1:1 tool go run github.com/acme/tool@v1 lint",
+		}},
+		{"a longer path is not the module", "go run github.com/go-task/task/v3/cmd/taskfile lint", []string{
+			"1:1 tool go run github.com/go-task/task/v3/cmd/taskfile lint",
+		}},
 		{"wrapped invoker", "env CI=1 task test", []string{"1:10 invoker task test"}},
 		{"dynamic variable", "$TOOL test", []string{"1:1 problem dynamic command name '$TOOL' cannot be analyzed"}},
 		{"dynamic expression", "${{ matrix.tool }} test", []string{

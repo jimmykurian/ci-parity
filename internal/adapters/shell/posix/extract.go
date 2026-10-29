@@ -288,7 +288,9 @@ func (e *extractor) peel(words []domain.Word) int {
 }
 
 // matchInvoker returns the longest configured invoker that words begin with,
-// and how many words it spans.
+// and how many words it spans. After the first, an invoker word also matches
+// itself followed by `@<version>`, so `go run <module>@v3.40.0` matches the
+// invoker `go run <module>`.
 func (e *extractor) matchInvoker(words []domain.Word) (string, int) {
 	best, bestLen := "", 0
 	for _, inv := range e.opts.Invokers {
@@ -300,7 +302,7 @@ func (e *extractor) matchInvoker(words []domain.Word) (string, int) {
 		}
 		ok := true
 		for k := 1; k < len(inv); k++ {
-			if !words[k].Literal || words[k].Text != inv[k] {
+			if !words[k].Literal || (words[k].Text != inv[k] && !strings.HasPrefix(words[k].Text, inv[k]+"@")) {
 				ok = false
 				break
 			}

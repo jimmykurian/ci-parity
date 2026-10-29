@@ -68,7 +68,7 @@ func Default() *Config {
 			".github/actions/**/action.yaml",
 		},
 		Invokers: Invokers{
-			Shell:   []string{"task", "go-task", "go tool task"},
+			Shell:   DefaultShellInvokers(RunnerTaskfile),
 			Actions: []ActionInvoker{{Uses: "./.github/actions/run-task", Input: "task"}},
 		},
 		Transparent: []string{"sudo", "env", "time", "nice", "ionice", "timeout", "nohup", "xvfb-run", "chronic"},
@@ -96,6 +96,9 @@ var runnerTools = map[string][]string{
 	RunnerMise:     {"mise"},
 }
 
+// TaskModule is task's Go package, which `go tool` and `go run` can run.
+const TaskModule = "github.com/go-task/task/v3/cmd/task"
+
 // DefaultShellInvokers returns the shell invokers a runner uses when the
 // config sets none.
 func DefaultShellInvokers(runner string) []string {
@@ -107,7 +110,7 @@ func DefaultShellInvokers(runner string) []string {
 	case RunnerMise:
 		return []string{"mise run", "mise r", "mise tasks run"}
 	default:
-		return []string{"task", "go-task", "go tool task"}
+		return []string{"task", "go-task", "go tool task", "go tool " + TaskModule, "go run " + TaskModule}
 	}
 }
 
