@@ -6,6 +6,9 @@ contact_links:
   - name: Report a security issue
     url: https://github.com/jimmykurian/ci-parity/blob/main/SECURITY.md
     about: Please don't open an issue for a vulnerability; follow the security policy.
+  - name: Ask a question
+    url: https://github.com/jimmykurian/ci-parity/discussions/categories/q-a
+    about: Questions about setting up ci-parity or reading a finding go in Discussions.
   - name: Usage and configuration
     url: https://jimmykurian.github.io/ci-parity/guides/
     about: The guides cover install, configuration, the baseline and fixing findings, and the FAQ.
