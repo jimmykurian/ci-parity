@@ -43,8 +43,14 @@ checks its tools are on `PATH` and names the one missing.
 ## Docs site
 
 `.github/workflows/site.yml` publishes `docs/` to GitHub Pages at
-<https://jimmykurian.github.io/ci-parity/> on every push to `main` that changes `docs/`,
+<https://ci-parity.is-a.dev/> on every push to `main` that changes `docs/`,
 `site/` or the workflow, and on demand.
+
+The domain is a subdomain of [is-a.dev](https://is-a.dev): `domains/ci-parity.json` in
+[is-a-dev/register](https://github.com/is-a-dev/register) points it at
+`jimmykurian.github.io` with a CNAME record, and the repository's Pages settings name it as
+the custom domain with HTTPS enforced. GitHub redirects the old
+`jimmykurian.github.io/ci-parity/` URLs to it.
 
 - **Build:** `task site:install` installs the site's packages from `site/pnpm-lock.yaml`;
   `task site:build` copies `docs/` into the Starlight site with `site/scripts/sync-docs.mjs`

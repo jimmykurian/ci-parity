@@ -22,7 +22,7 @@ const InformationURI = "https://github.com/jimmykurian/ci-parity"
 
 // RulesURI is the docs site's rules section; each rule's help page is
 // RulesURI + its lowercase ID + "/", such as rules/p001/.
-const RulesURI = "https://jimmykurian.github.io/ci-parity/rules/"
+const RulesURI = "https://ci-parity.is-a.dev/rules/"
 
 const (
 	schemaURI = "https://json.schemastore.org/sarif-2.1.0.json"

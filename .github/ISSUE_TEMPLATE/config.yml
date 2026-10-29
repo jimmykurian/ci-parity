@@ -10,5 +10,5 @@ contact_links:
     url: https://github.com/jimmykurian/ci-parity/discussions/categories/q-a
     about: Questions about setting up ci-parity or reading a finding go in Discussions.
   - name: Usage and configuration
-    url: https://jimmykurian.github.io/ci-parity/guides/
+    url: https://ci-parity.is-a.dev/guides/
     about: The guides cover install, configuration, the baseline and fixing findings, and the FAQ.

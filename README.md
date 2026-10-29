@@ -15,7 +15,7 @@ without regressing.
 
 [![Latest release](https://img.shields.io/github/v/release/jimmykurian/ci-parity?style=flat-square&label=release)](https://github.com/jimmykurian/ci-parity/releases/latest) [![License: Apache-2.0](https://img.shields.io/github/license/jimmykurian/ci-parity?style=flat-square)](LICENSE)
 
-[Documentation](https://jimmykurian.github.io/ci-parity/) · [Why ci-parity](https://jimmykurian.github.io/ci-parity/guides/why/) · [GitHub Marketplace](https://github.com/marketplace/actions/ci-parity) · [Changelog](https://jimmykurian.github.io/ci-parity/changelog/)
+[Documentation](https://ci-parity.is-a.dev/) · [Why ci-parity](https://ci-parity.is-a.dev/guides/why/) · [GitHub Marketplace](https://github.com/marketplace/actions/ci-parity) · [Changelog](https://ci-parity.is-a.dev/changelog/)
 
 ![A terminal session: ci-parity check reports three inline tools, each already available as a task; ci-parity fix rewrites the three steps; ci-parity check then reports 0 errors.](docs/assets/ci-parity-demo.svg)
 
@@ -27,7 +27,7 @@ without regressing.
 ```
 
 Or as a binary, with `go install`, mise, or a pre-commit hook:
-[Getting started](https://jimmykurian.github.io/ci-parity/guides/getting-started/).
+[Getting started](https://ci-parity.is-a.dev/guides/getting-started/).
 
 Until v1.0.0, a minor release may change commands, config keys and output; rule IDs, the
 baseline format and the JSON schema change only with a new `version` in the file.
@@ -50,20 +50,20 @@ $ ci-parity check
 existing repository adopt it one workflow at a time.
 
 How it compares with actionlint, zizmor and other workflow linters, and why it lints
-rather than generates workflows: [Why ci-parity](https://jimmykurian.github.io/ci-parity/guides/why/).
+rather than generates workflows: [Why ci-parity](https://ci-parity.is-a.dev/guides/why/).
 
 ## Documentation
 
-The full documentation is at **<https://jimmykurian.github.io/ci-parity/>**, with search. It's built from
+The full documentation is at **<https://ci-parity.is-a.dev/>**, with search. It's built from
 [`docs/`](docs/README.md), so every page also reads here on GitHub.
 
 | | |
 | --- | --- |
-| [Guides](https://jimmykurian.github.io/ci-parity/guides/) | [Getting started](https://jimmykurian.github.io/ci-parity/guides/getting-started/), [configuring](https://jimmykurian.github.io/ci-parity/guides/configuring/), [adopting with a baseline](https://jimmykurian.github.io/ci-parity/guides/baseline/), [fixing findings](https://jimmykurian.github.io/ci-parity/guides/fixing/), [CI setup](https://jimmykurian.github.io/ci-parity/guides/ci/), [recipes](https://jimmykurian.github.io/ci-parity/guides/recipes/) and the [FAQ](https://jimmykurian.github.io/ci-parity/guides/faq/) |
-| [Rules](https://jimmykurian.github.io/ci-parity/rules/) | [P001](https://jimmykurian.github.io/ci-parity/rules/p001/) to [P005](https://jimmykurian.github.io/ci-parity/rules/p005/): what each catches, an example, and how to fix or allow it |
-| [Reference](https://jimmykurian.github.io/ci-parity/reference/) | Configuration, the baseline, the CLI and exit codes, the output formats, the GitHub Action, and what stays [compatible](https://jimmykurian.github.io/ci-parity/reference/compatibility/) between releases |
-| [Architecture](https://jimmykurian.github.io/ci-parity/architecture/) | Packages and ports, flows, and design decisions |
-| [Changelog](https://jimmykurian.github.io/ci-parity/changelog/) | Every release |
+| [Guides](https://ci-parity.is-a.dev/guides/) | [Getting started](https://ci-parity.is-a.dev/guides/getting-started/), [configuring](https://ci-parity.is-a.dev/guides/configuring/), [adopting with a baseline](https://ci-parity.is-a.dev/guides/baseline/), [fixing findings](https://ci-parity.is-a.dev/guides/fixing/), [CI setup](https://ci-parity.is-a.dev/guides/ci/), [recipes](https://ci-parity.is-a.dev/guides/recipes/) and the [FAQ](https://ci-parity.is-a.dev/guides/faq/) |
+| [Rules](https://ci-parity.is-a.dev/rules/) | [P001](https://ci-parity.is-a.dev/rules/p001/) to [P005](https://ci-parity.is-a.dev/rules/p005/): what each catches, an example, and how to fix or allow it |
+| [Reference](https://ci-parity.is-a.dev/reference/) | Configuration, the baseline, the CLI and exit codes, the output formats, the GitHub Action, and what stays [compatible](https://ci-parity.is-a.dev/reference/compatibility/) between releases |
+| [Architecture](https://ci-parity.is-a.dev/architecture/) | Packages and ports, flows, and design decisions |
+| [Changelog](https://ci-parity.is-a.dev/changelog/) | Every release |
 
 ## Architecture
 
@@ -150,7 +150,7 @@ so each change updates them. Run `task metrics` to see them locally.
 | Metric | Go code | Go tests | Docs site | Total |
 | --- | --- | --- | --- | --- |
 | Files | 62 | 33 | 6 | 101 |
-| Lines of code | 4,827 | 3,045 | 444 | 8,316 |
+| Lines of code | 4,827 | 3,045 | 443 | 8,315 |
 | Functions | 267 | 146 | – | 413 |
 | Average complexity | 4.7 | 3.3 | – | 4.2 |
 | Max complexity | 18 | 16 | – | 18 |

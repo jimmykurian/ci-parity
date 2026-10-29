@@ -3,7 +3,7 @@
 # Documentation
 
 How ci-parity works, what it reads and reports, and how it is built, tested, secured and
-released. The same pages are published, with search, at [https://jimmykurian.github.io/ci-parity](https://jimmykurian.github.io/ci-parity/).
+released. The same pages are published, with search, at [https://ci-parity.is-a.dev](https://ci-parity.is-a.dev/).
 
 ## Documentation index
 

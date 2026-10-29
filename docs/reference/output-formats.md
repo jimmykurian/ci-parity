@@ -45,7 +45,7 @@ GitHub format emits one workflow command per finding, nothing else:
 Errors use `::error`, warnings `::warning`, tolerated `::notice`, allowed nothing.
 Messages are escaped per the workflow-command rules (`%`, `\r`, `\n`, `:`, `,`).
 
-JSON format (described by the [output schema](https://jimmykurian.github.io/ci-parity/schemas/output.schema.json)):
+JSON format (described by the [output schema](https://ci-parity.is-a.dev/schemas/output.schema.json)):
 
 ```json
 {
@@ -100,7 +100,7 @@ the other formats.
   `semanticVersion` when that version is `X.Y.Z`), `informationUri` the repository URL,
   and one `rules` entry per rule P001 to P005 with `id`, `name`, `shortDescription`,
   `helpUri` (the rule's page on the docs site,
-  `https://jimmykurian.github.io/ci-parity/rules/p001/` and so on) and
+  `https://ci-parity.is-a.dev/rules/p001/` and so on) and
   `defaultConfiguration.level`.
 - One result per finding: `ruleId`, `level` `error` for errors, `warning` for warnings
   and `note` for tolerated findings, and `message.text` with the same message as the

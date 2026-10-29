@@ -19,12 +19,12 @@ Changing any of these needs a new major version:
   their [messages](rules.md). People search for messages, so a message only changes with
   a major version.
 - **Configuration:** every key in [`.ci-parity.yml`](configuration.md), its meaning and
-  its default. The [config schema](https://jimmykurian.github.io/ci-parity/schemas/config.schema.json)
+  its default. The [config schema](https://ci-parity.is-a.dev/schemas/config.schema.json)
   describes them.
 - **Baseline:** the [file format](baseline.md), version 1, and its model: a count per
   workflow that tolerates that many inline-tool findings and only goes down.
 - **Output:** the JSON format (its `version`, keys and value types, described by the
-  [output schema](https://jimmykurian.github.io/ci-parity/schemas/output.schema.json)),
+  [output schema](https://ci-parity.is-a.dev/schemas/output.schema.json)),
   the SARIF format (rule IDs, levels, suppressions, fingerprints and `helpUri` pattern),
   and the `github` format's workflow commands.
 - **Command line:** the commands `check`, `baseline`, `fix` and `version`, their flags, and

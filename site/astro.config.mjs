@@ -1,7 +1,8 @@
 // Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
 // SPDX-License-Identifier: Apache-2.0
 
-// The docs site, served from GitHub Pages at https://jimmykurian.github.io/ci-parity/.
+// The docs site, served from GitHub Pages at https://ci-parity.is-a.dev/, an is-a.dev
+// subdomain whose CNAME points at jimmykurian.github.io.
 // Its pages come from docs/ through scripts/sync-docs.mjs; only the home page lives here.
 
 import starlight from '@astrojs/starlight';
@@ -10,8 +11,7 @@ import mermaid from 'astro-mermaid';
 import starlightLinksValidator from 'starlight-links-validator';
 
 export default defineConfig({
-  site: 'https://jimmykurian.github.io',
-  base: '/ci-parity',
+  site: 'https://ci-parity.is-a.dev',
   integrations: [
     // Renders the ```mermaid diagrams in the browser, following the light or dark theme.
     // It must come before Starlight.

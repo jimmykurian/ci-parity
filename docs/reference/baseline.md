@@ -32,7 +32,7 @@ Semantics:
   baseline, suggesting `ci-parity baseline` to lock in the improvement. Not an error.
 - `--strict` on `check` ignores the baseline entirely.
 
-The file is described by the [baseline schema](https://jimmykurian.github.io/ci-parity/schemas/baseline.schema.json).
+The file is described by the [baseline schema](https://ci-parity.is-a.dev/schemas/baseline.schema.json).
 
 ## Why a count
 
