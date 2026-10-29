@@ -150,8 +150,8 @@ so each change updates them. Run `task metrics` to see them locally.
 | Metric | Go code | Go tests | Docs site | Total |
 | --- | --- | --- | --- | --- |
 | Files | 62 | 33 | 6 | 101 |
-| Lines of code | 4,802 | 3,007 | 444 | 8,253 |
-| Functions | 266 | 145 | – | 411 |
+| Lines of code | 4,827 | 3,045 | 444 | 8,316 |
+| Functions | 267 | 146 | – | 413 |
 | Average complexity | 4.7 | 3.3 | – | 4.2 |
 | Max complexity | 18 | 16 | – | 18 |
 
@@ -164,7 +164,7 @@ so each change updates them. Run `task metrics` to see them locally.
 | `(*Justfile).read` | `internal/adapters/runner/justfile/justfile.go:83` | 17 |
 | `(*Mise).Names` | `internal/adapters/runner/mise/names.go:31` | 17 |
 | `TestRequiredFields` | `internal/adapters/report/sarif/sarif_test.go:38` | 16 |
-| `(*parser).recipe` | `internal/adapters/runner/justfile/parse.go:98` | 16 |
+| `(*parser).recipe` | `internal/adapters/runner/justfile/parse.go:100` | 16 |
 | `(*Makefile).Names` | `internal/adapters/runner/makefile/names.go:37` | 16 |
 | `(Source).Apply` | `internal/adapters/workflow/ghactions/edit.go:20` | 16 |
 | `validate` | `internal/adapters/config/yamlconfig/config.go:87` | 15 |
