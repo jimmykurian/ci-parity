@@ -13,6 +13,8 @@ It reports every inline invocation, verifies that every task CI references exist
 keeps a per-workflow baseline so an existing repo can migrate one workflow at a time
 without regressing.
 
+[![Latest release](https://img.shields.io/github/v/release/jimmykurian/ci-parity?style=flat-square&label=release)](https://github.com/jimmykurian/ci-parity/releases/latest) [![License: Apache-2.0](https://img.shields.io/github/license/jimmykurian/ci-parity?style=flat-square)](LICENSE)
+
 [Documentation](https://jimmykurian.github.io/ci-parity/) · [Why ci-parity](https://jimmykurian.github.io/ci-parity/guides/why/) · [GitHub Marketplace](https://github.com/marketplace/actions/ci-parity) · [Changelog](https://jimmykurian.github.io/ci-parity/changelog/)
 
 ![A terminal session: ci-parity check reports three inline tools, each already available as a task; ci-parity fix rewrites the three steps; ci-parity check then reports 0 errors.](docs/assets/ci-parity-demo.svg)
@@ -172,7 +174,3 @@ so each change updates them. Run `task metrics` to see them locally.
 </details>
 
 <!-- METRICS:END -->
-
-## License
-
-[Apache-2.0](LICENSE)
