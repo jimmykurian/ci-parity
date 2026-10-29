@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.2](https://github.com/jimmykurian/ci-parity/compare/v0.8.1...v0.8.2) (2026-10-29)
+
+
+### Documentation
+
+* name every supported runner in the action's description ([#63](https://github.com/jimmykurian/ci-parity/issues/63)) ([a639b04](https://github.com/jimmykurian/ci-parity/commit/a639b045a8de18fdbca32273db4bcfc2aff9002e)), closes [#43](https://github.com/jimmykurian/ci-parity/issues/43)
+
 ## [0.8.1](https://github.com/jimmykurian/ci-parity/compare/v0.8.0...v0.8.1) (2026-10-29)
 
 
