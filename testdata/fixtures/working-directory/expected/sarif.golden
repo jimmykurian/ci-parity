@@ -15,7 +15,7 @@
               "shortDescription": {
                 "text": "A run: step calls a listed tool directly instead of through the task runner."
               },
-              "helpUri": "https://jimmykurian.github.io/ci-parity/rules/p001/",
+              "helpUri": "https://ci-parity.is-a.dev/rules/p001/",
               "defaultConfiguration": {
                 "level": "error"
               }
@@ -26,7 +26,7 @@
               "shortDescription": {
                 "text": "CI calls a task that the task runner does not define."
               },
-              "helpUri": "https://jimmykurian.github.io/ci-parity/rules/p002/",
+              "helpUri": "https://ci-parity.is-a.dev/rules/p002/",
               "defaultConfiguration": {
                 "level": "error"
               }
@@ -37,7 +37,7 @@
               "shortDescription": {
                 "text": "CI calls a task the task runner marks internal, private or hidden."
               },
-              "helpUri": "https://jimmykurian.github.io/ci-parity/rules/p003/",
+              "helpUri": "https://ci-parity.is-a.dev/rules/p003/",
               "defaultConfiguration": {
                 "level": "error"
               }
@@ -48,7 +48,7 @@
               "shortDescription": {
                 "text": "A workflow has more inline-tool findings than its baseline allows."
               },
-              "helpUri": "https://jimmykurian.github.io/ci-parity/rules/p004/",
+              "helpUri": "https://ci-parity.is-a.dev/rules/p004/",
               "defaultConfiguration": {
                 "level": "error"
               }
@@ -59,7 +59,7 @@
               "shortDescription": {
                 "text": "A step that ci-parity cannot analyze."
               },
-              "helpUri": "https://jimmykurian.github.io/ci-parity/rules/p005/",
+              "helpUri": "https://ci-parity.is-a.dev/rules/p005/",
               "defaultConfiguration": {
                 "level": "warning"
               }
