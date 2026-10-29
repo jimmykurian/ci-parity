@@ -1,0 +1,22 @@
+name: ci
+on: [push]
+jobs:
+  widget-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extension dropped
+        run: mise run db:migrate
+      - name: Extension kept
+        run: mise run db:migrate.sh
+      - name: Default task of a directory
+        run: mise run test
+      - name: Nested task with its extension dropped
+        run: mise run test:integration
+      - name: Other extensions stay
+        run: mise run gen.proto
+      - name: Other extension dropped
+        run: mise run gen
+      - name: Alias from the header
+        run: mise run ship
+      - name: Unknown alias
+        run: mise run shipit

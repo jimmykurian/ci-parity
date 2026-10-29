@@ -1,0 +1,1 @@
+::error file=.github/workflows/ci.yml,line=12,col=23,title=P002 unknown-task::'mise run lint' is not defined in mise.toml

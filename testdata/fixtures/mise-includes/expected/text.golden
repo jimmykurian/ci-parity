@@ -1,0 +1,4 @@
+.github/workflows/ci.yml
+  12:23   P002 unknown-task  'mise run lint' is not defined in mise.toml
+
+1 error, 0 warnings, 0 tolerated, 0 allowed

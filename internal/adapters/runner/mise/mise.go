@@ -27,7 +27,7 @@ var ConfigNames = []string{
 }
 
 // TaskDirs hold file tasks: executables named by their path, `db/migrate` as
-// `db:migrate`.
+// `db:migrate`. task_config.includes replaces them.
 var TaskDirs = []string{".config/mise/tasks", "mise/tasks", ".mise/tasks", "mise-tasks", ".mise-tasks"}
 
 // task is one task or alias.
@@ -39,11 +39,15 @@ type task struct {
 	dirKnown bool
 }
 
+// scriptExts are the extensions mise drops from a file task's name.
+var scriptExts = []string{".sh", ".py", ".js", ".ps1"}
+
 // Mise is a repository's mise tasks, implementing rules.TaskSource.
 type Mise struct {
-	root  string
-	file  string           // repo-relative path of the highest-precedence config file
-	tasks map[string]*task // name or alias -> task
+	root     string
+	file     string           // repo-relative path of the highest-precedence config file
+	tasks    map[string]*task // name or alias -> task
+	includes bool             // a config sets task_config.includes
 }
 
 // Load reads the mise config files and task directories in root.
@@ -60,6 +64,9 @@ func Load(root string) (*Mise, error) {
 		}
 	}
 	for _, dir := range TaskDirs {
+		if m.includes {
+			break
+		}
 		if err := m.readTaskDir(filepath.Join(root, filepath.FromSlash(dir))); err != nil {
 			return nil, err
 		}
@@ -88,7 +95,8 @@ func exists(path string) bool {
 	return false
 }
 
-// readConfig reads a config file's [tasks] table and task_config.includes.
+// readConfig reads a config file's [tasks] table and task_config.includes,
+// which, once set, replaces the default task directories.
 func (m *Mise) readConfig(path string) error {
 	var doc map[string]any
 	if _, err := toml.DecodeFile(path, &doc); err != nil {
@@ -98,7 +106,8 @@ func (m *Mise) readConfig(path string) error {
 		m.addTasks(tasks)
 	}
 	cfg, _ := doc["task_config"].(map[string]any)
-	includes, _ := cfg["includes"].([]any)
+	includes, set := cfg["includes"].([]any)
+	m.includes = m.includes || set
 	for _, inc := range includes {
 		name, ok := inc.(string)
 		if !ok {
@@ -190,7 +199,9 @@ func stringsOf(v any) []string {
 
 // readTaskDir records the file tasks under dir: files that are executable or
 // start with a `#!` or `#MISE` line. The header test makes the result the same
-// on Windows, which has no executable bit. A `#MISE hide=true` line hides a task.
+// on Windows, which has no executable bit. A task is named by its path, and
+// also by the shorter name mise shows, when no task has it yet. Its header can
+// hide it and give it aliases.
 func (m *Mise) readTaskDir(dir string) error {
 	if info, err := os.Stat(dir); err != nil || !info.IsDir() {
 		return nil
@@ -211,7 +222,17 @@ func (m *Mise) readTaskDir(dir string) error {
 			return err
 		}
 		name := strings.ReplaceAll(filepath.ToSlash(rel), "/", ":")
-		m.tasks[name] = &task{hidden: hiddenFile(path)}
+		hidden, aliases := header(path)
+		t := &task{hidden: hidden}
+		m.tasks[name] = t
+		if short := shortName(name); short != name {
+			if _, taken := m.tasks[short]; !taken {
+				m.tasks[short] = t
+			}
+		}
+		for _, alias := range aliases {
+			m.tasks[alias] = &task{hidden: hidden}
+		}
 		return nil
 	})
 }
@@ -230,21 +251,48 @@ func scriptHeader(path string) bool {
 	return strings.HasPrefix(line, "#!") || strings.HasPrefix(line, "#MISE") || strings.HasPrefix(line, "# [MISE]")
 }
 
-// hiddenFile reports whether a file task's header sets hide=true, in a #MISE or
-// # [MISE] comment.
-func hiddenFile(path string) bool {
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return false
-	}
-	for _, line := range strings.Split(string(data), "\n") {
-		if l := strings.TrimSpace(line); strings.HasPrefix(l, "#MISE") || strings.HasPrefix(l, "# [MISE]") {
-			if strings.Contains(strings.ReplaceAll(l, " ", ""), "hide=true") {
-				return true
-			}
+// shortName returns the name mise shows for a file task: without a script
+// extension, and a `_default` file named after its directory, `test:_default`
+// as `test`.
+func shortName(name string) string {
+	for _, ext := range scriptExts {
+		if s := strings.TrimSuffix(name, ext); s != name && s != "" && !strings.HasSuffix(s, ":") {
+			name = s
+			break
 		}
 	}
-	return false
+	if dir, ok := strings.CutSuffix(name, ":_default"); ok {
+		return dir
+	}
+	return name
+}
+
+// header returns whether a file task's header sets hide = true, and the
+// aliases its alias sets, from its #MISE and # [MISE] comment lines, each read
+// as a line of TOML. A line that isn't valid TOML is skipped.
+func header(path string) (hidden bool, aliases []string) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return false, nil
+	}
+	for _, line := range strings.Split(string(data), "\n") {
+		l := strings.TrimSpace(line)
+		rest, ok := strings.CutPrefix(l, "#MISE")
+		if !ok {
+			if rest, ok = strings.CutPrefix(l, "# [MISE]"); !ok {
+				continue
+			}
+		}
+		var kv map[string]any
+		if _, err := toml.Decode(rest, &kv); err != nil {
+			continue
+		}
+		if h, ok := kv["hide"].(bool); ok {
+			hidden = h
+		}
+		aliases = append(aliases, stringsOf(kv["alias"])...)
+	}
+	return hidden, aliases
 }
 
 // rel makes path repo-relative with forward slashes, or leaves it as is when it

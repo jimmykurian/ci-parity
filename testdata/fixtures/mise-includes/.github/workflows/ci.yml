@@ -1,0 +1,12 @@
+name: ci
+on: [push]
+jobs:
+  acme-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Task from the TOML config
+        run: mise run build
+      - name: File task from an included directory
+        run: mise run release
+      - name: File task in a default directory that includes replaced
+        run: mise run lint
