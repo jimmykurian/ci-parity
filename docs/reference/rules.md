@@ -65,6 +65,11 @@ A step without a `name:` is referred to as `step <index>` (1-based) in place of
   must read the same root file, so the suggested name exists there. Where each runner's
   tasks run is in [runners](runners.md#where-tasks-run). When either is unknown, nothing is
   suggested, so `fix` leaves the step alone.
+- P001: every word of the inline command, from the command name on, must be literal.
+  The normalized form leaves out words with an expansion or a `${{ }}` expression, so
+  `pnpm test $EXTRA_ARGS` reads as `pnpm test`; a task that runs `pnpm test` would not
+  pass those arguments, so nothing is suggested. Words before the command, such as
+  `CI=$CI` or a wrapper's options, don't count.
 - P001: the task must run that one command and nothing else: no other command, no
   dependency, and no call to another task. A task that does more would change what the
   step runs, so it is never suggested.

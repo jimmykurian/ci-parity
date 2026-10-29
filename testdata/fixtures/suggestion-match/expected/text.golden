@@ -9,5 +9,7 @@
   22:14   P001 inline-tool   step "Task with deps does not match" in job "web" runs 'pnpm vet' directly
   24:14   P001 inline-tool   step "Task that calls another task does not match" in job "web" runs 'pnpm typecheck' directly
   26:14   P001 inline-tool   step "One of a task's two commands does not match" in job "web" runs 'pnpm build' directly
+  28:14   P001 inline-tool   step "Extra arguments from a variable get no suggestion" in job "web" runs 'pnpm test' directly
+  30:14   P001 inline-tool   step "Extra arguments from an expression get no suggestion" in job "web" runs 'pnpm lint' directly
 
-10 errors, 0 warnings, 0 tolerated, 0 allowed
+12 errors, 0 warnings, 0 tolerated, 0 allowed
