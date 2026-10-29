@@ -1,0 +1,2 @@
+::error file=.github/workflows/ci.yml,line=18,col=23,title=P002 unknown-task::'mise run gen' is not defined in mise.toml (closest: gen.proto)
+::error file=.github/workflows/ci.yml,line=22,col=23,title=P002 unknown-task::'mise run shipit' is not defined in mise.toml (closest: ship)

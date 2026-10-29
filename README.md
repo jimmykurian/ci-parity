@@ -150,9 +150,9 @@ so each change updates them. Run `task metrics` to see them locally.
 | Metric | Go code | Go tests | Docs site | Total |
 | --- | --- | --- | --- | --- |
 | Files | 62 | 33 | 6 | 101 |
-| Lines of code | 4,764 | 2,943 | 444 | 8,151 |
-| Functions | 265 | 143 | – | 408 |
-| Average complexity | 4.6 | 3.3 | – | 4.2 |
+| Lines of code | 4,802 | 3,007 | 444 | 8,253 |
+| Functions | 266 | 145 | – | 411 |
+| Average complexity | 4.7 | 3.3 | – | 4.2 |
 | Max complexity | 18 | 16 | – | 18 |
 
 <details>

@@ -1,0 +1,5 @@
+.github/workflows/ci.yml
+  18:23   P002 unknown-task  'mise run gen' is not defined in mise.toml (closest: gen.proto)
+  22:23   P002 unknown-task  'mise run shipit' is not defined in mise.toml (closest: ship)
+
+2 errors, 0 warnings, 0 tolerated, 0 allowed

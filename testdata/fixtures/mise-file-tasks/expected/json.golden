@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 2,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 18,
+      "col": 23,
+      "job": "widget-service",
+      "action": null,
+      "step": "Other extension dropped",
+      "command": null,
+      "message": "'mise run gen' is not defined in mise.toml (closest: gen.proto)",
+      "suggestion": "mise run gen.proto",
+      "reason": null
+    },
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 22,
+      "col": 23,
+      "job": "widget-service",
+      "action": null,
+      "step": "Unknown alias",
+      "command": null,
+      "message": "'mise run shipit' is not defined in mise.toml (closest: ship)",
+      "suggestion": "mise run ship",
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

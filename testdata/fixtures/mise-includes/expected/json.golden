@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 1,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P002",
+      "name": "unknown-task",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 12,
+      "col": 23,
+      "job": "acme-app",
+      "action": null,
+      "step": "File task in a default directory that includes replaced",
+      "command": null,
+      "message": "'mise run lint' is not defined in mise.toml",
+      "suggestion": null,
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

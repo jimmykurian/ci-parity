@@ -1,0 +1,4 @@
+#!/bin/sh
+#MISE description="Deploy the widget service"
+#MISE alias=["d", "ship"]
+./scripts/deploy.sh

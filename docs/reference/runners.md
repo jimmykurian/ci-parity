@@ -64,11 +64,18 @@ interface and its own call syntax; the rules are unchanged.
   or list) as the commands, `alias` (string or list) as aliases and `hide = true` as
   internal; file tasks under `.config/mise/tasks/`, `mise/tasks/`,
   `.mise/tasks/`, `mise-tasks/` and `.mise-tasks/` (named from the path, `db/migrate`
-  as `db:migrate`, hidden by a `#MISE hide=true` line, with no commands), where a file
-  is a task when it is executable or starts with a `#!` or `#MISE` line, so Windows
-  checkouts, which have no executable bit, find the same tasks; and
-  `task_config.includes`, each a task TOML file whose top-level tables are tasks or a
-  directory of file tasks, a missing one skipped. A call names one task, then its
+  as `db:migrate`, with no commands), where a file is a task when it is executable or
+  starts with a `#!` or `#MISE` line, so Windows checkouts, which have no executable
+  bit, find the same tasks; and `task_config.includes`, each a task TOML file whose
+  top-level tables are tasks or a directory of file tasks, a missing one skipped. Once
+  `task_config.includes` is set, it replaces the default task directories, which are
+  read only when listed.
+- mise file tasks also get the name mise shows, unless another task already has it: a
+  `.sh`, `.py`, `.js` or `.ps1` extension dropped (`db/migrate.sh` is `db:migrate` as
+  well as `db:migrate.sh`; `gen.proto` keeps its name), and a `_default` file named
+  after its directory (`test/_default` is `test`). Each `#MISE` or `# [MISE]` header
+  line is read as TOML: `hide = true` makes the task internal, and `alias` (string or
+  list) adds aliases. A call names one task, then its
   arguments; `:::` starts another task. `-C` and `--cd` select another directory; a
   task name holding a glob (`lint:*`) is not checked; `-j --jobs -E --env -t --tool
   --timeout -o --output -s --shell` take a value.
@@ -92,4 +99,4 @@ repo-relative; anything templated is unknown, and an unknown directory never mat
 - [Analysis](analysis.md)
 - [Configuration](configuration.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

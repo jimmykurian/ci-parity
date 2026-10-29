@@ -57,7 +57,7 @@ run = "goreleaser release --clean"
 hide = true
 
 [task_config]
-includes = ["tasks.toml", "more-tasks", "missing.toml"]
+includes = ["tasks.toml", "more-tasks", "missing.toml", "mise-tasks"]
 `
 
 func load(t *testing.T) *Mise {
@@ -297,5 +297,81 @@ depends = []
 		if got := m.RunsMore(name); got != more {
 			t.Errorf("RunsMore(%s) = %v, want %v", name, got, more)
 		}
+	}
+}
+
+func TestFileTaskNames(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{
+		"mise.toml":                       "[tasks.lint]\nrun = \"golangci-lint run\"\n",
+		"mise-tasks/db/migrate.sh*":       "#!/bin/sh\ngoose up\n",
+		"mise-tasks/gen.proto*":           "#!/bin/sh\nbuf generate\n",
+		"mise-tasks/lint.sh*":             "#!/bin/sh\necho shadowed\n",
+		"mise-tasks/seed.py*":             "#!/usr/bin/env python3\n",
+		"mise-tasks/test/_default*":       "#!/bin/sh\ngo test ./...\n",
+		"mise-tasks/test/integration.sh*": "#!/bin/sh\ngo test -tags integration ./...\n",
+		"mise-tasks/deploy*":              "#!/bin/sh\n#MISE alias=\"d\"\n# [MISE] alias = [\"ship\", \"push\"]\n#MISE not toml\n./deploy.sh\n",
+		"mise-tasks/secret*":              "#!/bin/sh\n#MISE hide = true\n#MISE alias=\"s\"\n",
+	})
+	want := []string{
+		"d", "db:migrate", "db:migrate.sh", "deploy", "gen.proto", "lint", "lint.sh", "push",
+		"s", "secret", "seed", "seed.py", "ship", "test", "test:_default", "test:integration",
+		"test:integration.sh",
+	}
+
+	// Act
+	m, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
+	if diff := cmp.Diff(want, m.Tasks()); diff != "" {
+		t.Errorf("tasks (-want +got):\n%s", diff)
+	}
+	if diff := cmp.Diff([]string{"golangci-lint run"}, m.Commands("lint")); diff != "" {
+		t.Errorf("lint stays the TOML task, not lint.sh (-want +got):\n%s", diff)
+	}
+	for name, hidden := range map[string]bool{"secret": true, "s": true, "deploy": false, "d": false} {
+		if got := m.IsInternal(name); got != hidden {
+			t.Errorf("IsInternal(%s) = %v, want %v", name, got, hidden)
+		}
+	}
+}
+
+func TestIncludesReplaceTaskDirs(t *testing.T) {
+	// Arrange
+	tests := map[string]struct {
+		config string
+		want   []string
+	}{
+		"no includes": {"", []string{"build", "old"}},
+		"includes without the default dir": {
+			"[task_config]\nincludes = [\"tasks\"]\n", []string{"build", "new"},
+		},
+		"includes listing it": {
+			"[task_config]\nincludes = [\"tasks\", \"mise-tasks\"]\n", []string{"build", "new", "old"},
+		},
+		"empty includes": {"[task_config]\nincludes = []\n", []string{"build"}},
+	}
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			root := write(t, map[string]string{
+				"mise.toml":       "[tasks]\nbuild = \"go build ./...\"\n" + tt.config,
+				"mise-tasks/old*": "#!/bin/sh\n",
+				"tasks/new*":      "#!/bin/sh\n",
+			})
+
+			// Act
+			m, err := Load(root)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			// Assert
+			if diff := cmp.Diff(tt.want, m.Tasks()); diff != "" {
+				t.Errorf("tasks (-want +got):\n%s", diff)
+			}
+		})
 	}
 }
