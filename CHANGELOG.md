@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.0](https://github.com/jimmykurian/ci-parity/compare/v0.10.0...v1.0.0) (2026-10-29)
+
+
+### Documentation
+
+* prepare 1.0: drop the pre-1.0 wording and point examples at `@v1` ([#83](https://github.com/jimmykurian/ci-parity/issues/83)) ([7cf166c](https://github.com/jimmykurian/ci-parity/commit/7cf166c8f344a4243ab73ff2860cefdb4e9c6d6b))
+
 ## [0.10.0](https://github.com/jimmykurian/ci-parity/compare/v0.9.0...v0.10.0) (2026-10-29)
 
 
