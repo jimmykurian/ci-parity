@@ -1,0 +1,13 @@
+version: "3"
+
+tasks:
+  test:
+    cmds:
+      - pnpm test
+  build:
+    cmds:
+      - pnpm build
+  e2e:
+    dir: e2e
+    cmds:
+      - pnpm e2e

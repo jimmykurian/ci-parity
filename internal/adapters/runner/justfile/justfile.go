@@ -12,6 +12,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 // Names are the file names just looks for in a directory, in its order.
@@ -26,6 +28,9 @@ type recipe struct {
 	private  bool     // [private], or a name starting with _
 	commands []string // body lines, for suggestions
 	alias    string   // for an alias, the recipe it names
+	dir      string   // repo-relative directory it runs in, when dirKnown
+	dirKnown bool
+	ownDir   bool // [no-cd] or [working-directory]: not the file's directory
 }
 
 // Justfile is a justfile with its imports and modules read, implementing
@@ -44,7 +49,7 @@ func Load(root string) (*Justfile, error) {
 		return nil, fmt.Errorf("no justfile found; looked for %s", strings.Join(Names, ", "))
 	}
 	j := &Justfile{root: root, file: filepath.Base(path), recipes: map[string]*recipe{}, modules: map[string]bool{}}
-	if err := j.read(path, "", 0, nil); err != nil {
+	if err := j.read(path, "", 0, "", true, nil); err != nil {
 		return nil, err
 	}
 	j.resolveAliases()
@@ -72,8 +77,9 @@ func discover(dir string) (string, bool) {
 }
 
 // read parses the justfile at path into the module prefix (`db::`, or "" at
-// the root). stack holds the files being read, so a cycle stops.
-func (j *Justfile) read(path, prefix string, depth int, stack []string) error {
+// the root). Its recipes run in dir, repo-relative, unless dirKnown is false.
+// stack holds the files being read, so a cycle stops.
+func (j *Justfile) read(path, prefix string, depth int, dir string, dirKnown bool, stack []string) error {
 	if depth > maxDepth {
 		return nil
 	}
@@ -88,21 +94,27 @@ func (j *Justfile) read(path, prefix string, depth int, stack []string) error {
 	}
 	p := parser{j: j, prefix: prefix}
 	p.parse(string(data))
-	dir, stack := filepath.Dir(path), append(stack, path)
+	dirKnown = dirKnown && !p.setWorkingDir
+	for _, r := range p.added {
+		if dirKnown && !r.ownDir {
+			r.dir, r.dirKnown = dir, true
+		}
+	}
+	from, stack := filepath.Dir(path), append(stack, path)
 	for _, imp := range p.imports {
-		target := filepath.Join(dir, filepath.FromSlash(imp.path))
+		target := filepath.Join(from, filepath.FromSlash(imp.path))
 		if _, err := os.Stat(target); err != nil {
 			if imp.optional {
 				continue
 			}
 			return fmt.Errorf("%s: import %q not found", j.rel(path), imp.path)
 		}
-		if err := j.read(target, prefix, depth+1, stack); err != nil {
+		if err := j.read(target, prefix, depth+1, dir, dirKnown, stack); err != nil {
 			return err
 		}
 	}
 	for _, mod := range p.modules {
-		target, ok := moduleFile(dir, mod)
+		target, ok := moduleFile(from, mod)
 		if !ok {
 			if mod.optional {
 				continue
@@ -110,7 +122,8 @@ func (j *Justfile) read(path, prefix string, depth int, stack []string) error {
 			return fmt.Errorf("%s: module %q not found", j.rel(path), mod.name)
 		}
 		j.modules[prefix+mod.name] = true
-		if err := j.read(target, prefix+mod.name+"::", depth+1, stack); err != nil {
+		modDir, ok := domain.RepoDir(j.rel(filepath.Dir(target)))
+		if err := j.read(target, prefix+mod.name+"::", depth+1, modDir, ok, stack); err != nil {
 			return err
 		}
 	}
@@ -178,6 +191,24 @@ func (j *Justfile) Tasks() []string {
 func (j *Justfile) IsInternal(name string) bool {
 	r, ok := j.recipes[name]
 	return ok && r.private
+}
+
+// Dir returns the repo-relative directory a recipe runs in: the root
+// justfile's, or a module's file's, as for imported recipes the importing
+// file's. It is unknown under [no-cd], [working-directory] or a
+// working-directory setting.
+func (j *Justfile) Dir(name string) (string, bool) {
+	if r, ok := j.recipes[name]; ok {
+		return r.dir, r.dirKnown
+	}
+	return "", false
+}
+
+// Reaches reports whether `just` called from dir, repo-relative, reads the root
+// justfile: neither dir nor a directory above it, below the root, holds a
+// justfile, which just would find first.
+func (j *Justfile) Reaches(dir string) bool {
+	return domain.Reaches(filepath.Join(j.root, j.file), filepath.Join(j.root, filepath.FromSlash(dir)), discover)
 }
 
 // Commands returns a recipe's body lines; an alias has none, so suggestions

@@ -22,16 +22,18 @@ type file struct {
 	includes []include
 }
 
-// task is one task: its name, aliases, whether it is internal, and its commands.
+// task is one task: its name, aliases, whether it is internal, its commands and
+// its directory.
 type task struct {
 	name     string
 	aliases  []string
 	internal bool
 	cmds     []string
+	dir      string // dir:, as written
 }
 
 // include is one `includes` entry: its namespace and aliases, the file it reads,
-// and whether it is optional, internal or flattened.
+// whether it is optional, internal or flattened, and the directory its tasks run in.
 type include struct {
 	namespace string
 	path      string
@@ -39,6 +41,7 @@ type include struct {
 	optional  bool
 	internal  bool
 	flatten   bool
+	dir       string // dir:, as written
 }
 
 // parse decodes one Taskfile. Keys ci-parity does not need are ignored.
@@ -78,6 +81,7 @@ func parseTask(name string, n *yaml.Node) task {
 	case yaml.MappingNode:
 		t.aliases = scalars(get(n, "aliases"))
 		t.internal = scalar(get(n, "internal")) == "true"
+		t.dir = scalar(get(n, "dir"))
 		if c := scalar(get(n, "cmd")); c != "" {
 			t.cmds = append(t.cmds, c)
 		}
@@ -118,6 +122,7 @@ func parseInclude(ns string, n *yaml.Node) include {
 	inc.optional = scalar(get(n, "optional")) == "true"
 	inc.internal = scalar(get(n, "internal")) == "true"
 	inc.flatten = scalar(get(n, "flatten")) == "true"
+	inc.dir = scalar(get(n, "dir"))
 	return inc
 }
 

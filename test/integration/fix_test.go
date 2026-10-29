@@ -61,6 +61,19 @@ var _ = Describe("ci-parity fix", Label("integration"), func() {
 		Expect(r.stdout).To(Equal("fixed 0 steps in 0 files; 8 inline-tool findings need a manual change\n"))
 	})
 
+	It("rewrites only steps whose working directory matches the task's", func() {
+		wd := copyDir(filepath.Join(fixtures, "working-directory"))
+		r := runCLI("fix", "--dry-run", "-C", wd)
+		Expect(r.code).To(Equal(cli.ExitOK), "stderr: %s", r.stderr)
+		Expect(r.stdout).To(Equal(".github/workflows/ci.yml:8:14 'pnpm test' -> 'task test'\n" +
+			".github/workflows/ci.yml:10:14 'pnpm fmt' -> 'task tools:fmt'\n" +
+			".github/workflows/ci.yml:15:14 'pnpm lint' -> 'task lint-api'\n" +
+			".github/workflows/ci.yml:31:14 'pnpm build' -> 'task web:build'\n" +
+			".github/workflows/ci.yml:34:14 'pnpm test' -> 'task web:test'\n" +
+			".github/workflows/ci.yml:37:14 'pnpm e2e' -> 'task web:e2e'\n" +
+			"would fix 6 steps in 1 file; 6 inline-tool findings need a manual change\n"))
+	})
+
 	It("suggests running baseline once the counts fell", func() {
 		Expect(runCLI("baseline", "-C", repo).code).To(Equal(cli.ExitOK))
 		r := runCLI("fix", "-C", repo)

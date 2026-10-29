@@ -17,6 +17,14 @@ type TaskSource interface {
 	// Commands returns the command strings of the task defined under name.
 	// Aliases and namespace shortcuts return none, so suggestions name the task.
 	Commands(name string) []string
+	// Dir returns the directory the task called name runs its commands in,
+	// repo-relative with forward slashes and "" for the root, or false when it
+	// can't be known statically, such as a templated dir. Suggestions need it
+	// to match the step's working directory.
+	Dir(name string) (string, bool)
+	// Reaches reports whether calling the runner from dir, repo-relative, reads
+	// this root file, so a task named there is one of these tasks.
+	Reaches(dir string) bool
 	// Command returns how CI calls a task, such as "task" or "mise run"; messages
 	// and suggestions use it.
 	Command() string

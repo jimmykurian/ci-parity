@@ -10,24 +10,31 @@ import (
 // suggester proposes tasks for inline commands and unknown task names. Internal
 // tasks are never proposed: task refuses to run them from the command line.
 type suggester struct {
-	invoke    string            // how CI calls a task, such as "task"
-	byCommand map[string]string // canonical command -> task name
-	names     []string          // invocable, non-internal names
+	invoke    string                 // how CI calls a task, such as "task"
+	reaches   func(dir string) bool  // whether a call from dir reads the runner's file
+	byCommand map[string][]candidate // canonical command -> tasks that run it
+	names     []string               // invocable, non-internal names
+}
+
+// candidate is a task that runs a command, and the directory it runs in.
+type candidate struct {
+	name     string
+	dir      string
+	dirKnown bool
 }
 
 // newSuggester indexes the runner's non-internal tasks by the commands they run.
 func newSuggester(r TaskSource) *suggester {
-	s := &suggester{byCommand: map[string]string{}, invoke: r.Command()}
+	s := &suggester{byCommand: map[string][]candidate{}, invoke: r.Command(), reaches: r.Reaches}
 	for _, name := range r.Tasks() {
 		if r.IsInternal(name) {
 			continue
 		}
 		s.names = append(s.names, name)
+		dir, known := r.Dir(name)
 		for _, cmd := range r.Commands(name) {
 			for _, key := range keys(cmd) {
-				if prev, ok := s.byCommand[key]; !ok || better(name, prev) {
-					s.byCommand[key] = name
-				}
+				s.byCommand[key] = append(s.byCommand[key], candidate{name: name, dir: dir, dirKnown: known})
 			}
 		}
 	}
@@ -35,13 +42,21 @@ func newSuggester(r TaskSource) *suggester {
 }
 
 // command returns "<invoke> <name>" for a task whose command equals the inline
-// command, as written or with a package runner unwrapped on either side, or "".
-// Among several matching tasks the better name wins.
-func (s *suggester) command(normalized string) string {
+// command, as written or with a package runner unwrapped on either side, and
+// that runs in dir, the step's working directory; or "". Calling the runner
+// from dir must read the same file, so the name resolves. A task whose
+// directory isn't known never matches, nor does any task when dirKnown is
+// false. Among several matching tasks the better name wins.
+func (s *suggester) command(normalized, dir string, dirKnown bool) string {
+	if !dirKnown || !s.reaches(dir) {
+		return ""
+	}
 	best := ""
 	for _, key := range keys(normalized) {
-		if name, ok := s.byCommand[key]; ok && (best == "" || better(name, best)) {
-			best = name
+		for _, c := range s.byCommand[key] {
+			if c.dirKnown && c.dir == dir && (best == "" || better(c.name, best)) {
+				best = c.name
+			}
 		}
 	}
 	if best == "" {

@@ -1,0 +1,362 @@
+{
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "ci-parity",
+          "version": "dev",
+          "informationUri": "https://github.com/jimmykurian/ci-parity",
+          "rules": [
+            {
+              "id": "P001",
+              "name": "inline-tool",
+              "shortDescription": {
+                "text": "A run: step calls a listed tool directly instead of through the task runner."
+              },
+              "helpUri": "https://jimmykurian.github.io/ci-parity/rules/p001/",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P002",
+              "name": "unknown-task",
+              "shortDescription": {
+                "text": "CI calls a task that the task runner does not define."
+              },
+              "helpUri": "https://jimmykurian.github.io/ci-parity/rules/p002/",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P003",
+              "name": "internal-task",
+              "shortDescription": {
+                "text": "CI calls a task the task runner marks internal, private or hidden."
+              },
+              "helpUri": "https://jimmykurian.github.io/ci-parity/rules/p003/",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P004",
+              "name": "regression",
+              "shortDescription": {
+                "text": "A workflow has more inline-tool findings than its baseline allows."
+              },
+              "helpUri": "https://jimmykurian.github.io/ci-parity/rules/p004/",
+              "defaultConfiguration": {
+                "level": "error"
+              }
+            },
+            {
+              "id": "P005",
+              "name": "unsupported",
+              "shortDescription": {
+                "text": "A step that ci-parity cannot analyze."
+              },
+              "helpUri": "https://jimmykurian.github.io/ci-parity/rules/p005/",
+              "defaultConfiguration": {
+                "level": "warning"
+              }
+            }
+          ]
+        }
+      },
+      "results": [
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Root step, root task\" in job \"root\" runs 'pnpm test' directly; already available as 'task test'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 8,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "f5f6ce70747fa34d5fabf34c395c9e7d"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Included task without dir runs at the root\" in job \"root\" runs 'pnpm fmt' directly; already available as 'task tools:fmt'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 10,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "bde0933a154ed1be9970b70157af1dd2"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Task with dir api does not run at the root\" in job \"root\" runs 'pnpm lint' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 12,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "a620e35bbbef5be3acd5dcf851daf14f"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Step in api, task with dir api\" in job \"root\" runs 'pnpm lint' directly; already available as 'task lint-api'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 15,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "41a775f09ef8b66e4a824e81a099d0f1"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Templated task dir\" in job \"root\" runs 'pnpm gen' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 17,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "53a2b06addfa5096bd380957bb546288"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Expression working directory\" in job \"root\" runs 'pnpm test' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "54d92d73bc0ec4d22f790e3e85166806"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"task would read docs/Taskfile.yml from docs\" in job \"root\" runs 'pnpm docs:build' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 23,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "33b3058746e4958786cbf0815bb800bd"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Job default matches the include dir\" in job \"web\" runs 'pnpm build' directly; already available as 'task web:build'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 31,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "4074d45f1d67f842af17af113e01a145"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Same directory written differently\" in job \"web\" runs 'pnpm test' directly; already available as 'task web:test'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 34,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "4fe598f4309a2eee3979c6737abe2ef5"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Task dir under the include dir\" in job \"web\" runs 'pnpm e2e' directly; already available as 'task web:e2e'"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 37,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "aaff2c6e7b5951d3baa7553d54a85e12"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Root task does not run in web\" in job \"web\" runs 'pnpm fmt' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 39,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "8d8fafe26b6d8e350c3153cc7f74f8ba"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Step overrides the job default\" in job \"web\" runs 'pnpm build' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 42,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "8fb0ba437552acfc553a4078dbced21c"
+          }
+        }
+      ]
+    }
+  ]
+}

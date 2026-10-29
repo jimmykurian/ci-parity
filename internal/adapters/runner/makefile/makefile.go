@@ -139,3 +139,11 @@ func (m *Makefile) IsInternal(string) bool { return false }
 
 // Commands returns the recipe lines of a target.
 func (m *Makefile) Commands(name string) []string { return m.commands[name] }
+
+// Dir returns the repository root: make reads the Makefile there, and its
+// recipes run in the directory make starts in.
+func (m *Makefile) Dir(string) (string, bool) { return "", true }
+
+// Reaches reports whether dir is the root: make reads only the Makefile in the
+// directory it starts in.
+func (m *Makefile) Reaches(dir string) bool { return dir == "" }

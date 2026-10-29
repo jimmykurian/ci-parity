@@ -1,0 +1,12 @@
+::error file=.github/workflows/ci.yml,line=8,col=14,title=P001 inline-tool::step "Root step, root task" in job "root" runs 'pnpm test' directly; already available as 'task test'
+::error file=.github/workflows/ci.yml,line=10,col=14,title=P001 inline-tool::step "Included task without dir runs at the root" in job "root" runs 'pnpm fmt' directly; already available as 'task tools:fmt'
+::error file=.github/workflows/ci.yml,line=12,col=14,title=P001 inline-tool::step "Task with dir api does not run at the root" in job "root" runs 'pnpm lint' directly
+::error file=.github/workflows/ci.yml,line=15,col=14,title=P001 inline-tool::step "Step in api, task with dir api" in job "root" runs 'pnpm lint' directly; already available as 'task lint-api'
+::error file=.github/workflows/ci.yml,line=17,col=14,title=P001 inline-tool::step "Templated task dir" in job "root" runs 'pnpm gen' directly
+::error file=.github/workflows/ci.yml,line=20,col=14,title=P001 inline-tool::step "Expression working directory" in job "root" runs 'pnpm test' directly
+::error file=.github/workflows/ci.yml,line=23,col=14,title=P001 inline-tool::step "task would read docs/Taskfile.yml from docs" in job "root" runs 'pnpm docs:build' directly
+::error file=.github/workflows/ci.yml,line=31,col=14,title=P001 inline-tool::step "Job default matches the include dir" in job "web" runs 'pnpm build' directly; already available as 'task web:build'
+::error file=.github/workflows/ci.yml,line=34,col=14,title=P001 inline-tool::step "Same directory written differently" in job "web" runs 'pnpm test' directly; already available as 'task web:test'
+::error file=.github/workflows/ci.yml,line=37,col=14,title=P001 inline-tool::step "Task dir under the include dir" in job "web" runs 'pnpm e2e' directly; already available as 'task web:e2e'
+::error file=.github/workflows/ci.yml,line=39,col=14,title=P001 inline-tool::step "Root task does not run in web" in job "web" runs 'pnpm fmt' directly
+::error file=.github/workflows/ci.yml,line=42,col=14,title=P001 inline-tool::step "Step overrides the job default" in job "web" runs 'pnpm build' directly

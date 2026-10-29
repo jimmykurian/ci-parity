@@ -105,8 +105,8 @@ func (c *checker) parseError(f *domain.File, s *domain.Step, err error) {
 }
 
 // inlineTool reports P001 for a tool called directly, allowed when an allow
-// comment or rule covers it, with the task that runs it and a fix when there
-// is one.
+// comment or rule covers it, with the task that runs it in the step's working
+// directory and a fix when there is one.
 func (c *checker) inlineTool(f *domain.File, s *domain.Step, cmd domain.Command) {
 	line, col := s.Run.Position(cmd.Line, cmd.Col)
 	msg := fmt.Sprintf("%s %s runs '%s' directly", stepRef(s), scope(f, s), cmd.Normalized)
@@ -116,7 +116,8 @@ func (c *checker) inlineTool(f *domain.File, s *domain.Step, cmd domain.Command)
 	} else if r, ok := c.allowRule(f.Path, cmd.Normalized); ok {
 		sev, reason = domain.SeverityAllowed, r
 	}
-	suggestion := c.suggest.command(cmd.Normalized)
+	dir, dirKnown := domain.RepoDir(s.WorkingDir)
+	suggestion := c.suggest.command(cmd.Normalized, dir, dirKnown)
 	if suggestion != "" {
 		msg += fmt.Sprintf("; already available as '%s'", suggestion)
 	}

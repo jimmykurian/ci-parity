@@ -220,3 +220,41 @@ func TestNames(t *testing.T) {
 		}
 	}
 }
+
+func TestDirIsTheRootUnlessTheTaskSetsOne(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"mise.toml": `[tasks]
+test = "cargo test"
+[tasks.web]
+run = "pnpm build"
+dir = "web"
+[tasks.here]
+run = "ls"
+dir = "{{cwd}}"
+`})
+	m, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		task, wantDir string
+		wantOK        bool
+	}{
+		{"test", "", true},
+		{"web", "web", true},
+		{"here", "", false},
+		{"nope", "", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.task, func(t *testing.T) {
+			// Act
+			dir, ok := m.Dir(tt.task)
+
+			// Assert
+			if dir != tt.wantDir || ok != tt.wantOK {
+				t.Errorf("Dir(%q) = %q, %v, want %q, %v", tt.task, dir, ok, tt.wantDir, tt.wantOK)
+			}
+		})
+	}
+}
