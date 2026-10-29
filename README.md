@@ -61,10 +61,10 @@ so each change updates them. Run `task metrics` to see them locally.
 
 | Metric | Go code | Go tests | Docs site | Total |
 | --- | --- | --- | --- | --- |
-| Files | 61 | 31 | 6 | 98 |
-| Lines of code | 4,572 | 2,541 | 444 | 7,557 |
-| Functions | 247 | 128 | – | 375 |
-| Average complexity | 4.7 | 3.2 | – | 4.2 |
+| Files | 62 | 33 | 6 | 101 |
+| Lines of code | 4,722 | 2,802 | 444 | 7,968 |
+| Functions | 260 | 138 | – | 398 |
+| Average complexity | 4.7 | 3.3 | – | 4.2 |
 | Max complexity | 18 | 16 | – | 18 |
 
 <details>
@@ -73,15 +73,15 @@ so each change updates them. Run `task metrics` to see them locally.
 | Function | Where | Complexity |
 | --- | --- | --- |
 | `(*extractor).peel` | `internal/adapters/shell/posix/extract.go:262` | 18 |
+| `(*Justfile).read` | `internal/adapters/runner/justfile/justfile.go:82` | 17 |
 | `(*Mise).Names` | `internal/adapters/runner/mise/names.go:31` | 17 |
 | `TestRequiredFields` | `internal/adapters/report/sarif/sarif_test.go:38` | 16 |
 | `(*Makefile).Names` | `internal/adapters/runner/makefile/names.go:37` | 16 |
 | `(Source).Apply` | `internal/adapters/workflow/ghactions/edit.go:20` | 16 |
 | `validate` | `internal/adapters/config/yamlconfig/config.go:87` | 15 |
-| `Load` | `internal/adapters/workflow/ghactions/workflow.go:23` | 14 |
-| `(*Justfile).read` | `internal/adapters/runner/justfile/justfile.go:76` | 13 |
-| `(*parser).recipe` | `internal/adapters/runner/justfile/parse.go:91` | 13 |
-| `(*App).Fix` | `internal/app/fix.go:32` | 13 |
+| `(*parser).recipe` | `internal/adapters/runner/justfile/parse.go:98` | 15 |
+| `Load` | `internal/adapters/workflow/ghactions/workflow.go:23` | 15 |
+| `(*parser).line` | `internal/adapters/runner/justfile/parse.go:56` | 14 |
 
 </details>
 

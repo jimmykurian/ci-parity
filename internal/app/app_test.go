@@ -50,6 +50,8 @@ func (fakeTasks) File() string                            { return "Taskfile.yml
 func (fakeTasks) Tasks() []string                         { return nil }
 func (fakeTasks) IsInternal(string) bool                  { return false }
 func (fakeTasks) Commands(string) []string                { return nil }
+func (fakeTasks) Dir(string) (string, bool)               { return "", true }
+func (fakeTasks) Reaches(string) bool                     { return true }
 func (fakeTasks) Command() string                         { return "task" }
 func (fakeTasks) Internal() string                        { return "is marked internal: true" }
 func (fakeTasks) Names(args []domain.Word) []domain.Word {

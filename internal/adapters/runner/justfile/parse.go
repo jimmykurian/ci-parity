@@ -26,9 +26,13 @@ type parser struct {
 	j       *Justfile
 	prefix  string
 	private bool    // a [private] attribute applies to the next recipe or alias
+	ownDir  bool    // a [no-cd] or [working-directory] attribute applies to the next recipe
 	current *recipe // recipe whose body is being read
 	imports []importLine
 	modules []module
+	added   []*recipe // recipes and aliases this file defines
+	// setWorkingDir records a `set working-directory`, which moves every recipe.
+	setWorkingDir bool
 }
 
 var (
@@ -64,8 +68,11 @@ func (p *parser) line(line string) {
 	}
 	if m := attribute.FindStringSubmatch(text); m != nil {
 		for _, a := range strings.Split(m[1], ",") {
-			if strings.TrimSpace(a) == "private" {
+			switch a = strings.TrimSpace(a); {
+			case a == "private":
 				p.private = true
+			case a == "no-cd" || strings.HasPrefix(a, "working-directory"):
+				p.ownDir = true
 			}
 		}
 		return
@@ -83,7 +90,7 @@ func (p *parser) line(line string) {
 	default:
 		p.recipe(text)
 	}
-	p.private = false
+	p.private, p.ownDir = false, false
 }
 
 // recipe reads a recipe header, `name param... : dependencies`. Assignments
@@ -94,7 +101,13 @@ func (p *parser) recipe(text string) {
 		return
 	}
 	name := m[1]
-	if name == "set" || name == "export" || name == "unexport" {
+	if name == "set" {
+		if f := strings.Fields(text); len(f) > 1 && strings.HasPrefix(f[1], "working-directory") {
+			p.setWorkingDir = true
+		}
+		return
+	}
+	if name == "export" || name == "unexport" {
 		return
 	}
 	rest := text[len(m[0]):]
@@ -129,7 +142,9 @@ func (p *parser) recipe(text string) {
 // add records a recipe or alias under the module prefix.
 func (p *parser) add(name string, r *recipe) {
 	r.private = p.private || strings.HasPrefix(name, "_")
+	r.ownDir = p.ownDir
 	p.j.recipes[p.prefix+name] = r
+	p.added = append(p.added, r)
 }
 
 // body records a recipe line without the @ and - prefixes that only change

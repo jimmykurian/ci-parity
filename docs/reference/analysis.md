@@ -39,6 +39,15 @@ Analyze when the shell is `bash`, `sh`, or starts with `bash ` or `sh `. Any oth
 (`pwsh`, `powershell`, `cmd`, `python`, custom) produces one P005 finding for the step
 and the step is skipped.
 
+## Working directory
+
+Resolution order: step `working-directory`, job `defaults.run.working-directory`,
+workflow `defaults.run.working-directory`, then the repository root. Composite action
+steps read only their own. It is compared with the directory a task runs in before a
+P001 suggestion is made (see [rules](rules.md#suggestions)); it changes nothing else. A
+value with an expression, a variable or `~`, an absolute path, or one leaving the
+repository is unknown.
+
 ## Commands
 
 1. Parse the script with `mvdan.cc/sh/v3/syntax` using `syntax.LangBash` and

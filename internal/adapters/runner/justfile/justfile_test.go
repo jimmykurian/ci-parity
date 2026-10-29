@@ -226,3 +226,74 @@ func TestNames(t *testing.T) {
 		}
 	}
 }
+
+func TestDirFollowsModulesAndAttributes(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{
+		"justfile":       "import 'ci.just'\nmod web\n\nbuild:\n  cargo build\n\n[no-cd]\nhere:\n  ls\n\n[working-directory('docs')]\ndocs:\n  mdbook build\n",
+		"ci.just":        "lint:\n  cargo clippy\n",
+		"web/mod.just":   "test:\n  pnpm test\n",
+		"tools/justfile": "set working-directory := 'out'\n\ngen:\n  make gen\n",
+	})
+	j, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	tests := []struct {
+		name, recipe, wantDir string
+		wantOK                bool
+	}{
+		{"root recipe", "build", "", true},
+		{"imported recipe runs in the importing file's directory", "lint", "", true},
+		{"module recipe runs in the module's directory", "web::test", "web", true},
+		{"[no-cd]", "here", "", false},
+		{"[working-directory]", "docs", "", false},
+		{"unknown recipe", "nope", "", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Act
+			dir, ok := j.Dir(tt.recipe)
+
+			// Assert
+			if dir != tt.wantDir || ok != tt.wantOK {
+				t.Errorf("Dir(%q) = %q, %v, want %q, %v", tt.recipe, dir, ok, tt.wantDir, tt.wantOK)
+			}
+		})
+	}
+}
+
+func TestDirIsUnknownUnderAWorkingDirectorySetting(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"justfile": "build:\n  cargo build\n\nset working-directory := 'out'\n"})
+
+	// Act
+	j, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+	_, ok := j.Dir("build")
+
+	// Assert
+	if ok {
+		t.Error("Dir(build) under `set working-directory`: want unknown")
+	}
+}
+
+func TestReachesStopsAtANestedJustfile(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"justfile": "build:\n  cargo build\n", "tools/justfile": "gen:\n  make gen\n"})
+	j, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Act
+	atRoot, inWeb, inTools := j.Reaches(""), j.Reaches("web"), j.Reaches("tools/gen")
+
+	// Assert
+	if !atRoot || !inWeb || inTools {
+		t.Errorf("Reaches: root %v, web %v, tools/gen %v; want true, true, false", atRoot, inWeb, inTools)
+	}
+}

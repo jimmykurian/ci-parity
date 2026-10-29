@@ -12,6 +12,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 // DefaultNames are the file names searched, in order, when no Taskfile path is
@@ -31,6 +33,7 @@ type Taskfile struct {
 	file     string
 	internal map[string]bool     // every invocable name -> internal
 	commands map[string][]string // canonical task name -> command strings
+	dirs     map[string]string   // canonical task name -> repo-relative directory it runs in
 }
 
 // Load reads the Taskfile at path, relative to root, or discovers one of
@@ -45,20 +48,22 @@ func Load(root, path string) (*Taskfile, error) {
 	} else if filepath.IsAbs(path) {
 		full = path
 	}
-	t := &Taskfile{root: root, internal: map[string]bool{}, commands: map[string][]string{}}
+	t := &Taskfile{root: root, internal: map[string]bool{}, commands: map[string][]string{}, dirs: map[string]string{}}
 	t.file = t.rel(full)
 	if _, err := os.Stat(full); err != nil {
 		return nil, fmt.Errorf("read Taskfile %s: %w", t.file, err)
 	}
-	if err := t.load(full, []string{""}, false, nil); err != nil {
+	if err := t.load(full, []string{""}, false, filepath.Dir(full), nil); err != nil {
 		return nil, err
 	}
 	return t, nil
 }
 
 // load adds the tasks of the Taskfile at path under each of prefixes, then
-// follows its includes. stack holds the files being loaded, to stop cycles.
-func (t *Taskfile) load(path string, prefixes []string, internal bool, stack []string) error {
+// follows its includes. dir is where its tasks run by default: the root
+// Taskfile's directory, or an include's dir:; "" when it isn't known. stack
+// holds the files being loaded, to stop cycles.
+func (t *Taskfile) load(path string, prefixes []string, internal bool, dir string, stack []string) error {
 	if len(stack) > maxDepth {
 		return nil
 	}
@@ -75,7 +80,7 @@ func (t *Taskfile) load(path string, prefixes []string, internal bool, stack []s
 	if err != nil {
 		return fmt.Errorf("parse %s: %w", t.rel(path), err)
 	}
-	t.addTasks(f.tasks, prefixes, internal)
+	t.addTasks(f.tasks, prefixes, internal, dir)
 	stack = append(stack, path)
 	for _, inc := range f.includes {
 		target, err := resolve(filepath.Dir(path), inc.path)
@@ -88,23 +93,26 @@ func (t *Taskfile) load(path string, prefixes []string, internal bool, stack []s
 			}
 			return fmt.Errorf("include %q in %s: %w", inc.namespace, t.rel(path), err)
 		}
-		if err := t.load(target, inc.prefixes(prefixes), internal || inc.internal, stack); err != nil {
+		if err := t.load(target, inc.prefixes(prefixes), internal || inc.internal, inc.runDir(filepath.Dir(path), dir), stack); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// addTasks registers tasks under every prefix. Commands are kept only under
-// the first prefix, the canonical namespace. A default task also makes the
-// bare namespace invocable, as `task <namespace>` runs it.
-func (t *Taskfile) addTasks(tasks []task, prefixes []string, internal bool) {
+// addTasks registers tasks under every prefix. Commands and directories are
+// kept only under the first prefix, the canonical namespace. A default task
+// also makes the bare namespace invocable, as `task <namespace>` runs it.
+func (t *Taskfile) addTasks(tasks []task, prefixes []string, internal bool, dir string) {
 	for _, tk := range tasks {
 		hidden := internal || tk.internal
 		for i, p := range prefixes {
 			t.add(p+tk.name, hidden)
 			if i == 0 && len(tk.cmds) > 0 {
 				t.commands[p+tk.name] = tk.cmds
+				if d, ok := t.taskDir(dir, tk.dir); ok {
+					t.dirs[p+tk.name] = d
+				}
 			}
 			for _, a := range tk.aliases {
 				t.add(p+a, hidden)
@@ -122,6 +130,42 @@ func (t *Taskfile) add(name string, internal bool) {
 	if _, ok := t.internal[name]; !ok {
 		t.internal[name] = internal
 	}
+}
+
+// runDir returns where an include's tasks run: its dir:, relative to the
+// including Taskfile's directory from, or else parent, where the including
+// file's tasks run. It is "" when a template makes it unknown.
+func (inc include) runDir(from, parent string) string {
+	switch {
+	case inc.dir == "":
+		return parent
+	case strings.Contains(inc.dir, "{{"):
+		return ""
+	case filepath.IsAbs(inc.dir):
+		return inc.dir
+	}
+	return filepath.Join(from, filepath.FromSlash(inc.dir))
+}
+
+// taskDir returns the repo-relative directory a task runs in: its dir:,
+// relative to base, or base itself. It returns false when base is unknown, the
+// dir: is a template, or the directory is outside the repository.
+func (t *Taskfile) taskDir(base, dir string) (string, bool) {
+	if base == "" || strings.Contains(dir, "{{") {
+		return "", false
+	}
+	if dir != "" {
+		if filepath.IsAbs(dir) {
+			base = dir
+		} else {
+			base = filepath.Join(base, filepath.FromSlash(dir))
+		}
+	}
+	rel, err := filepath.Rel(t.root, base)
+	if err != nil {
+		return "", false
+	}
+	return domain.RepoDir(filepath.ToSlash(rel))
 }
 
 // prefixes returns the name prefixes for an include's tasks under each of
@@ -211,3 +255,17 @@ func (t *Taskfile) IsInternal(name string) bool { return t.internal[name] }
 
 // Commands returns the command strings of the task defined under name.
 func (t *Taskfile) Commands(name string) []string { return t.commands[name] }
+
+// Reaches reports whether `task` called from dir, repo-relative, reads the root
+// Taskfile: dir is at or below the Taskfile's directory, and neither dir nor a
+// directory between them holds a Taskfile, which task would find first.
+func (t *Taskfile) Reaches(dir string) bool {
+	return domain.Reaches(filepath.Join(t.root, filepath.FromSlash(t.file)), filepath.Join(t.root, filepath.FromSlash(dir)), discover)
+}
+
+// Dir returns the repo-relative directory the task defined under name runs in,
+// or false when it can't be known statically.
+func (t *Taskfile) Dir(name string) (string, bool) {
+	d, ok := t.dirs[name]
+	return d, ok
+}

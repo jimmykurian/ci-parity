@@ -94,10 +94,10 @@ func TestUnwrap(t *testing.T) {
 
 func TestCommandSuggestionUnwraps(t *testing.T) {
 	// Arrange
-	s := &suggester{byCommand: map[string]string{}, invoke: "task"}
+	s := &suggester{byCommand: map[string][]candidate{}, invoke: "task", reaches: func(string) bool { return true }}
 	for name, cmd := range map[string]string{"lint": "eslint .", "test": "uv run pytest", "fmt": "npx prettier --check .", "check": "pnpm run check"} {
 		for _, key := range keys(cmd) {
-			s.byCommand[key] = name
+			s.byCommand[key] = append(s.byCommand[key], candidate{name: name, dirKnown: true})
 		}
 	}
 	tests := map[string]string{
@@ -112,11 +112,48 @@ func TestCommandSuggestionUnwraps(t *testing.T) {
 	}
 	for in, want := range tests {
 		// Act
-		got := s.command(in)
+		got := s.command(in, "", true)
 
 		// Assert
 		if got != want {
 			t.Errorf("command(%q) = %q, want %q", in, got, want)
 		}
+	}
+}
+
+func TestCommandSuggestionMatchesTheWorkingDirectory(t *testing.T) {
+	// Arrange
+	s := &suggester{invoke: "task", reaches: func(dir string) bool { return dir != "docs" }, byCommand: map[string][]candidate{
+		"pnpm test": {
+			{name: "test", dir: "", dirKnown: true},
+			{name: "web:test", dir: "web", dirKnown: true},
+			{name: "gen:test", dirKnown: false},
+			{name: "docs:test", dir: "docs", dirKnown: true},
+		},
+		"pnpm build": {{name: "web:build", dir: "web", dirKnown: true}},
+	}}
+	tests := []struct {
+		name, cmd, dir string
+		dirKnown       bool
+		want           string
+	}{
+		{"root step, root task", "pnpm test", "", true, "task test"},
+		{"step in web, task in web", "pnpm test", "web", true, "task web:test"},
+		{"step in web, only a root task would run elsewhere", "pnpm build", "", true, ""},
+		{"step in another directory", "pnpm test", "api", true, ""},
+		{"step directory unknown", "pnpm test", "", false, ""},
+		{"the runner reads another file from the step's directory", "pnpm test", "docs", true, ""},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			// Act
+			got := s.command(tt.cmd, tt.dir, tt.dirKnown)
+
+			// Assert
+			if got != tt.want {
+				t.Errorf("command(%q, %q, %v) = %q, want %q", tt.cmd, tt.dir, tt.dirKnown, got, tt.want)
+			}
+		})
 	}
 }

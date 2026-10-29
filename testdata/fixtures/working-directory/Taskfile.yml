@@ -1,0 +1,23 @@
+version: "3"
+
+includes:
+  web:
+    taskfile: ./web/tasks.yml
+    dir: ./web
+  docs:
+    taskfile: ./docs
+    dir: ./docs
+  tools: ./tools
+
+tasks:
+  test:
+    cmds:
+      - pnpm test
+  lint-api:
+    dir: api
+    cmds:
+      - pnpm lint
+  gen:
+    dir: "{{.GEN_DIR}}"
+    cmds:
+      - pnpm gen

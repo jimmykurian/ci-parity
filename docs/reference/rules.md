@@ -60,6 +60,11 @@ A step without a `name:` is referred to as `step <index>` (1-based) in place of
   | `uv run`, `uvx` | `--with --with-editable --with-requirements --python -p --project --directory --extra --group --package --env-file --from --index --default-index` | |
   | `dotnet tool run` | none | |
 
+- P001: the task must also run in the step's working directory
+  ([analysis](analysis.md#working-directory)), and calling the runner from that directory
+  must read the same root file, so the suggested name exists there. Where each runner's
+  tasks run is in [runners](runners.md#where-tasks-run). When either is unknown, nothing is
+  suggested, so `fix` leaves the step alone.
 - P002: a task name that has the unknown name as a prefix wins, shortest first.
   Otherwise suggest the name with the lowest Levenshtein distance, when that distance is
   at most 3 and less than the length of the unknown name. Internal tasks are never

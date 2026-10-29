@@ -73,6 +73,19 @@ interface and its own call syntax; the rules are unchanged.
   task name holding a glob (`lint:*`) is not checked; `-j --jobs -E --env -t --tool
   --timeout -o --output -s --shell` take a value.
 
+## Where tasks run
+
+P001 suggests a task only when it runs in the step's working directory and calling the
+runner from there reads the same root file ([rules](rules.md#suggestions)). Paths are
+repo-relative; anything templated is unknown, and an unknown directory never matches.
+
+| Runner | A task runs in | Called from a step's directory, reads the root file when |
+| --- | --- | --- |
+| Taskfile | The root Taskfile's directory. An include's `dir:`, relative to the including file, moves its tasks; without one they run where the including file's tasks do. A task's own `dir:` is relative to that. | Neither that directory nor one between it and the root Taskfile's holds a Taskfile, which task would find first |
+| make | The repository root | It is the root: make reads only the Makefile where it starts |
+| just | The root justfile's directory; a module's recipes run in the module file's directory, and imported recipes where the importing file's do. Unknown under `[no-cd]`, `[working-directory]` or `set working-directory`. | Neither that directory nor one between it and the root holds a justfile |
+| mise | The repository root, or the task's `dir`, relative to the root | Always: mise reads every parent directory's config |
+
 ## See also
 
 - [Reference index](README.md)

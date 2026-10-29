@@ -38,11 +38,11 @@ func Load(root, rel string) (*domain.File, error) {
 	if runs := get(top, "runs"); runs != nil {
 		f.Kind = domain.KindAction
 		if strings.EqualFold(scalar(get(runs, "using")), "composite") {
-			f.Steps = steps(rel, "", get(runs, "steps"), "", lines)
+			f.Steps = steps(rel, "", get(runs, "steps"), "", "", lines)
 		}
 		return f, nil
 	}
-	defaultShell := shellDefault(top)
+	defaultShell, defaultDir := shellDefault(top), dirDefault(top)
 	jobs := get(top, "jobs")
 	if jobs == nil || jobs.Kind != yaml.MappingNode {
 		return f, nil
@@ -59,14 +59,19 @@ func Load(root, rel string) (*domain.File, error) {
 		if shell == "" {
 			shell = osDefaultShell(get(job, "runs-on"))
 		}
-		f.Steps = append(f.Steps, steps(rel, id, get(job, "steps"), shell, lines)...)
+		dir := dirDefault(job)
+		if dir == "" {
+			dir = defaultDir
+		}
+		f.Steps = append(f.Steps, steps(rel, id, get(job, "steps"), shell, dir, lines)...)
 	}
 	return f, nil
 }
 
 // steps enumerates a steps: sequence. fallback is the shell for steps that do
 // not set one; it is empty for composite actions, where shell is required.
-func steps(rel, job string, seq *yaml.Node, fallback string, lines []string) []domain.Step {
+// dir is the defaults.run working-directory for steps that do not set one.
+func steps(rel, job string, seq *yaml.Node, fallback, dir string, lines []string) []domain.Step {
 	if seq == nil || seq.Kind != yaml.SequenceNode {
 		return nil
 	}
@@ -75,9 +80,12 @@ func steps(rel, job string, seq *yaml.Node, fallback string, lines []string) []d
 		if n.Kind != yaml.MappingNode {
 			continue
 		}
-		s := domain.Step{File: rel, Job: job, Index: i + 1, Name: scalar(get(n, "name")), Shell: fallback}
+		s := domain.Step{File: rel, Job: job, Index: i + 1, Name: scalar(get(n, "name")), Shell: fallback, WorkingDir: dir}
 		if sh := scalar(get(n, "shell")); sh != "" {
 			s.Shell = sh
+		}
+		if wd := scalar(get(n, "working-directory")); wd != "" {
+			s.WorkingDir = wd
 		}
 		if key, val := getPair(n, "run"); val != nil && val.Kind == yaml.ScalarNode {
 			s.Line, s.Col = key.Line, key.Column
@@ -139,6 +147,11 @@ func blockIndent(lines []string, header int) int {
 // shellDefault returns n's defaults.run.shell, or "" when unset.
 func shellDefault(n *yaml.Node) string {
 	return scalar(get(get(get(n, "defaults"), "run"), "shell"))
+}
+
+// dirDefault returns n's defaults.run.working-directory, or "" when unset.
+func dirDefault(n *yaml.Node) string {
+	return scalar(get(get(get(n, "defaults"), "run"), "working-directory"))
 }
 
 // osDefaultShell is pwsh when runs-on names a windows runner and bash

@@ -15,6 +15,8 @@ import (
 	"strings"
 
 	"github.com/BurntSushi/toml"
+
+	"github.com/jimmykurian/ci-parity/internal/domain"
 )
 
 // ConfigNames are the config files read from the repository root, lowest
@@ -32,6 +34,8 @@ var TaskDirs = []string{".config/mise/tasks", "mise/tasks", ".mise/tasks", "mise
 type task struct {
 	hidden   bool
 	commands []string
+	dir      string // repo-relative directory it runs in, when dirKnown
+	dirKnown bool
 }
 
 // Mise is a repository's mise tasks, implementing rules.TaskSource.
@@ -128,13 +132,16 @@ func (m *Mise) include(path string) error {
 // or `[name]` with run, alias and hide.
 func (m *Mise) addTasks(tasks map[string]any) {
 	for name, v := range tasks {
-		t := &task{}
+		t := &task{dirKnown: true} // the project root, unless dir says otherwise
 		switch v := v.(type) {
 		case string, []any:
 			t.commands = stringsOf(v)
 		case map[string]any:
 			t.commands = stringsOf(v["run"])
 			t.hidden, _ = v["hide"].(bool)
+			if d, ok := v["dir"].(string); ok {
+				t.dir, t.dirKnown = domain.RepoDir(d)
+			}
 			for _, alias := range stringsOf(v["alias"]) {
 				m.tasks[alias] = &task{hidden: t.hidden}
 			}
@@ -253,6 +260,19 @@ func (m *Mise) IsInternal(name string) bool {
 	t, ok := m.tasks[name]
 	return ok && t.hidden
 }
+
+// Dir returns the repo-relative directory a task runs in: the project root, or
+// its dir, relative to the root. A templated dir, such as {{cwd}}, is unknown.
+func (m *Mise) Dir(name string) (string, bool) {
+	if t, ok := m.tasks[name]; ok {
+		return t.dir, t.dirKnown
+	}
+	return "", false
+}
+
+// Reaches reports true: mise reads the config files of every parent directory,
+// so the project's tasks run from anywhere in the repository.
+func (m *Mise) Reaches(string) bool { return true }
 
 // Commands returns a task's run commands; aliases and file tasks have none.
 func (m *Mise) Commands(name string) []string {

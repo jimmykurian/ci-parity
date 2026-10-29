@@ -34,6 +34,9 @@ type Step struct {
 	Run   *Script
 	Uses  string
 	With  map[string]Input
+	// WorkingDir is the working-directory: the step's own, or else its job's
+	// or the workflow's defaults.run, as written; empty when none is set.
+	WorkingDir string
 }
 
 // Input is one scalar with: value of a uses: step and its position.

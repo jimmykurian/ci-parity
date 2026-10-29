@@ -1,0 +1,42 @@
+name: ci
+on: [push]
+jobs:
+  root:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Root step, root task
+        run: pnpm test
+      - name: Included task without dir runs at the root
+        run: pnpm fmt
+      - name: Task with dir api does not run at the root
+        run: pnpm lint
+      - name: Step in api, task with dir api
+        working-directory: api
+        run: pnpm lint
+      - name: Templated task dir
+        run: pnpm gen
+      - name: Expression working directory
+        working-directory: ${{ inputs.dir }}
+        run: pnpm test
+      - name: task would read docs/Taskfile.yml from docs
+        working-directory: docs
+        run: pnpm docs:build
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - name: Job default matches the include dir
+        run: pnpm build
+      - name: Same directory written differently
+        working-directory: ./web/
+        run: pnpm test
+      - name: Task dir under the include dir
+        working-directory: web/e2e
+        run: pnpm e2e
+      - name: Root task does not run in web
+        run: pnpm fmt
+      - name: Step overrides the job default
+        working-directory: .
+        run: pnpm build

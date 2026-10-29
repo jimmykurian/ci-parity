@@ -1,0 +1,15 @@
+.github/workflows/ci.yml
+  8:14    P001 inline-tool   step "Root step, root task" in job "root" runs 'pnpm test' directly; already available as 'task test'
+  10:14   P001 inline-tool   step "Included task without dir runs at the root" in job "root" runs 'pnpm fmt' directly; already available as 'task tools:fmt'
+  12:14   P001 inline-tool   step "Task with dir api does not run at the root" in job "root" runs 'pnpm lint' directly
+  15:14   P001 inline-tool   step "Step in api, task with dir api" in job "root" runs 'pnpm lint' directly; already available as 'task lint-api'
+  17:14   P001 inline-tool   step "Templated task dir" in job "root" runs 'pnpm gen' directly
+  20:14   P001 inline-tool   step "Expression working directory" in job "root" runs 'pnpm test' directly
+  23:14   P001 inline-tool   step "task would read docs/Taskfile.yml from docs" in job "root" runs 'pnpm docs:build' directly
+  31:14   P001 inline-tool   step "Job default matches the include dir" in job "web" runs 'pnpm build' directly; already available as 'task web:build'
+  34:14   P001 inline-tool   step "Same directory written differently" in job "web" runs 'pnpm test' directly; already available as 'task web:test'
+  37:14   P001 inline-tool   step "Task dir under the include dir" in job "web" runs 'pnpm e2e' directly; already available as 'task web:e2e'
+  39:14   P001 inline-tool   step "Root task does not run in web" in job "web" runs 'pnpm fmt' directly
+  42:14   P001 inline-tool   step "Step overrides the job default" in job "web" runs 'pnpm build' directly
+
+12 errors, 0 warnings, 0 tolerated, 0 allowed
