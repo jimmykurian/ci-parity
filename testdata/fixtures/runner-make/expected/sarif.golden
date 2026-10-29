@@ -187,6 +187,30 @@
           "partialFingerprints": {
             "ciParity/v1": "84d1f0f46097b63b7a7267e3d5a74761"
           }
+        },
+        {
+          "ruleId": "P002",
+          "level": "error",
+          "message": {
+            "text": "'make .c.o' is not defined in Makefile"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 32,
+                  "startColumn": 19
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "35d56455da68d0c7ca66954c2d9c14a3"
+          }
         }
       ]
     }

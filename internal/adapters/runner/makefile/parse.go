@@ -85,9 +85,20 @@ func (p *parser) recipe(line string) {
 	}
 }
 
+// specialTargets are GNU make's built-in target names, which are not targets
+// CI can run.
+var specialTargets = map[string]bool{
+	".PHONY": true, ".SUFFIXES": true, ".DEFAULT": true, ".PRECIOUS": true, ".INTERMEDIATE": true,
+	".NOTINTERMEDIATE": true, ".SECONDARY": true, ".SECONDEXPANSION": true, ".DELETE_ON_ERROR": true,
+	".IGNORE": true, ".LOW_RESOLUTION_TIME": true, ".SILENT": true, ".EXPORT_ALL_VARIABLES": true,
+	".NOTPARALLEL": true, ".ONESHELL": true, ".POSIX": true, ".WAIT": true,
+}
+
 // rule reads a rule line, `targets: prerequisites [; recipe]`, and opens it
 // for recipe lines. Variable assignments, target-specific variables, special
-// targets, pattern rules and names holding variables define no target.
+// targets, suffix rules, pattern rules and names holding variables define no
+// target. A `.SUFFIXES` rule adds to the known suffixes, or clears them when it
+// has no prerequisites.
 func (p *parser) rule(text string) {
 	colon := strings.IndexByte(text, ':')
 	eq := strings.IndexByte(text, '=')
@@ -102,16 +113,21 @@ func (p *parser) rule(text string) {
 	if strings.Contains(prereqs, "=") {
 		return // target-specific variable: `t: VAR = x`
 	}
+	names := strings.Fields(strings.TrimSuffix(strings.TrimSpace(text[:colon]), "&"))
+	hasPrereqs := strings.TrimSpace(prereqs) != ""
+	if len(names) == 1 && names[0] == ".SUFFIXES" {
+		p.suffixes(strings.Fields(prereqs))
+	}
 	var targets []string
-	for _, t := range strings.Fields(strings.TrimSuffix(strings.TrimSpace(text[:colon]), "&")) {
-		if t == "&" || strings.HasPrefix(t, ".") || strings.ContainsAny(t, "%$") {
+	for _, t := range names {
+		if t == "&" || specialTargets[t] || (!hasPrereqs && p.suffixRule(t)) || strings.ContainsAny(t, "%$") {
 			continue
 		}
 		targets = append(targets, t)
 		if _, ok := p.m.commands[t]; !ok {
 			p.m.commands[t] = nil
 		}
-		if strings.TrimSpace(prereqs) != "" {
+		if hasPrereqs {
 			p.m.prereqs[t] = true
 		}
 	}
@@ -119,6 +135,32 @@ func (p *parser) rule(text string) {
 	if hasInline {
 		p.recipe("\t" + inline)
 	}
+}
+
+// suffixes applies a `.SUFFIXES` rule: its prerequisites join the known
+// suffixes, and none clears them.
+func (p *parser) suffixes(add []string) {
+	if len(add) == 0 {
+		clear(p.m.suffixes)
+	}
+	for _, s := range add {
+		p.m.suffixes[s] = true
+	}
+}
+
+// suffixRule reports whether a target is a suffix rule: one known suffix, or two
+// joined, such as `.c` or `.c.o`. A suffix rule with prerequisites is an
+// ordinary target, so callers check that first.
+func (p *parser) suffixRule(t string) bool {
+	if p.m.suffixes[t] {
+		return true
+	}
+	for i := 1; i < len(t); i++ {
+		if p.m.suffixes[t[:i]] && p.m.suffixes[t[i:]] {
+			return true
+		}
+	}
+	return false
 }
 
 // stripComment drops a # comment that is not escaped.

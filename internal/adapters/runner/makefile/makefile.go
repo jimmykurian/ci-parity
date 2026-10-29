@@ -25,6 +25,14 @@ type Makefile struct {
 	file     string              // repo-relative path of the root Makefile
 	commands map[string][]string // target -> recipe lines
 	prereqs  map[string]bool     // targets with prerequisites
+	suffixes map[string]bool     // the known suffixes, for suffix rules
+}
+
+// defaultSuffixes is GNU make's default suffix list.
+var defaultSuffixes = []string{
+	".out", ".a", ".ln", ".o", ".c", ".cc", ".C", ".cpp", ".p", ".f", ".F", ".m", ".r", ".y",
+	".l", ".ym", ".lm", ".s", ".S", ".mod", ".sym", ".def", ".h", ".info", ".dvi", ".tex",
+	".texinfo", ".texi", ".txinfo", ".w", ".ch", ".web", ".sh", ".elc", ".el",
 }
 
 // Load discovers the Makefile in root and reads it and its includes.
@@ -33,7 +41,10 @@ func Load(root string) (*Makefile, error) {
 	if !ok {
 		return nil, fmt.Errorf("no Makefile found; looked for %s", strings.Join(Names, ", "))
 	}
-	m := &Makefile{root: root, file: filepath.Base(path), commands: map[string][]string{}, prereqs: map[string]bool{}}
+	m := &Makefile{root: root, file: filepath.Base(path), commands: map[string][]string{}, prereqs: map[string]bool{}, suffixes: map[string]bool{}}
+	for _, s := range defaultSuffixes {
+		m.suffixes[s] = true
+	}
 	if err := m.read(path, 0, nil); err != nil {
 		return nil, err
 	}
