@@ -29,13 +29,13 @@ test('outputPath maps READMEs to indexes and the top-level README to overview', 
   }
 });
 
-test('route serves each page under the base with a trailing slash', () => {
+test('route serves each page from the root with a trailing slash', () => {
   // Arrange
   const cases = [
-    ['README.md', '/ci-parity/overview/'],
-    ['reference/README.md', '/ci-parity/reference/'],
-    ['testing/testing-strategy.md', '/ci-parity/testing/testing-strategy/'],
-    ['STYLE_GUIDE.md', '/ci-parity/style_guide/'],
+    ['README.md', '/overview/'],
+    ['reference/README.md', '/reference/'],
+    ['testing/testing-strategy.md', '/testing/testing-strategy/'],
+    ['STYLE_GUIDE.md', '/style_guide/'],
   ];
 
   for (const [rel, want] of cases) {
@@ -59,7 +59,7 @@ test('rewriteLink turns links between pages into routes and keeps anchors', () =
   ];
 
   // Assert
-  assert.deepEqual(got, ['/ci-parity/reference/analysis/#invokers', '/ci-parity/architecture/', '#suggestions']);
+  assert.deepEqual(got, ['/reference/analysis/#invokers', '/architecture/', '#suggestions']);
 });
 
 test('rewriteLink points links out of docs/ at GitHub, as a tree for directories', () => {
@@ -86,7 +86,7 @@ test('rewriteLink serves docs/assets files from the site root', () => {
   const got = rewriteLink('../assets/logo.svg', 'reference/README.md', noDirs);
 
   // Assert
-  assert.equal(got, '/ci-parity/logo.svg');
+  assert.equal(got, '/logo.svg');
 });
 
 test('convert writes frontmatter from the H1 and first paragraph and drops the header', () => {
@@ -115,11 +115,11 @@ test('convert writes frontmatter from the H1 and first paragraph and drops the h
       'description: "Rules P001 to P005, with their messages."',
       'editUrl: "https://github.com/jimmykurian/ci-parity/edit/main/docs/reference/rules.md"',
       '---',
-      'Rules P001 to P005, with [their messages](/ci-parity/reference/cli/).',
+      'Rules P001 to P005, with [their messages](/reference/cli/).',
       '',
       '## P001',
       '',
-      'See [analysis](/ci-parity/reference/analysis/#commands).',
+      'See [analysis](/reference/analysis/#commands).',
     ].join('\n'),
   );
 });

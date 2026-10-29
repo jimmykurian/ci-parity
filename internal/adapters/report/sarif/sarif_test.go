@@ -162,8 +162,8 @@ func TestFingerprintDependsOnUnnamedStep(t *testing.T) {
 func TestHelpURIPointsAtEachRulePage(t *testing.T) {
 	// Arrange
 	tests := []struct{ id, want string }{
-		{"P001", "https://jimmykurian.github.io/ci-parity/rules/p001/"},
-		{"P005", "https://jimmykurian.github.io/ci-parity/rules/p005/"},
+		{"P001", "https://ci-parity.is-a.dev/rules/p001/"},
+		{"P005", "https://ci-parity.is-a.dev/rules/p005/"},
 	}
 
 	for _, tt := range tests {
