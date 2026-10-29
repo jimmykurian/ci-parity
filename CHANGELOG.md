@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.8.1](https://github.com/jimmykurian/ci-parity/compare/v0.8.0...v0.8.1) (2026-10-29)
+
+
+### Bug Fixes
+
+* suggest a task only where it runs in the step's working directory ([#61](https://github.com/jimmykurian/ci-parity/issues/61)) ([2d2e53e](https://github.com/jimmykurian/ci-parity/commit/2d2e53ec1f5f504bc7a2ad271d152bc80dc50a86)), closes [#42](https://github.com/jimmykurian/ci-parity/issues/42)
+
 ## [0.8.0](https://github.com/jimmykurian/ci-parity/compare/v0.7.0...v0.8.0) (2026-10-28)
 
 
