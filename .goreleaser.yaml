@@ -43,6 +43,9 @@ changelog:
   disable: true
 
 release:
-  # Attach the archives to the Release that Release Please created, keeping its notes.
+  # Attach the archives to the draft Release that Release Please created, keeping its
+  # notes, then publish it. GitHub's lookup by tag skips drafts, so the draft is found by
+  # its name, which is the tag. Users never see a latest release without archives.
+  use_existing_draft: true
   mode: keep-existing
   prerelease: auto

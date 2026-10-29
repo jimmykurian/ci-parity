@@ -73,8 +73,8 @@ sequenceDiagram
     Main->>CI: Checks, Self-check, Badges, code-scanning upload
     Main->>RP: Release Please opens or updates the release PR
     Dev->>PR: close and reopen the release PR so its checks run, then merge
-    RP->>GH: tag vX.Y.Z and publish the release
-    RP->>GH: goreleaser attaches archives and checksums.txt
+    RP->>GH: tag vX.Y.Z and create the release as a draft
+    RP->>GH: goreleaser attaches archives and checksums.txt, then publishes it
     RP->>Main: move the v0 tag to the release
 ```
 
