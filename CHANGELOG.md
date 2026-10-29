@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.9.0](https://github.com/jimmykurian/ci-parity/compare/v0.8.3...v0.9.0) (2026-10-29)
+
+
+### Bug Fixes
+
+* count names a make pattern rule makes as defined ([#76](https://github.com/jimmykurian/ci-parity/issues/76)) ([69c8ea4](https://github.com/jimmykurian/ci-parity/commit/69c8ea4aea88d8d081e9d3876e18067224f89096)), closes [#54](https://github.com/jimmykurian/ci-parity/issues/54)
+* keep make targets that start with a dot ([#74](https://github.com/jimmykurian/ci-parity/issues/74)) ([2672f6f](https://github.com/jimmykurian/ci-parity/commit/2672f6ffdf9d6abe48639bebcc977b507d84dea3)), closes [#47](https://github.com/jimmykurian/ci-parity/issues/47)
+* lower the go directive to 1.26.0 so go install works on Go 1.26 ([#78](https://github.com/jimmykurian/ci-parity/issues/78)) ([3612387](https://github.com/jimmykurian/ci-parity/commit/361238733b37e6e41fe48828a79867ecae0c727b)), closes [#49](https://github.com/jimmykurian/ci-parity/issues/49)
+* name mise file tasks as mise does, and let includes replace the task dirs ([#72](https://github.com/jimmykurian/ci-parity/issues/72)) ([24bf089](https://github.com/jimmykurian/ci-parity/commit/24bf089193069b2325fafc85fbdc1db29ef95030)), closes [#45](https://github.com/jimmykurian/ci-parity/issues/45)
+* read just lines with trailing comments, and every just 1.59 flag ([#73](https://github.com/jimmykurian/ci-parity/issues/73)) ([4a874a6](https://github.com/jimmykurian/ci-parity/commit/4a874a69bc6325ad31a27cd51e3c96e278f09638)), closes [#46](https://github.com/jimmykurian/ci-parity/issues/46)
+* recognize go tool and go run of task's module as calling task ([#75](https://github.com/jimmykurian/ci-parity/issues/75)) ([33a1131](https://github.com/jimmykurian/ci-parity/commit/33a113151376086fa2f8788c59cebc1ea5108fe8)), closes [#55](https://github.com/jimmykurian/ci-parity/issues/55)
+* skip the values of every task flag that takes one ([#69](https://github.com/jimmykurian/ci-parity/issues/69)) ([4e3f2b1](https://github.com/jimmykurian/ci-parity/commit/4e3f2b11ebaef391152bc46878eeb39260409052)), closes [#44](https://github.com/jimmykurian/ci-parity/issues/44)
+* suggest a task only when every word of the inline command is literal ([#77](https://github.com/jimmykurian/ci-parity/issues/77)) ([6f0dfe6](https://github.com/jimmykurian/ci-parity/commit/6f0dfe69f4298c5bec9f99a7240c45f2e71a2fec)), closes [#48](https://github.com/jimmykurian/ci-parity/issues/48)
+* suggest only tasks that run exactly the step's command ([#71](https://github.com/jimmykurian/ci-parity/issues/71)) ([8667610](https://github.com/jimmykurian/ci-parity/commit/86676100ca8b1fbd229fc7a8f72ca398b48d7775)), closes [#53](https://github.com/jimmykurian/ci-parity/issues/53)
+
+
+### Documentation
+
+* move the docs site to ci-parity.is-a.dev ([#60](https://github.com/jimmykurian/ci-parity/issues/60)) ([1809f78](https://github.com/jimmykurian/ci-parity/commit/1809f78b800485e0dba0ef8beb262102141d1c1a))
+
+
+### Miscellaneous Chores
+
+* release the v0.9.0 correctness fixes as 0.9.0 ([#79](https://github.com/jimmykurian/ci-parity/issues/79)) ([a49b98f](https://github.com/jimmykurian/ci-parity/commit/a49b98fdbe70579b0781eece5d2d1614e515ca19))
+
 ## [0.8.3](https://github.com/jimmykurian/ci-parity/compare/v0.8.2...v0.8.3) (2026-10-29)
 
 
