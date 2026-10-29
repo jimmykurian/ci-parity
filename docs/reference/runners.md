@@ -41,9 +41,16 @@ interface and its own call syntax; the rules are unchanged.
   `["mise run", "mise r", "mise tasks run"]`, and `invokers.actions` is empty, unless
   the config sets them. Unless `tools.replace` is set, the configured runner's commands
   leave the tools list and the other runners' are on it, including `task` and `go-task`.
-- make: a target is a rule line outside a recipe; special targets (`.PHONY`), pattern
-  rules (`%`), variable assignments (including target-specific ones), `define` blocks
-  and names holding `$` define none. `include`, `-include` and `sinclude` of literal
+- make: a target is a rule line outside a recipe; GNU make's special targets
+  (`.PHONY`, `.SUFFIXES`, `.DEFAULT`, `.PRECIOUS`, `.INTERMEDIATE`, `.NOTINTERMEDIATE`,
+  `.SECONDARY`, `.SECONDEXPANSION`, `.DELETE_ON_ERROR`, `.IGNORE`, `.LOW_RESOLUTION_TIME`,
+  `.SILENT`, `.EXPORT_ALL_VARIABLES`, `.NOTPARALLEL`, `.ONESHELL`, `.POSIX`, `.WAIT`),
+  suffix rules (a target that is one or two known suffixes, such as `.c` or `.c.o`, with
+  no prerequisites), pattern rules (`%`), variable assignments (including
+  target-specific ones), `define` blocks and names holding `$` define none. Any other
+  name starting with a dot, such as `.venv`, is a target. The known suffixes start as
+  GNU make's default list; a `.SUFFIXES` rule adds its prerequisites, or clears the list
+  when it has none. `include`, `-include` and `sinclude` of literal
   paths, resolved from the repository root, are followed to depth 10; a missing file is
   skipped, as make may generate it. Recipe lines, without leading `@`, `-` or `+` and
   with whitespace collapsed, are a target's commands. No target is internal. In a call,

@@ -213,3 +213,43 @@ func TestRunsMore(t *testing.T) {
 		}
 	}
 }
+
+func TestDottedTargets(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"Makefile": strings.Join([]string{
+		".PHONY: build",
+		".DEFAULT_GOAL := build",
+		".ONESHELL:",
+		".DELETE_ON_ERROR:",
+		".venv:",
+		"\tpython3 -m venv .venv",
+		".c.o:",
+		"\t$(CC) -c $<",
+		".sh:",
+		"\tcp $< $@",
+		".c.o: foo.h", // a suffix rule with prerequisites is an ordinary target
+		".SUFFIXES: .proto .go",
+		".proto.go:",
+		"\tprotoc $<",
+		".SUFFIXES:",
+		".o.c:", // the suffixes were cleared, so this is a target
+		"\techo",
+		"build:",
+		"\tgo build ./...",
+		"",
+	}, "\n")})
+
+	// Act
+	m, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
+	if diff := cmp.Diff([]string{".c.o", ".o.c", ".venv", "build"}, m.Tasks()); diff != "" {
+		t.Errorf("targets (-want +got):\n%s", diff)
+	}
+	if diff := cmp.Diff([]string{"python3 -m venv .venv"}, m.Commands(".venv")); diff != "" {
+		t.Errorf("Commands(.venv) (-want +got):\n%s", diff)
+	}
+}

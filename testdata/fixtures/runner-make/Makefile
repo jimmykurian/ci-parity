@@ -18,3 +18,9 @@ check: build
 tidy:
 	go mod tidy
 	go generate ./...
+
+.venv:
+	python3 -m venv .venv
+
+.c.o:
+	$(CC) -c $<
