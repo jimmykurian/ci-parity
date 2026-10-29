@@ -1,0 +1,42 @@
+{
+  "version": 1,
+  "summary": {
+    "errors": 2,
+    "warnings": 0,
+    "tolerated": 0,
+    "allowed": 0
+  },
+  "findings": [
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 8,
+      "col": 14,
+      "job": "acme-app",
+      "action": null,
+      "step": "Version",
+      "command": "go version",
+      "message": "step \"Version\" in job \"acme-app\" runs 'go version' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 10,
+      "col": 14,
+      "job": "acme-app",
+      "action": null,
+      "step": "Sign in",
+      "command": "docker login ghcr.io",
+      "message": "step \"Sign in\" in job \"acme-app\" runs 'docker login ghcr.io' directly",
+      "suggestion": null,
+      "reason": null
+    }
+  ],
+  "ratchet": null
+}

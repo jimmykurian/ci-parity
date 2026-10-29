@@ -1,0 +1,37 @@
+name: ci
+on: [push]
+jobs:
+  widget-service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Versions
+        run: |
+          go version
+          node --version
+          go env GOVERSION
+      - name: Pinned installs
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@v1.1.4
+          cargo install --locked mdbook@0.4.52
+          npm install --global corepack@0.34.0
+          pip install poetry==2.2.1
+      - name: Sign in
+        run: |
+          docker login ghcr.io -u acme --password-stdin
+          aws configure set region eu-west-1
+          gcloud auth configure-docker
+      - name: Inline script
+        run: python3 -c "print('widget-service')"
+      - name: Not version or info
+        run: npm version patch
+      - name: Not pinned
+        run: |
+          go install golang.org/x/vuln/cmd/govulncheck@latest
+          pip install -r requirements.txt
+          npm install
+      - name: Not sign-in
+        run: docker push ghcr.io/acme/widget-service
+      - name: A script file, not inline
+        run: python3 scripts/build.py
+      - name: The config's own allow entry wins
+        run: docker logout ghcr.io

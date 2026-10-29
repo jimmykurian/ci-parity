@@ -1,5 +1,5 @@
 .github/workflows/ci.yml
-  12:11   P001 inline-tool   step "Publish" in job "release" runs 'docker logout ghcr.io' directly
+  12:11   P001 inline-tool   step "Publish" in job "release" runs 'docker push widget-service:latest' directly
   14:14   P001 inline-tool   step "Missing reason" in job "release" runs 'pnpm publish' directly
   14:27   P005 unsupported   allow comment has no reason
 

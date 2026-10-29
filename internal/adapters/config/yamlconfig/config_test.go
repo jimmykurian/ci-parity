@@ -80,6 +80,8 @@ func TestParseErrors(t *testing.T) {
 		{"string given a list", "taskfile: [a, b]\n", "line 1: taskfile must be a string"},
 		{"list item given a mapping", "transparent:\n  - {a: b}\n", "line 2: transparent[0] must be a string"},
 		{"top level not a mapping", "- a\n", "line 1: the config must be a mapping"},
+		{"boolean given a word", "builtin_allow: maybe\n", "line 1: builtin_allow must be true or false"},
+		{"boolean given a quoted false", "builtin_allow: \"false\"\n", "line 1: builtin_allow must be true or false"},
 		{"allow without reason", "allow:\n  - match: \"gh *\"\n", "allow[0].reason is required"},
 		{"allow without match", "allow:\n  - reason: r\n", "allow[0].match is required"},
 		{"replace with extend", "tools:\n  replace: [pnpm]\n  extend: [k6]\n", "tools.replace cannot be combined"},

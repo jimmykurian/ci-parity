@@ -8,14 +8,15 @@ import "github.com/jimmykurian/ci-parity/internal/domain"
 // file mirrors domain.Config with the YAML key names, so the domain type does
 // not carry the config file format.
 type file struct {
-	Runner      string      `yaml:"runner"`
-	Taskfile    string      `yaml:"taskfile"`
-	Workflows   []string    `yaml:"workflows"`
-	Invokers    invokers    `yaml:"invokers"`
-	Tools       toolList    `yaml:"tools"`
-	Transparent []string    `yaml:"transparent"`
-	Allow       []allowRule `yaml:"allow"`
-	Baseline    string      `yaml:"baseline"`
+	Runner       string      `yaml:"runner"`
+	Taskfile     string      `yaml:"taskfile"`
+	Workflows    []string    `yaml:"workflows"`
+	Invokers     invokers    `yaml:"invokers"`
+	Tools        toolList    `yaml:"tools"`
+	Transparent  []string    `yaml:"transparent"`
+	Allow        []allowRule `yaml:"allow"`
+	BuiltinAllow bool        `yaml:"builtin_allow"`
+	Baseline     string      `yaml:"baseline"`
 }
 
 // invokers is the `invokers` key: extra shell prefixes and composite actions that
@@ -54,7 +55,7 @@ func fromConfig(c *domain.Config) *file {
 		Runner: c.Runner, Taskfile: c.Taskfile, Workflows: c.Workflows,
 		Invokers:    invokers{Shell: c.Invokers.Shell},
 		Tools:       toolList(c.Tools),
-		Transparent: c.Transparent, Baseline: c.Baseline,
+		Transparent: c.Transparent, BuiltinAllow: c.BuiltinAllow, Baseline: c.Baseline,
 	}
 	for _, a := range c.Invokers.Actions {
 		f.Invokers.Actions = append(f.Invokers.Actions, actionInvoker(a))
@@ -71,7 +72,7 @@ func (f *file) config() *domain.Config {
 		Runner: f.Runner, Taskfile: f.Taskfile, Workflows: f.Workflows,
 		Invokers:    domain.Invokers{Shell: f.Invokers.Shell},
 		Tools:       domain.ToolList(f.Tools),
-		Transparent: f.Transparent, Baseline: f.Baseline,
+		Transparent: f.Transparent, BuiltinAllow: f.BuiltinAllow, Baseline: f.Baseline,
 	}
 	for _, a := range f.Invokers.Actions {
 		c.Invokers.Actions = append(c.Invokers.Actions, domain.ActionInvoker(a))

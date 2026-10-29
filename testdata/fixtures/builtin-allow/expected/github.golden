@@ -1,0 +1,6 @@
+::error file=.github/workflows/ci.yml,line=26,col=14,title=P001 inline-tool::step "Not version or info" in job "widget-service" runs 'npm version patch' directly
+::error file=.github/workflows/ci.yml,line=29,col=11,title=P001 inline-tool::step "Not pinned" in job "widget-service" runs 'go install golang.org/x/vuln/cmd/govulncheck@latest' directly
+::error file=.github/workflows/ci.yml,line=30,col=11,title=P001 inline-tool::step "Not pinned" in job "widget-service" runs 'pip install -r requirements.txt' directly
+::error file=.github/workflows/ci.yml,line=31,col=11,title=P001 inline-tool::step "Not pinned" in job "widget-service" runs 'npm install' directly
+::error file=.github/workflows/ci.yml,line=33,col=14,title=P001 inline-tool::step "Not sign-in" in job "widget-service" runs 'docker push ghcr.io/acme/widget-service' directly
+::error file=.github/workflows/ci.yml,line=35,col=14,title=P001 inline-tool::step "A script file, not inline" in job "widget-service" runs 'python3 scripts/build.py' directly

@@ -12,7 +12,9 @@ type Config struct {
 	Tools       ToolList
 	Transparent []string
 	Allow       []AllowRule
-	Baseline    string
+	// BuiltinAllow turns on the built-in allow set (see BuiltinAllow).
+	BuiltinAllow bool
+	Baseline     string
 }
 
 // Invokers describes how CI calls the task runner.
@@ -71,8 +73,9 @@ func Default() *Config {
 			Shell:   DefaultShellInvokers(RunnerTaskfile),
 			Actions: []ActionInvoker{{Uses: "./.github/actions/run-task", Input: "task"}},
 		},
-		Transparent: []string{"sudo", "env", "time", "nice", "ionice", "timeout", "nohup", "xvfb-run", "chronic"},
-		Baseline:    ".ci-parity-baseline.json",
+		Transparent:  []string{"sudo", "env", "time", "nice", "ionice", "timeout", "nohup", "xvfb-run", "chronic"},
+		BuiltinAllow: true,
+		Baseline:     ".ci-parity-baseline.json",
 	}
 }
 

@@ -47,8 +47,8 @@
       "job": "release",
       "action": null,
       "step": "Publish",
-      "command": "docker logout ghcr.io",
-      "message": "step \"Publish\" in job \"release\" runs 'docker logout ghcr.io' directly",
+      "command": "docker push widget-service:latest",
+      "message": "step \"Publish\" in job \"release\" runs 'docker push widget-service:latest' directly",
       "suggestion": null,
       "reason": null
     },
