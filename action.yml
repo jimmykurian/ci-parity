@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 name: ci-parity
-description: Check that GitHub Actions workflows run project commands through the Taskfile, with a baseline that only shrinks.
+description: Check that GitHub Actions workflows run commands through Taskfile, make, just or mise, with a baseline that only shrinks.
 author: Jimmy Kurian
 
 branding:
