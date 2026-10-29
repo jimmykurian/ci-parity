@@ -297,3 +297,35 @@ func TestReachesStopsAtANestedJustfile(t *testing.T) {
 		t.Errorf("Reaches: root %v, web %v, tools/gen %v; want true, true, false", atRoot, inWeb, inTools)
 	}
 }
+
+func TestRunsMore(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"justfile": strings.Join([]string{
+		"build:",
+		"    go build ./...",
+		"fmt: # format the code",
+		"    gofmt -w .",
+		"vet: build",
+		"    go vet ./...",
+		"ci: && build",
+		"    go test ./...",
+		"release version='1': (build)",
+		"    goreleaser release",
+		"alias b := build",
+		"",
+	}, "\n")})
+	want := map[string]bool{"build": false, "fmt": false, "b": false, "vet": true, "ci": true, "release": true}
+
+	// Act
+	j, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
+	for name, more := range want {
+		if got := j.RunsMore(name); got != more {
+			t.Errorf("RunsMore(%s) = %v, want %v", name, got, more)
+		}
+	}
+}

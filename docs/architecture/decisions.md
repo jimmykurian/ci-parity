@@ -29,6 +29,9 @@ or pull request and the maintainer's agreement before any code.
   each runner's own words are used: `make lint`, `'release' is private`.
 - **Suggestions look through package runners.** `npx eslint .` matches a task that runs
   `eslint .`, on either side, because that is how most repositories call their tools.
+- **Suggestions name only tasks that do exactly what the step does.** A task with one
+  command, no dependencies and no calls to other tasks; otherwise `fix` would turn a
+  format check into the whole CI run.
 - **SARIF keeps allowed findings as suppressions** and gives each finding a fingerprint
   from its rule, file, job, step and command, so code scanning dismisses rather than
   forgets them and moving lines doesn't open a new alert.
@@ -111,4 +114,4 @@ or pull request and the maintainer's agreement before any code.
 - [Reference](../reference/README.md)
 - [Security overview](../security/overview.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

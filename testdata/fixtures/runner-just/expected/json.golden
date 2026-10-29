@@ -1,7 +1,7 @@
 {
   "version": 1,
   "summary": {
-    "errors": 4,
+    "errors": 6,
     "warnings": 0,
     "tolerated": 0,
     "allowed": 0
@@ -64,6 +64,36 @@
       "step": "Through make",
       "command": "make build",
       "message": "step \"Through make\" in job \"ci\" runs 'make build' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 28,
+      "col": 14,
+      "job": "ci",
+      "action": null,
+      "step": "Recipe with a dependency",
+      "command": "go vet ./...",
+      "message": "step \"Recipe with a dependency\" in job \"ci\" runs 'go vet ./...' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 30,
+      "col": 14,
+      "job": "ci",
+      "action": null,
+      "step": "One of a recipe's two lines",
+      "command": "go mod tidy",
+      "message": "step \"One of a recipe's two lines\" in job \"ci\" runs 'go mod tidy' directly",
       "suggestion": null,
       "reason": null
     }

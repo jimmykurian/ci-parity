@@ -22,13 +22,14 @@ type file struct {
 	includes []include
 }
 
-// task is one task: its name, aliases, whether it is internal, its commands and
-// its directory.
+// task is one task: its name, aliases, whether it is internal, its commands,
+// whether it does more than run them, and its directory.
 type task struct {
 	name     string
 	aliases  []string
 	internal bool
 	cmds     []string
+	more     bool   // deps:, or a task:, for: or defer: entry in cmds:
 	dir      string // dir:, as written
 }
 
@@ -77,7 +78,7 @@ func parseTask(name string, n *yaml.Node) task {
 	case yaml.ScalarNode:
 		t.cmds = []string{n.Value}
 	case yaml.SequenceNode:
-		t.cmds = commands(n)
+		t.cmds, t.more = commands(n)
 	case yaml.MappingNode:
 		t.aliases = scalars(get(n, "aliases"))
 		t.internal = scalar(get(n, "internal")) == "true"
@@ -85,18 +86,22 @@ func parseTask(name string, n *yaml.Node) task {
 		if c := scalar(get(n, "cmd")); c != "" {
 			t.cmds = append(t.cmds, c)
 		}
-		t.cmds = append(t.cmds, commands(get(n, "cmds"))...)
+		cmds, more := commands(get(n, "cmds"))
+		t.cmds = append(t.cmds, cmds...)
+		deps := get(n, "deps")
+		t.more = more || (deps != nil && len(deps.Content) > 0)
 	}
 	return t
 }
 
 // commands returns the string entries and cmd: entries of a cmds list,
-// skipping task:, for: and defer: entries.
-func commands(n *yaml.Node) []string {
+// skipping task:, for: and defer: entries, and whether it skipped any.
+func commands(n *yaml.Node) ([]string, bool) {
 	if n == nil || n.Kind != yaml.SequenceNode {
-		return nil
+		return nil, false
 	}
 	var out []string
+	more := false
 	for _, c := range n.Content {
 		switch {
 		case c.Kind == yaml.ScalarNode:
@@ -105,9 +110,11 @@ func commands(n *yaml.Node) []string {
 			if v := scalar(get(c, "cmd")); v != "" {
 				out = append(out, v)
 			}
+		case c.Kind == yaml.MappingNode:
+			more = true
 		}
 	}
-	return out
+	return out, more
 }
 
 // parseInclude reads an include given as a path or as a mapping.

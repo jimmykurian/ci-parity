@@ -65,6 +65,17 @@ A step without a `name:` is referred to as `step <index>` (1-based) in place of
   must read the same root file, so the suggested name exists there. Where each runner's
   tasks run is in [runners](runners.md#where-tasks-run). When either is unknown, nothing is
   suggested, so `fix` leaves the step alone.
+- P001: the task must run that one command and nothing else: no other command, no
+  dependency, and no call to another task. A task that does more would change what the
+  step runs, so it is never suggested.
+
+  | Runner | Does more than its command |
+  | --- | --- |
+  | Taskfile | `deps:`, or a `task:`, `for:` or `defer:` entry in `cmds:` |
+  | just | dependencies, before or after `&&` |
+  | make | prerequisites, order-only ones included, on any of the target's rules |
+  | mise | `depends`, `depends_post`, or a `run` entry that isn't a string |
+
 - P002: a task name that has the unknown name as a prefix wins, shortest first.
   Otherwise suggest the name with the lowest Levenshtein distance, when that distance is
   at most 3 and less than the length of the unknown name. Internal tasks are never
@@ -76,4 +87,4 @@ A step without a `name:` is referred to as `step <index>` (1-based) in place of
 - [Analysis](analysis.md)
 - [Output formats](output-formats.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

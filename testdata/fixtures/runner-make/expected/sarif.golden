@@ -139,6 +139,54 @@
           "partialFingerprints": {
             "ciParity/v1": "771cc550fe46ad48a124c9ad7da1e784"
           }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Target with a prerequisite\" in job \"build\" runs 'go vet ./...' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 26,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "795bbe1d4801d399121ef256fe607650"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"One of a target's two lines\" in job \"build\" runs 'go mod tidy' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 28,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "84d1f0f46097b63b7a7267e3d5a74761"
+          }
         }
       ]
     }

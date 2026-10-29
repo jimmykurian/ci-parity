@@ -23,7 +23,9 @@ type candidate struct {
 	dirKnown bool
 }
 
-// newSuggester indexes the runner's non-internal tasks by the commands they run.
+// newSuggester indexes the runner's non-internal tasks by the command they run.
+// Only a task that runs exactly one command, and nothing else, is indexed, so a
+// suggestion never runs more than the step.
 func newSuggester(r TaskSource) *suggester {
 	s := &suggester{byCommand: map[string][]candidate{}, invoke: r.Command(), reaches: r.Reaches}
 	for _, name := range r.Tasks() {
@@ -31,11 +33,13 @@ func newSuggester(r TaskSource) *suggester {
 			continue
 		}
 		s.names = append(s.names, name)
+		cmds := r.Commands(name)
+		if len(cmds) != 1 || r.RunsMore(name) {
+			continue
+		}
 		dir, known := r.Dir(name)
-		for _, cmd := range r.Commands(name) {
-			for _, key := range keys(cmd) {
-				s.byCommand[key] = append(s.byCommand[key], candidate{name: name, dir: dir, dirKnown: known})
-			}
+		for _, key := range keys(cmds[0]) {
+			s.byCommand[key] = append(s.byCommand[key], candidate{name: name, dir: dir, dirKnown: known})
 		}
 	}
 	return s

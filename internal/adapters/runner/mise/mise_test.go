@@ -258,3 +258,44 @@ dir = "{{cwd}}"
 		})
 	}
 }
+
+func TestRunsMore(t *testing.T) {
+	// Arrange
+	root := write(t, map[string]string{"mise.toml": `[tasks]
+fmt = "gofmt -l ."
+lint = ["golangci-lint run"]
+
+[tasks.build]
+run = "go build ./..."
+alias = "b"
+
+[tasks.vet]
+run = "go vet ./..."
+depends = ["build"]
+
+[tasks.test]
+run = "go test ./..."
+depends_post = "lint"
+
+[tasks.ci]
+run = [{ task = "build" }, "go test ./..."]
+
+[tasks.wait]
+run = "go test ./..."
+depends = []
+`})
+	want := map[string]bool{"fmt": false, "lint": false, "build": false, "b": false, "wait": false, "vet": true, "test": true, "ci": true}
+
+	// Act
+	m, err := Load(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Assert
+	for name, more := range want {
+		if got := m.RunsMore(name); got != more {
+			t.Errorf("RunsMore(%s) = %v, want %v", name, got, more)
+		}
+	}
+}

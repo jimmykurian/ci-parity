@@ -2,3 +2,5 @@
 ::error file=.github/workflows/ci.yml,line=20,col=19,title=P002 unknown-task::'just biuld' is not defined in justfile (closest: build)
 ::error file=.github/workflows/ci.yml,line=22,col=19,title=P003 internal-task::'release' is private and should not be invoked from CI
 ::error file=.github/workflows/ci.yml,line=26,col=14,title=P001 inline-tool::step "Through make" in job "ci" runs 'make build' directly
+::error file=.github/workflows/ci.yml,line=28,col=14,title=P001 inline-tool::step "Recipe with a dependency" in job "ci" runs 'go vet ./...' directly
+::error file=.github/workflows/ci.yml,line=30,col=14,title=P001 inline-tool::step "One of a recipe's two lines" in job "ci" runs 'go mod tidy' directly

@@ -8,3 +8,10 @@ alias = "t"
 [tasks.release]
 run = "goreleaser release --clean"
 hide = true
+
+[tasks.check]
+run = "go vet ./..."
+depends = ["build"]
+
+[tasks.tidy]
+run = ["go mod tidy", { task = "build" }]

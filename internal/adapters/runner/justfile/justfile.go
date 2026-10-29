@@ -27,6 +27,7 @@ type recipe struct {
 	min, max int      // how many arguments it takes; max is -1 when variadic
 	private  bool     // [private], or a name starting with _
 	commands []string // body lines, for suggestions
+	deps     bool     // it has dependencies, run before or after its body
 	alias    string   // for an alias, the recipe it names
 	dir      string   // repo-relative directory it runs in, when dirKnown
 	dirKnown bool
@@ -209,6 +210,12 @@ func (j *Justfile) Dir(name string) (string, bool) {
 // justfile, which just would find first.
 func (j *Justfile) Reaches(dir string) bool {
 	return domain.Reaches(filepath.Join(j.root, j.file), filepath.Join(j.root, filepath.FromSlash(dir)), discover)
+}
+
+// RunsMore reports whether a recipe has dependencies.
+func (j *Justfile) RunsMore(name string) bool {
+	r, ok := j.recipes[name]
+	return ok && r.deps
 }
 
 // Commands returns a recipe's body lines; an alias has none, so suggestions

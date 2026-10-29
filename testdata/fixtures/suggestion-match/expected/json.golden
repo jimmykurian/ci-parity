@@ -1,7 +1,7 @@
 {
   "version": 1,
   "summary": {
-    "errors": 7,
+    "errors": 10,
     "warnings": 0,
     "tolerated": 0,
     "allowed": 0
@@ -109,6 +109,51 @@
       "step": "Templated command does not match",
       "command": "pnpm exec playwright test",
       "message": "step \"Templated command does not match\" in job \"web\" runs 'pnpm exec playwright test' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 22,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Task with deps does not match",
+      "command": "pnpm vet",
+      "message": "step \"Task with deps does not match\" in job \"web\" runs 'pnpm vet' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 24,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "Task that calls another task does not match",
+      "command": "pnpm typecheck",
+      "message": "step \"Task that calls another task does not match\" in job \"web\" runs 'pnpm typecheck' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 26,
+      "col": 14,
+      "job": "web",
+      "action": null,
+      "step": "One of a task's two commands does not match",
+      "command": "pnpm build",
+      "message": "step \"One of a task's two commands does not match\" in job \"web\" runs 'pnpm build' directly",
       "suggestion": null,
       "reason": null
     }

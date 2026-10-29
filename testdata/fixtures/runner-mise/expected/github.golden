@@ -2,3 +2,5 @@
 ::error file=.github/workflows/ci.yml,line=16,col=23,title=P002 unknown-task::'mise run tset' is not defined in mise.toml (closest: test)
 ::error file=.github/workflows/ci.yml,line=18,col=23,title=P003 internal-task::'release' is hidden and should not be invoked from CI
 ::error file=.github/workflows/ci.yml,line=22,col=14,title=P001 inline-tool::step "Through just" in job "ci" runs 'just build' directly
+::error file=.github/workflows/ci.yml,line=24,col=14,title=P001 inline-tool::step "Task with depends" in job "ci" runs 'go vet ./...' directly
+::error file=.github/workflows/ci.yml,line=26,col=14,title=P001 inline-tool::step "Task that runs another task" in job "ci" runs 'go mod tidy' directly

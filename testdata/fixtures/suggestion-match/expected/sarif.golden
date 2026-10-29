@@ -235,6 +235,78 @@
           "partialFingerprints": {
             "ciParity/v1": "1df4bc0cb2b1beab9465786b38af8458"
           }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Task with deps does not match\" in job \"web\" runs 'pnpm vet' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 22,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "68a2cbf54801f943efcda4f5f9d5b494"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"Task that calls another task does not match\" in job \"web\" runs 'pnpm typecheck' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 24,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "4fb7ead2cdd1da691b4e1f9e4764cda2"
+          }
+        },
+        {
+          "ruleId": "P001",
+          "level": "error",
+          "message": {
+            "text": "step \"One of a task's two commands does not match\" in job \"web\" runs 'pnpm build' directly"
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": ".github/workflows/ci.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 26,
+                  "startColumn": 14
+                }
+              }
+            }
+          ],
+          "partialFingerprints": {
+            "ciParity/v1": "d5cff052c67d575490af82d839ad6386"
+          }
         }
       ]
     }

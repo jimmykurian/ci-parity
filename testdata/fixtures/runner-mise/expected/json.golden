@@ -1,7 +1,7 @@
 {
   "version": 1,
   "summary": {
-    "errors": 4,
+    "errors": 6,
     "warnings": 0,
     "tolerated": 0,
     "allowed": 0
@@ -64,6 +64,36 @@
       "step": "Through just",
       "command": "just build",
       "message": "step \"Through just\" in job \"ci\" runs 'just build' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 24,
+      "col": 14,
+      "job": "ci",
+      "action": null,
+      "step": "Task with depends",
+      "command": "go vet ./...",
+      "message": "step \"Task with depends\" in job \"ci\" runs 'go vet ./...' directly",
+      "suggestion": null,
+      "reason": null
+    },
+    {
+      "rule": "P001",
+      "name": "inline-tool",
+      "severity": "error",
+      "file": ".github/workflows/ci.yml",
+      "line": 26,
+      "col": 14,
+      "job": "ci",
+      "action": null,
+      "step": "Task that runs another task",
+      "command": "go mod tidy",
+      "message": "step \"Task that runs another task\" in job \"ci\" runs 'go mod tidy' directly",
       "suggestion": null,
       "reason": null
     }

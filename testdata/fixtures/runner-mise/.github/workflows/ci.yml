@@ -20,3 +20,7 @@ jobs:
         run: mise run -C web build
       - name: Through just
         run: just build
+      - name: Task with depends
+        run: go vet ./...
+      - name: Task that runs another task
+        run: go mod tidy

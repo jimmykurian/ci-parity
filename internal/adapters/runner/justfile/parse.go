@@ -115,7 +115,8 @@ func (p *parser) recipe(text string) {
 	if colon < 0 || strings.HasPrefix(rest[colon:], ":=") {
 		return
 	}
-	r := &recipe{}
+	deps := strings.TrimSpace(rest[colon+1:])
+	r := &recipe{deps: deps != "" && !strings.HasPrefix(deps, "#")}
 	for _, param := range strings.Fields(rest[:colon]) {
 		param = strings.TrimPrefix(param, "$")
 		switch {

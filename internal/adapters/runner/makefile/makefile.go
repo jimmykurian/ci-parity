@@ -24,6 +24,7 @@ type Makefile struct {
 	root     string
 	file     string              // repo-relative path of the root Makefile
 	commands map[string][]string // target -> recipe lines
+	prereqs  map[string]bool     // targets with prerequisites
 }
 
 // Load discovers the Makefile in root and reads it and its includes.
@@ -32,7 +33,7 @@ func Load(root string) (*Makefile, error) {
 	if !ok {
 		return nil, fmt.Errorf("no Makefile found; looked for %s", strings.Join(Names, ", "))
 	}
-	m := &Makefile{root: root, file: filepath.Base(path), commands: map[string][]string{}}
+	m := &Makefile{root: root, file: filepath.Base(path), commands: map[string][]string{}, prereqs: map[string]bool{}}
 	if err := m.read(path, 0, nil); err != nil {
 		return nil, err
 	}
@@ -136,6 +137,10 @@ func (m *Makefile) Tasks() []string {
 
 // IsInternal reports false: make has no internal targets.
 func (m *Makefile) IsInternal(string) bool { return false }
+
+// RunsMore reports whether a target has prerequisites, which make brings up to
+// date first.
+func (m *Makefile) RunsMore(name string) bool { return m.prereqs[name] }
 
 // Commands returns the recipe lines of a target.
 func (m *Makefile) Commands(name string) []string { return m.commands[name] }
