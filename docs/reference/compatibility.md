@@ -5,11 +5,9 @@
 What ci-parity keeps stable between releases, what may change, and how a change is
 announced. It follows [semantic versioning](https://semver.org).
 
-## Before 1.0
-
-Until v1.0.0, a minor release may still change anything on this page; the
-[changelog](https://github.com/jimmykurian/ci-parity/blob/main/CHANGELOG.md) lists every
-change. From 1.0, the promises below hold.
+These promises hold from v1.0.0. The 0.x releases could change anything on this page;
+the [changelog](https://github.com/jimmykurian/ci-parity/blob/main/CHANGELOG.md) lists
+every change.
 
 ## Stable
 
@@ -59,4 +57,4 @@ output is the same on each.
 - [Reference index](README.md)
 - [Releases and CI](../deployment/releases-and-ci.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

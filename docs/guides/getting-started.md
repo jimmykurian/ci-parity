@@ -12,10 +12,10 @@ Install ci-parity, run it on a repository, and read what it reports.
 
 ```yaml
 - uses: actions/checkout@v7
-- uses: jimmykurian/ci-parity@v0
+- uses: jimmykurian/ci-parity@v1
 ```
 
-`@v0` follows the latest v0.x release. To pin, use a release tag (`@v0.6.0`) or, better,
+`@v1` follows the latest v1.x release. To pin, use a release tag (`@v1.0.0`) or, better,
 its full commit SHA with the tag as a comment. The action downloads that release's binary
 for the runner, verifies it against `checksums.txt`, and runs `ci-parity check`. Its
 inputs and outputs are in the [GitHub Action reference](../reference/action.md), and
@@ -164,4 +164,4 @@ $ ci-parity check
 - [Guides](README.md)
 - [CLI reference](../reference/cli.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29

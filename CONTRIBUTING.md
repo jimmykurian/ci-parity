@@ -215,8 +215,8 @@ versions the project from the Conventional Commits on `main`:
 
 - After each merge it opens or updates one release PR, `chore: release <version>`, that
   bumps the version in `.github/.release-please-manifest.json` and adds the commits to
-  `CHANGELOG.md`. Before 1.0, a `feat` is a minor release and a `fix` a patch; a `!` or
-  `BREAKING CHANGE` footer is a minor release too. `docs` and `refactor` commits are
+  `CHANGELOG.md`. A `feat` is a minor release and a `fix` a patch; a `!` or a
+  `BREAKING CHANGE` footer is a major release. `docs` and `refactor` commits are
   listed; `chore`, `ci`, `build`, `test` and `style` aren't.
 - The workflow uses `GITHUB_TOKEN`, so the release PR doesn't start the CI checks on its
   own. Close and reopen it to run them, then merge it.

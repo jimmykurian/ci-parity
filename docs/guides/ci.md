@@ -7,7 +7,7 @@ counts for a later step.
 
 ```mermaid
 flowchart LR
-    pr["Pull request"] --> job["Workflow job:<br/>checkout, then<br/>jimmykurian/ci-parity@v0"]
+    pr["Pull request"] --> job["Workflow job:<br/>checkout, then<br/>jimmykurian/ci-parity@v1"]
     job -->|"format: github<br/>(default)"| ann["Annotations on the<br/>changed workflow lines"]
     job -->|"format: sarif"| up["upload-sarif"] --> cs["Code scanning alerts,<br/>each linked to its rule page"]
     job -->|"fail-on-error: false"| out["Outputs: errors,<br/>warnings, tolerated"]
@@ -29,7 +29,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v7
-      - uses: jimmykurian/ci-parity@v0
+      - uses: jimmykurian/ci-parity@v1
 ```
 
 On the pull request, each finding appears on its line in **Files changed**:
@@ -60,7 +60,7 @@ jobs:
       security-events: write
     steps:
       - uses: actions/checkout@v7
-      - uses: jimmykurian/ci-parity@v0
+      - uses: jimmykurian/ci-parity@v1
         id: parity
         with:
           format: sarif
@@ -91,7 +91,7 @@ Security.
 With `fail-on-error: false`, the step always succeeds and its outputs carry the counts:
 
 ```yaml
-      - uses: jimmykurian/ci-parity@v0
+      - uses: jimmykurian/ci-parity@v1
         id: parity
         with:
           fail-on-error: false
@@ -117,4 +117,4 @@ ignore the baseline, for example in a scheduled job that tracks what's left. See
 - [GitHub Action reference](../reference/action.md)
 - [Output formats](../reference/output-formats.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29
