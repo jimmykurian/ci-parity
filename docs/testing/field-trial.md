@@ -83,10 +83,46 @@ Each cause has an issue:
 The 1.0 criteria ([#51](https://github.com/jimmykurian/ci-parity/issues/51)) ask for a
 re-run with no false positives.
 
+## Results for v0.10.0
+
+The same commits, after the fixes in the table above and the built-in allow set (#50).
+
+| Repository | Runner | P001 | P002 | P005 | Allowed | False positives | Noise | True |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| go-task/task | Taskfile | 12 | 0 | 0 | 1 | 0 | 1 | 11 |
+| goreleaser/goreleaser | Taskfile | 3 | 0 | 1 | 1 | 0 | 2 | 1 |
+| arduino/arduino-cli | Taskfile | 12 | 0 | 2 | 4 | 0 | 5 | 7 |
+| prometheus/prometheus | make | 12 | 0 | 1 | 0 | 0 | 3 | 9 |
+| traefik/traefik | make | 18 | 0 | 3 | 2 | 0 | 6 | 12 |
+| cli/cli | make | 12 | 0 | 7 | 8 | 0 | 0 | 12 |
+| casey/just | just | 8 | 0 | 0 | 2 | 0 | 0 | 8 |
+| oxc-project/oxc | just | 120 | 0 | 17 | 1 | 0 | 2 | 118 |
+| jdx/mise | mise | 18 | 0 | 8 | 2 | 0 | 6 | 12 |
+| jdx/hk | mise | 11 | 0 | 14 | 33 | 0 | 0 | 11 |
+| **Total** | | **226** | **0** | **53** | **54** | **0** | **25** | **201** |
+
+P001 counts only errors here; allowed findings are in their own column.
+
+- **False positives: none.** There are no P002s, and the 23 `go tool` task calls are
+  checked as task calls.
+- **Allowed: 54** by the built-in allow set: 33 inline scripts, 11 version or environment
+  checks and 10 pinned tool installs. Every one is a setup or info command.
+- **Noise left: 25 (11% of errors):**
+  - 18 tool installs that aren't pinned, such as `npm i -g corepack`,
+    `pip install poetry`, `go install …@latest` and `cargo binstall cargo-zigbuild`,
+    which the built-in set leaves out on purpose;
+  - 1 pinned tool run once, `npx --yes junit-report-merger@9.0.3`;
+  - 5 registry commands (`docker buildx imagetools`, `docker pull`);
+  - 1 version check run inside `docker run`.
+- **True positives: 201 (89%):** builds, tests and checks run inline, such as
+  `cargo build`, `go test` and `pnpm --filter … build`.
+- **P005 warnings:** the same 53 as before, all expected.
+- **Suggestions: 5, all exact:** each names a task that runs only that command.
+
 ## See also
 
 - [Testing strategy](testing-strategy.md)
 - [P001](../rules/p001.md) and [P002](../rules/p002.md)
 - [How runner files are read](../reference/runners.md)
 
-Last reviewed: 2026-10-28
+Last reviewed: 2026-10-29
