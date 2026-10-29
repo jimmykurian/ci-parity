@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.10.0](https://github.com/jimmykurian/ci-parity/compare/v0.9.0...v0.10.0) (2026-10-29)
+
+
+### Features
+
+* allow setup and info commands by default, with builtin_allow to turn it off ([#80](https://github.com/jimmykurian/ci-parity/issues/80)) ([bcd9970](https://github.com/jimmykurian/ci-parity/commit/bcd99707afc3fb3d8469646ff8e1df7e079fe5fc)), closes [#50](https://github.com/jimmykurian/ci-parity/issues/50)
+
+
+### Documentation
+
+* record the field trial re-run: no false positives ([#82](https://github.com/jimmykurian/ci-parity/issues/82)) ([cba3d5d](https://github.com/jimmykurian/ci-parity/commit/cba3d5d9b0f53cd026b4ba783967de6e1ff00a5a))
+
 ## [0.9.0](https://github.com/jimmykurian/ci-parity/compare/v0.8.3...v0.9.0) (2026-10-29)
 
 
