@@ -46,6 +46,16 @@ workflows, composite actions, runner files, `.ci-parity.yml` and the baseline.
   hook. A hit is fixed, never allowlisted.
 - `main` takes only squash-merged pull requests with passing checks and signed commits.
 - Workflows start with read-only or no permissions; each job that needs more asks for it.
+- GitHub secret scanning runs on the repository, with push protection blocking a push that
+  carries a secret.
+- CodeQL's default setup scans the Go, the workflows and the docs site's scripts on every
+  pull request and weekly.
+- Dependabot raises alerts and opens security updates only; `.github/dependabot.yml` turns
+  version updates off. Its pull requests have Conventional Commit titles: `fix(deps):` for
+  Go modules, so a fix to one in the binary releases a patch, `build(deps):` for the docs
+  site's packages and `ci(deps):` for the actions.
+- Private vulnerability reporting takes reports as [SECURITY.md](../../SECURITY.md)
+  describes.
 
 ## See also
 
