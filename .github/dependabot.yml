@@ -1,0 +1,47 @@
+# Copyright (c) 2026 Jimmy Kurian. Licensed under Apache-2.0; see LICENSE.
+# SPDX-License-Identifier: Apache-2.0
+
+# Dependabot opens security updates only: open-pull-requests-limit 0 turns version
+# updates off, and security updates don't count against it. Each commit message is a
+# Conventional Commit: a fix to a Go module in the binary releases a patch through
+# Release Please; the docs site's packages and the workflows' actions release nothing.
+version: 2
+updates:
+  # go.mod, for the binary and its tests.
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    # zizmor asks for a cooldown; it delays version updates only, so it never holds back a
+    # security update.
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: fix(deps)
+
+  # The docs site in site/ (pnpm).
+  - package-ecosystem: npm
+    directory: /site
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    # zizmor asks for a cooldown; it delays version updates only, so it never holds back a
+    # security update.
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: build(deps)
+
+  # The actions the workflows in .github/workflows and action.yml use.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 0
+    # zizmor asks for a cooldown; it delays version updates only, so it never holds back a
+    # security update.
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: ci(deps)
